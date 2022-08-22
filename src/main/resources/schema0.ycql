@@ -1,10 +1,10 @@
-DROP KEYSPACE IF EXIST wholesale;
-CREATE KEYSPACE IF NOT EXIST wholesale
+-- DROP KEYSPACE IF EXISTS wholesale;
+CREATE KEYSPACE IF NOT EXISTS wholesale
     WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};
 USE wholesale;
 
-DROP TABLE IF EXIST warehouse;
-CREATE TABLE IF NOT EXIST warehouse (
+DROP TABLE IF EXISTS warehouse;
+CREATE TABLE IF NOT EXISTS warehouse (
     W_ID int,
     W_NAME varchar,
     W_STREET_1 varchar,
@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXIST warehouse (
     PRIMARY KEY (W_ID)
 );
 
-DROP TABLE IF EXIST district;
-CREATE TABLE IF NOT EXIST district (
+DROP TABLE IF EXISTS district;
+CREATE TABLE IF NOT EXISTS district (
     D_W_ID int,
     D_ID int,
     D_NAME varchar,
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXIST district (
     PRIMARY KEY ((D_W_ID, D_ID))
 );
 
-DROP TABLE IF EXIST customer;
-CREATE TABLE IF NOT EXIST customer (
+DROP TABLE IF EXISTS customer;
+CREATE TABLE IF NOT EXISTS customer (
     C_W_ID int,
     C_D_ID int,
     C_ID int,
@@ -59,8 +59,8 @@ CREATE TABLE IF NOT EXIST customer (
     PRIMARY KEY ((C_W_ID, C_D_ID, C_ID))
 );
 
-DROP TABLE IF EXIST order;
-CREATE TABLE IF NOT EXIST order (
+DROP TABLE IF EXISTS "order";
+CREATE TABLE IF NOT EXISTS "order" (
     O_W_ID int,
     O_D_ID int,
     O_ID int,
@@ -69,11 +69,11 @@ CREATE TABLE IF NOT EXIST order (
     O_OL_CNT decimal,
     O_ALL_LOCAL decimal,
     O_ENTRY_D timestamp,
-    PRIMARY KEY ((O_W_ID, O_D_ID, O_ID)
+    PRIMARY KEY ((O_W_ID, O_D_ID, O_ID))
 );
 
-DROP TABLE IF EXIST item;
-CREATE TABLE IF NOT EXIST item (
+DROP TABLE IF EXISTS item;
+CREATE TABLE IF NOT EXISTS item (
     I_ID int,
     I_NAME varchar,
     I_PRICE decimal,
@@ -82,8 +82,8 @@ CREATE TABLE IF NOT EXIST item (
     PRIMARY KEY (I_ID)
 );
 
-DROP TABLE IF EXIST order_line;
-CREATE TABLE IF NOT EXIST order_line (
+DROP TABLE IF EXISTS order_line;
+CREATE TABLE IF NOT EXISTS order_line (
     OL_W_ID int,
     OL_D_ID int,
     OL_O_ID int,
@@ -97,8 +97,8 @@ CREATE TABLE IF NOT EXIST order_line (
     PRIMARY KEY ((OL_W_ID, OL_D_ID, OL_O_ID, OL_NUMBER))
 );
 
-DROP TABLE IF EXIST stock;
-CREATE TABLE IF NOT EXIST stock (
+DROP TABLE IF EXISTS stock;
+CREATE TABLE IF NOT EXISTS stock (
     S_W_ID int,
     S_I_ID int,
     S_QUANTITY decimal,
@@ -115,5 +115,6 @@ CREATE TABLE IF NOT EXIST stock (
     S_DIST_09 text,
     S_DIST_10 text,
     S_DATA varchar,
+    PRIMARY KEY ((S_W_ID, S_I_ID))
 );
 
