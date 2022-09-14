@@ -1,13 +1,13 @@
-package transaction;
+package util;
 
-public class QueryFormat {
+public class QueryFormatter {
 
     // For NewOrderTransaction
     public String getDistrictNextOrderId(int warehouseId, int districtId) {
         return String.format(
                 "SELECT D_NEXT_O_ID from district WHERE D_W_ID=%d AND D_ID=%d;",
                 warehouseId, districtId);
-    };
+    }
 
     public String getIncrementDistrictNextOrderId(int warehouseId, int districtId) {
         return String.format(
@@ -96,4 +96,53 @@ public class QueryFormat {
                 warehouseId, districtId, customerId
         );
     }
+
+    // For DeliveryTransaction
+    public String getOrderToDeliverInDistrict(int warehouseId, int districtId) {
+        // get order_id, customer_id
+        return String.format("""
+                        SELECT O_ID, O_C_ID from order 
+                        WHERE O_W_ID = %d AND O_D_ID = %d AND O_CARRIER_ID IS NULL
+                        ORDER BY O_ID
+                        LIMIT 1;
+                        """,
+                warehouseId, districtId);
+    }
+
+    public String updateCarrierIdInOrder(int warehouseId, int districtId, int orderId, int newCarrierId) {
+        return String.format("""
+                UPDATE order
+                SET O_CARRIER_ID = %d
+                WHERE O_W_ID = %d AND O_D_ID = %d AND O_ID = %d;
+                """,
+                newCarrierId, warehouseId, districtId, orderId);
+    }
+
+    public String updateDeliveryDateInOrderLine(int warehouseId, int districtId, int orderId) {
+        return String.format("""
+                UPDATE order_line
+                SET OL_DELIVERY_D = %s
+                WHERE OL_W_ID = %d AND OL_D_ID = %d AND OL_O_ID = %d;
+                """,
+                TimeFormatter.getCurrentTimestamp(), warehouseId, districtId, orderId);
+    }
+
+    public String getOrderTotalPrice(int warehouseId, int districtId, int orderId) {
+        return String.format("""
+                SELECT sum(OL_AMOUNT) as total_price
+                FROM order_line
+                WHERE OL_W_ID = %d AND OL_D_ID = %d AND OL_O_ID = %d;
+                """,
+                warehouseId, districtId, orderId);
+    }
+
+    public String updateCustomerDeliveryInfo(int warehouseId, int districtId, int customerId, double totalCost) {
+        return String.format("""
+                UPDATE customer
+                SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + %f
+                WHERE C_W_ID = %d AND C_D_ID = %d AND C_ID = %d;
+                """,
+                totalCost, warehouseId, districtId, customerId);
+    }
+
 }
