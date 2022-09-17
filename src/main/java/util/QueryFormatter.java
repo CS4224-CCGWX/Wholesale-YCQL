@@ -145,4 +145,50 @@ public class QueryFormatter {
                 totalCost, warehouseId, districtId, customerId);
     }
 
+    // For payment transaction
+    public String updateWarehouseYearToDateAmount(int warehouseId, double payment) {
+        return String.format("""
+                UPDATE warehouse
+                SET W_YTD = W_YTD + %f
+                WHERE W_ID = %d;
+                """, payment, warehouseId);
+    }
+
+    public String updateDistrictYearToDateAmount(int warehouseId, int districtId, double payment) {
+        return String.format("""
+                UPDATE district
+                SET D_YTD = D_YTD + %f
+                WHERE D_W_ID = %d AND D_ID = %d;
+                """, payment, warehouseId, districtId);
+    }
+
+    public String updateCustomerPaymentInfo(int warehouseId, int districtId, int customerId, double payment) {
+        return String.format("""
+                UPDATE customer
+                SET C_BALANCE = C_BALANCE - %f, C_YTD_PAYMENT = C_YTD_PAYMENT + %f, C_PAYMENT_CNT = C_PAYMENT_CNT + 1
+                WHERE C_W_ID = %d AND C_D_ID = %d AND C_ID = %d;
+                """, payment, payment, warehouseId, districtId, customerId);
+    }
+
+    public String getFullCustomerInfo(int warehouseId, int districtId, int customerId) {
+        return String.format("""
+                SELECT C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2,
+                C_CITY, C_STATE, C_ZIP, C_PHONE, C_SINCE, C_CREDIT, C_CREDIT_LIM, C_DISCOUNT, C_BALANCE
+                FROM customer WHERE C_W_ID = %d AND C_D_ID = %d AND C_ID = %d;
+                """, warehouseId, districtId, customerId);
+    }
+
+    public String getWarehouseAddress(int warehouseId) {
+        return String.format("""
+                SELECT W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP
+                FROM warehouse WHERE W_ID = %d;
+                """, warehouseId);
+    }
+
+    public String getDistrictAddress(int warehouseId, int districtId) {
+        return String.format("""
+                SELECT D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP
+                FROM district WHERE D_W_ID = %d AND D_ID = %d;
+                """, warehouseId, districtId);
+    }
 }
