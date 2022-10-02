@@ -12,10 +12,11 @@ import com.datastax.driver.core.Statement;
 
 public class AbstractTransaction {
     protected Session session;
-    private ConsistencyLevel consistencyLevel = ConsistencyLevel.ALL;
+    private ConsistencyLevel defaultConsistencyLevel;
 
     AbstractTransaction(Session s) {
         session = s;
+        defaultConsistencyLevel = ConsistencyLevel.ALL;
     }
 
     protected List<Row> executeQuery(String query) {
@@ -42,15 +43,15 @@ public class AbstractTransaction {
         return res.all();
     }
 
+    public void setDefaultConsistencyLevel(ConsistencyLevel consistencyLevel) {
+        this.defaultConsistencyLevel = consistencyLevel;
+    }
+
     private ConsistencyLevel getConsistencyLevel(String query) {
-        if (consistencyLevel.equals(ConsistencyLevel.ALL)) {
-            if (query.startsWith("SELECT")) {
-                return ConsistencyLevel.ONE;
-            } else {
-                return ConsistencyLevel.ALL;
-            }
+        if (query.startsWith("SELECT")) {
+            return ConsistencyLevel.ONE;
         } else {
-            return ConsistencyLevel.QUORUM;
+            return defaultConsistencyLevel;
         }
     }
 }
