@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+
+import util.PreparedQueries;
 import util.QueryFormatter;
 import util.TimeFormatter;
 
@@ -35,7 +37,7 @@ public class NewOrderTransaction extends AbstractTransaction {
         QueryFormatter queryFormatter = new QueryFormatter();
 
         List<Row> res;
-        res = this.executeQuery(queryFormatter.getDistrictNextOrderIdAndTax(warehouseId, districtId));
+        res = this.executeQuery(PreparedQueries.getDistrictNextOrderId, warehouseId, districtId);
         Row districtInfo = res.get(0);
         int orderId = districtInfo.getInt("D_NEXT_O_ID");
 
@@ -59,8 +61,7 @@ public class NewOrderTransaction extends AbstractTransaction {
             }
         }
         String orderDateTime = TimeFormatter.getCurrentTimestamp();
-        this.executeQuery(queryFormatter.createNewOrder(
-                orderId, districtId, warehouseId, customerId, orderDateTime, nOrderLines, isAllLocal));
+        this.executeQuery(PreparedQueries.createNewOrder,orderId, districtId, warehouseId, customerId, orderDateTime, nOrderLines, isAllLocal);
 
         /*
           3. Initialize TOTAL_AMOUNT = 0
@@ -80,11 +81,11 @@ public class NewOrderTransaction extends AbstractTransaction {
               ADJUST_QTY = S_QUANTITY - quantities[i]
               if ADJUST_QTY < 10, then ADJUST_QTY += 100
              */
-            res = this.executeQuery(queryFormatter.getStockQty(supplyWarehouseId, itemId));
+            res = this.executeQuery(PreparedQueries.getStockQty, supplyWarehouseId, itemId);
             int stockQty = res.get(0).getInt(0);
 
             int adjustQty = stockQty - quantity;
-            if(adjustQty < STOCK_REFILL_THRESHOLD) {
+            if (adjustQty < STOCK_REFILL_THRESHOLD) {
                 adjustQty += STOCK_REFILL_QTY;
             }
             adjustQuantities.add(adjustQty);
@@ -96,14 +97,16 @@ public class NewOrderTransaction extends AbstractTransaction {
               - increment S_ORDER_CNT by 1
               - Increment S_REMOTE_CNT by 1 if supplyWarehouseIds[i] != warehouseID
              */
-            this.executeQuery(queryFormatter.updateStockQty(
-                    adjustQty, quantity, supplyWarehouseId, itemId, supplyWarehouseId != warehouseId));
-
+            if(supplyWarehouseId != warehouseId) {
+                this.executeQuery(PreparedQueries.updateStockQtyIncrRemoteCnt, adjustQty, quantity, supplyWarehouseId, itemId);
+            } else {
+                this.executeQuery(PreparedQueries.updateStockQty, adjustQty, quantity, supplyWarehouseId, itemId);
+            }
             /*
               3.3. ITEM_AMOUNT = quantities[i] * I_PRICE, where I_PRICE is price of itemIds[i]
               TOTAL_AMOUNT += ITEM_AMOUNT
              */
-            Row itemInfo = this.executeQuery(queryFormatter.getItemInfo(itemId)).get(0);
+            Row itemInfo = this.executeQuery(PreparedQueries.getItemInfo, itemId).get(0);
             double price = itemInfo.getDouble("I_PRICE");
             double itemAmount = quantity * price;
             itemAmounts.add(itemAmount);
@@ -122,9 +125,10 @@ public class NewOrderTransaction extends AbstractTransaction {
               - OL_DELIVERY_D = null
               - OL_DIST_INFO = S_DIST_xx where xx=D_ID
              */
-            res = this.executeQuery(queryFormatter.getStockDistInfo(districtId, warehouseId, itemId));
+            String distIdStr = queryFormatter.distIdStr(districtId);
+            res = this.executeQuery(PreparedQueries.getStockDistInfo, distIdStr, warehouseId, itemId);
             String distInfo = res.get(0).getString(0);
-            this.executeQuery(queryFormatter.createNewOrderLine(districtId, warehouseId, i, itemId, supplyWarehouseId, itemAmount, distInfo));
+            this.executeQuery(PreparedQueries.createNewOrderLine, districtId, warehouseId, i, itemId, supplyWarehouseId, itemAmount, distInfo);
         }
 
         /*
@@ -134,9 +138,9 @@ public class NewOrderTransaction extends AbstractTransaction {
           and C_DISCOUNT is the discount for customer C_ID.
          */
         double dTax = districtInfo.getDecimal("D_TAX").doubleValue();
-        res = this.executeQuery(queryFormatter.getWarehouseTax(warehouseId));
+        res = this.executeQuery(PreparedQueries.getWarehouseTax, warehouseId);
         double wTax = res.get(0).getDouble(0);
-        res = this.executeQuery(queryFormatter.getCustomerInfo(warehouseId, districtId, customerId));
+        res = this.executeQuery(PreparedQueries.getCustomerInfo, warehouseId, districtId, customerId);
         Row cInfo = res.get(0);
         double cDiscount = cInfo.getDecimal("C_DISCOUNT").doubleValue();
 
