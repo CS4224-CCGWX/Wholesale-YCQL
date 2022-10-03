@@ -13,15 +13,17 @@ public class PaymentTransaction extends AbstractTransaction {
     private int warehouseId;
     private int districtId;
     private int customerId;
+    private double payment;
     private static QueryFormatter queryFormatter = new QueryFormatter();
     private static OutputFormatter outputFormatter = new OutputFormatter();
     private static final String delimiter = "\n";
 
-    public PaymentTransaction(Session session, int warehouseId, int districtId, int customerId) {
+    public PaymentTransaction(Session session, int warehouseId, int districtId, int customerId, double payment) {
         super(session);
         this.warehouseId = warehouseId;
         this.districtId = districtId;
         this.customerId = customerId;
+        this.payment = payment;
     }
     /**
      * This transaction processes a payment made by a customer.
@@ -43,7 +45,7 @@ public class PaymentTransaction extends AbstractTransaction {
      * 3. District’s address (D STREET 1, D STREET 2, D CITY, D STATE, D ZIP)
      * 4. Payment amount PAYMENT
      */
-    public void execute(double payment) {
+    public void execute() {
         // 1. Update the warehouse C W ID by incrementing W YTD by PAYMENT
         executeQuery(PreparedQueries.updateWarehouseYearToDateAmount, payment, warehouseId);
 

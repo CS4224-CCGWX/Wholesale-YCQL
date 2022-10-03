@@ -91,4 +91,11 @@ public class OutputFormatter {
                 itemInfo.getDecimal("OL_AMOUNT").doubleValue(),
                 itemInfo.getTimestamp("OL_DELIVERY_D").toString());
     }
+
+    public String formatStockLevelTransactionOutput(long result, String transactionInfo) {
+        StringBuilder sb = new StringBuilder(transactionInfo);
+        sb.append(delimiter);
+        sb.append(result);
+        return sb.toString();
+    }
 }
