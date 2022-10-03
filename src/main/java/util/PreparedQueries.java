@@ -134,9 +134,9 @@ public class PreparedQueries {
             SELECT O_ID, O_CARRIER_ID, O_ENTRY_D
             FROM "order"
             WHERE O_W_ID = ? AND O_D_ID = ? AND O_C_ID = ?
-            ORDER BY O_ENTRY_D DESC
+            ORDER BY O_ID DESC
             LIMIT 1;
-            """;
+            """;  // "order" is partitioned by O_W_ID and O_D_ID, and sort by O_ID.
 
     public final static String getCustomerLastOrderItemsInfo = """
             SELECT OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DELIVERY_D

@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS "order" (
     O_OL_CNT decimal,
     O_ALL_LOCAL decimal,
     O_ENTRY_D timestamp,
-    PRIMARY KEY ((O_W_ID, O_D_ID, O_ID))
+    PRIMARY KEY ((O_W_ID, O_D_ID), O_ID)
 );
 
 DROP TABLE IF EXISTS item;
