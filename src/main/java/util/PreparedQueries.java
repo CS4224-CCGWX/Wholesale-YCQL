@@ -20,7 +20,7 @@ public class PreparedQueries {
                 WHERE D_W_ID = ? AND D_ID = ?;
                 """;
 
-    public final static String getIncrementDistrictNextOrderId = """
+    public final static String incrementDistrictNextOrderId = """
                 UPDATE district
                 SET D_NEXT_O_ID=D_NEXT_O_ID+1
                 WHERE D_W_ID = ? AND D_ID = ?;
@@ -37,12 +37,14 @@ public class PreparedQueries {
                 FROM stock
                 WHERE S_W_ID = ?, S_I_ID = ?;
                 """;
+
     // update stock qty that increments remote count
     public final static String updateStockQtyIncrRemoteCnt = """
                 UPDATE stock
                 SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1
                 WHERE S_W_ID = ?, S_I_ID = ?;
                 """;
+
     // update stock qty that NOT increments remote count
     public final static String updateStockQty = """
                 UPDATE stock
@@ -50,7 +52,7 @@ public class PreparedQueries {
                 WHERE S_W_ID = ?, S_I_ID = ?;
                 """;
 
-    public final static String getItemInfo = """
+    public final static String getItemPriceAndName = """
                 SELECT I_PRICE, I_NAME
                 FROM item
                 WHERE I_ID = ?;
@@ -74,7 +76,7 @@ public class PreparedQueries {
                 WHERE W_ID = ?;
                 """;
 
-    public final static String getCustomerInfo = """
+    public final static String getCustomerLastAndCreditAndDiscount = """
                 SELECT C_LAST, C_CREDIT, C_DISCOUNT
                 FROM customer
                 WHERE C_W_ID = ?, C_D_ID = ?, C_ID = ?;
@@ -120,6 +122,27 @@ public class PreparedQueries {
                 SELECT D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP
                 FROM district WHERE D_W_ID = ? AND D_ID = ?;
                 """;
+
+    // For order status transaction
+    public final static String getCustomerFullNameAndBalance = """
+            SELECT C_FIRST, C_MIDDLE, C_LAST, C_BALANCE
+            FROM customer
+            WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;
+            """;
+
+    public final static String getCustomerLastOrderInfo = """
+            SELECT O_ID, O_CARRIER_ID, O_ENTRY_D
+            FROM "order"
+            WHERE O_W_ID = ? AND O_D_ID = ? AND O_C_ID = ?
+            ORDER BY O_ENTRY_D DESC
+            LIMIT 1;
+            """;
+
+    public final static String getCustomerLastOrderItemsInfo = """
+            SELECT OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DELIVERY_D
+            FROM order_line
+            WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?;
+            """;
 
     // For stock level transactions
     public final static String getNextAvailableOrderNumber = """

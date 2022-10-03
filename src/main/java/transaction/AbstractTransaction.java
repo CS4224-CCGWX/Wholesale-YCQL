@@ -10,7 +10,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 
-public class AbstractTransaction {
+public abstract class AbstractTransaction {
     protected Session session;
     private ConsistencyLevel defaultConsistencyLevel;
 
