@@ -27,7 +27,6 @@ public class NewOrderTransaction extends AbstractTransaction {
         nOrderLines = n;
     }
 
-
     public void execute(List<Integer> itemIds,List<Integer> supplyWarehouseIds, List<Integer> quantities) {
         /*
           1. N denotes the next available order number D_NEXT_O_ID for district (W_ID, D_ID)
@@ -37,9 +36,10 @@ public class NewOrderTransaction extends AbstractTransaction {
         QueryFormatter queryFormatter = new QueryFormatter();
 
         List<Row> res;
-        res = this.executeQuery(PreparedQueries.getDistrictNextOrderId, warehouseId, districtId);
+        res = this.executeQuery(PreparedQueries.getDistrictNextOrderIdAndTax, warehouseId, districtId);
         Row districtInfo = res.get(0);
         int orderId = districtInfo.getInt("D_NEXT_O_ID");
+        this.executeQuery(PreparedQueries.incrementDistrictNextOrderId, warehouseId, districtId);
 
         /*
           2. Create nwe order with:
@@ -106,7 +106,7 @@ public class NewOrderTransaction extends AbstractTransaction {
               3.3. ITEM_AMOUNT = quantities[i] * I_PRICE, where I_PRICE is price of itemIds[i]
               TOTAL_AMOUNT += ITEM_AMOUNT
              */
-            Row itemInfo = this.executeQuery(PreparedQueries.getItemInfo, itemId).get(0);
+            Row itemInfo = this.executeQuery(PreparedQueries.getItemPriceAndName, itemId).get(0);
             double price = itemInfo.getDouble("I_PRICE");
             double itemAmount = quantity * price;
             itemAmounts.add(itemAmount);
@@ -140,7 +140,7 @@ public class NewOrderTransaction extends AbstractTransaction {
         double dTax = districtInfo.getDecimal("D_TAX").doubleValue();
         res = this.executeQuery(PreparedQueries.getWarehouseTax, warehouseId);
         double wTax = res.get(0).getDouble(0);
-        res = this.executeQuery(PreparedQueries.getCustomerInfo, warehouseId, districtId, customerId);
+        res = this.executeQuery(PreparedQueries.getCustomerLastAndCreditAndDiscount, warehouseId, districtId, customerId);
         Row cInfo = res.get(0);
         double cDiscount = cInfo.getDecimal("C_DISCOUNT").doubleValue();
 

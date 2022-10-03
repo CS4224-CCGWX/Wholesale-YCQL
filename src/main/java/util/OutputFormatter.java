@@ -1,5 +1,7 @@
 package util;
 
+import java.util.Date;
+
 import com.datastax.driver.core.Row;
 
 public class OutputFormatter {
@@ -66,5 +68,27 @@ public class OutputFormatter {
                 districtAddress.getString("D_CITY"),
                 districtAddress.getString("D_STATE"),
                 districtAddress.getString("D_ZIP"));
+    }
+
+    public String formatCustomerFullNameAndBalance(Row cInfo) {
+        return String.format("Customer name: %s_%s_%s, balance: %.2f",
+                cInfo.getString("C_FIRST"),
+                cInfo.getString("C_MIDDLE"),
+                cInfo.getString("C_LAST"),
+                cInfo.getDecimal("C_BALANCE").doubleValue());
+    }
+
+    public String formatLastOrderInfo(int lastOrderId, int carrierId, Date datetime) {
+        return String.format("Last order ID: %d, Carrier ID: %d, Datetime: %s",
+                lastOrderId, carrierId, datetime.toString());
+    }
+
+    public String formatItemInfo(Row itemInfo) {
+        return String.format("\tItem number: %d, Supply warehouse ID: %d, Quantity: %d, Price: %.2f, Datetime: %s",
+                itemInfo.getInt("OL_I_ID"),
+                itemInfo.getInt("OL_SUPPLY_W_ID"),
+                itemInfo.getInt("OL_QUANTITY"),
+                itemInfo.getDecimal("OL_AMOUNT").doubleValue(),
+                itemInfo.getTimestamp("OL_DELIVERY_D").toString());
     }
 }
