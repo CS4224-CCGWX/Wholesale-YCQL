@@ -82,21 +82,27 @@ public class PreparedQueries {
 
     // For payment transactions
     public final static String updateWarehouseYearToDateAmount = """
+                BEGIN TRANSACTION
                 UPDATE warehouse
                 SET W_YTD = W_YTD + ?
-                WHERE W_ID = ?;
+                WHERE W_ID = ?
+                END TRANSACTION;
                 """;
 
     public final static String updateDistrictYearToDateAmount = """
+                BEGIN TRANSACTION
                 UPDATE district
                 SET D_YTD = D_YTD + ?
-                WHERE D_W_ID = ? AND D_ID = ?;
+                WHERE D_W_ID = ? AND D_ID = ?
+                END TRANSACTION;
                 """;
 
     public final static String updateCustomerPaymentInfo = """
+                BEGIN TRANSACTION
                 UPDATE customer
                 SET C_BALANCE = C_BALANCE - ?, C_YTD_PAYMENT = C_YTD_PAYMENT + ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1
-                WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;
+                WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?
+                END TRANSACTION;
                 """;
 
     public final static String getFullCustomerInfo = """
@@ -113,5 +119,21 @@ public class PreparedQueries {
     public final static String getDistrictAddress = """
                 SELECT D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP
                 FROM district WHERE D_W_ID = ? AND D_ID = ?;
+                """;
+
+    // For stock level transactions
+    public final static String getNextAvailableOrderNumber = """
+                SELECT D_NEXT_O_ID
+                FROM district WHERE D_W_ID = ? AND D_ID = ?;
+                """;
+
+    public final static String getLastLOrdersForDistrict = """
+                SELECT OL_I_ID
+                FROM order-line WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID >= ? AND OL_O_ID < ?;
+                """;
+
+    public final static String getStockQuantityForWarehouseItem = """
+                SELECT S_QUANTITY
+                FROM stock WHERE S_W_ID = ? AND S_I_ID = ?;
                 """;
 }

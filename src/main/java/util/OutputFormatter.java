@@ -67,4 +67,11 @@ public class OutputFormatter {
                 districtAddress.getString("D_STATE"),
                 districtAddress.getString("D_ZIP"));
     }
+
+    public String formatStockLevelTransactionOutput(long result, String transactionInfo) {
+        StringBuilder sb = new StringBuilder(transactionInfo);
+        sb.append(delimiter);
+        sb.append(result);
+        return sb.toString();
+    }
 }
