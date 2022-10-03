@@ -6,6 +6,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
 import util.OutputFormatter;
+import util.PreparedQueries;
 import util.QueryFormatter;
 
 public class PaymentTransaction extends AbstractTransaction {
@@ -44,16 +45,18 @@ public class PaymentTransaction extends AbstractTransaction {
      */
     public void execute(double payment) {
         // 1. Update the warehouse C W ID by incrementing W YTD by PAYMENT
-        executeQuery(queryFormatter.updateWarehouseYearToDateAmount(warehouseId, payment));
+        executeQuery(PreparedQueries.updateWarehouseYearToDateAmount, payment, warehouseId);
 
         // 2. Update the district (C W ID,C D ID) by incrementing D YTD by PAYMENT
-        executeQuery(queryFormatter.updateDistrictYearToDateAmount(warehouseId, districtId, payment));
+//        executeQuery(queryFormatter.updateDistrictYearToDateAmount(warehouseId, districtId, payment));
+        executeQuery(PreparedQueries.updateDistrictYearToDateAmount, payment, warehouseId, districtId);
 
         // 3. Update the customer (C W ID, C D ID, C ID) as follows:
         // • Decrement C BALANCE by PAYMENT
         // • Increment C YTD PAYMENT by PAYMENT
         // • Increment C PAYMENT CNT by 1
-        executeQuery(queryFormatter.updateCustomerPaymentInfo(warehouseId, districtId, customerId, payment));
+//        executeQuery(queryFormatter.updateCustomerPaymentInfo(warehouseId, districtId, customerId, payment));
+        executeQuery(PreparedQueries.updateCustomerPaymentInfo, payment, payment, warehouseId, districtId, customerId);
 
         // Output
         StringBuilder sb = new StringBuilder();
@@ -64,17 +67,20 @@ public class PaymentTransaction extends AbstractTransaction {
          *    (C STREET 1, C STREET 2, C CITY, C STATE, C ZIP), C PHONE, C SINCE, C CREDIT,
          *     C CREDIT LIM, C DISCOUNT, C BALANCE
          */
-        result = executeQuery(queryFormatter.getFullCustomerInfo(warehouseId, districtId, customerId));
+//        result = executeQuery(queryFormatter.getFullCustomerInfo(warehouseId, districtId, customerId));
+        result = executeQuery(PreparedQueries.getFullCustomerInfo, warehouseId, districtId, customerId);
         sb.append(outputFormatter.formatFullCustomerInfo(result.get(0)));
         sb.append(delimiter);
 
         // 2. Warehouse’s address (W STREET 1, W STREET 2, W CITY, W STATE, W ZIP)
-        result = executeQuery(queryFormatter.getWarehouseAddress(warehouseId));
+//        result = executeQuery(queryFormatter.getWarehouseAddress(warehouseId));
+        result = executeQuery(PreparedQueries.getWarehouseAddress, warehouseId);
         sb.append(outputFormatter.formatWarehouseAddress(result.get(0)));
         sb.append(delimiter);
 
         // 3. District’s address (D STREET 1, D STREET 2, D CITY, D STATE, D ZIP)
-        result = executeQuery(queryFormatter.getDistrictAddress(warehouseId, districtId));
+//        result = executeQuery(queryFormatter.getDistrictAddress(warehouseId, districtId));
+        result = executeQuery(PreparedQueries.getDistrictAddress, warehouseId, districtId);
         sb.append(outputFormatter.formatDistrictAddress(result.get(0)));
         sb.append(delimiter);
 
@@ -82,6 +88,6 @@ public class PaymentTransaction extends AbstractTransaction {
         sb.append(String.format("Payment: %f", payment));
         sb.append(delimiter);
 
-        System.out.print(sb.toString());
+        System.out.print(sb);
     }
 }
