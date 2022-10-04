@@ -78,7 +78,7 @@ public class OutputFormatter {
     }
 
     public String formatCustomerFullNameAndBalance(Row cInfo) {
-        return String.format("Customer name: %s_%s_%s, balance: %.2f",
+        return String.format("Customer name: (%s, %s, %s), balance: %.2f",
                 cInfo.getString("C_FIRST"),
                 cInfo.getString("C_MIDDLE"),
                 cInfo.getString("C_LAST"),
@@ -104,6 +104,18 @@ public class OutputFormatter {
         sb.append(delimiter);
         sb.append(result);
         return sb.toString();
+    }
+
+    public String formatTopBalanceCustomerInfo(Row cInfo, String warehouseName, String districtName) {
+        /*
+        (a) Name of customer (C FIRST, C MIDDLE, C LAST)
+        (b) Balance of customer’s outstanding payment C BALANCE
+        (c) Warehouse name of customer W NAME
+        (d) District name of customer D NAME
+         */
+        return String.format("Customer: (%s, %s, %s), Balance: %.2f, Warehouse: %s, District: %s",
+                cInfo.getString("C_FIRST"),cInfo.getString("C_MIDDLE"), cInfo.getString("C_LAST"),
+                cInfo.getDecimal("C_BALANCE").doubleValue(), warehouseName, districtName);
     }
 
     public String formatOrderIdAndTimestamp(int id, Date timestamp) {
