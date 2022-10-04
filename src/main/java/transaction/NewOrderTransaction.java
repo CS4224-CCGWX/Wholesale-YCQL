@@ -42,7 +42,7 @@ public class NewOrderTransaction extends AbstractTransaction {
         this.executeQuery(PreparedQueries.incrementDistrictNextOrderId, warehouseId, districtId);
 
         /*
-          2. Create nwe order with:
+          2. Create new order with:
           O_ID = N
           O_D_ID = D_ID
           O_W_ID = W_ID
@@ -121,6 +121,7 @@ public class NewOrderTransaction extends AbstractTransaction {
               - OL_NUMBER = i
               - OL_I_ID = itemIds[i]
               - OL_SUPPLY_W_ID = supplyWarehouseIds[i]
+              - OL_QUANTITY = quantities[i]
               - OL_AMOUNT = ITEM_AMOUNT
               - OL_DELIVERY_D = null
               - OL_DIST_INFO = S_DIST_xx where xx=D_ID
@@ -128,7 +129,8 @@ public class NewOrderTransaction extends AbstractTransaction {
             String distIdStr = queryFormatter.distIdStr(districtId);
             res = this.executeQuery(PreparedQueries.getStockDistInfo, distIdStr, warehouseId, itemId);
             String distInfo = res.get(0).getString(0);
-            this.executeQuery(PreparedQueries.createNewOrderLine, districtId, warehouseId, i, itemId, supplyWarehouseId, itemAmount, distInfo);
+            this.executeQuery(PreparedQueries.createNewOrderLine,
+                    orderId, districtId, warehouseId, i, itemId, supplyWarehouseId, quantity, itemAmount, distInfo);
         }
 
         /*
