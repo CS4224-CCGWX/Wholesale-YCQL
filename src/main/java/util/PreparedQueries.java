@@ -66,8 +66,8 @@ public class PreparedQueries {
 
     public final static String createNewOrderLine = """
                 INSERT INTO order_line
-                (OL_O_ID, OL_W_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_AMOUNT, OL_DIST_INFO)
-                VALUES (?, ?, ?, ?, ?, ?, ?);
+                (OL_O_ID, OL_D_ID, OL_W_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DIST_INFO)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
                 """;
 
     public final static String getWarehouseTax = """
@@ -159,4 +159,24 @@ public class PreparedQueries {
                 SELECT S_QUANTITY
                 FROM stock WHERE S_W_ID = ? AND S_I_ID = ?;
                 """;
+
+    // For top balance transaction
+    public final static String getTopKBalanceCustomers = """
+            SELECT C_W_ID, C_D_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST
+            FROM customer
+            ORDER BY C_BALANCE DESC
+            LIMIT ?;
+            """;
+
+    public final static String getWarehouseName = """
+            SELECT W_NAME
+            FROM warehouse
+            WHERE W_ID = ?;
+            """;
+
+    public final static String getDistrictName = """
+            SELECT D_NAME
+            FROM district
+            WHERE D_W_ID = ?, D_ID = ?;
+            """;
 }

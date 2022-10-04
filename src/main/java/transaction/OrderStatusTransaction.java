@@ -54,6 +54,7 @@ public class OrderStatusTransaction extends AbstractTransaction {
         System.out.println(outputFormatter.formatLastOrderInfo(lastOrderId, carrierId, orderDateTime));
 
         List<Row> itemsInfo = this.executeQuery(PreparedQueries.getCustomerLastOrderItemsInfo, customerWarehouseId, customerDistrictId, lastOrderId);
+        System.out.println("*** Order Status Transaction Summary ***");
         for (Row itemInfo : itemsInfo) {
             System.out.println(outputFormatter.formatItemInfo(itemInfo));
         }
