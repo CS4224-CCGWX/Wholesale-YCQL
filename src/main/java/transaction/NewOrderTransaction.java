@@ -163,7 +163,7 @@ public class NewOrderTransaction extends AbstractTransaction {
         String cLast = cInfo.getString("C_LAST");
         String cCredit = cInfo.getString("C_CREDIT");
 
-        System.out.println("NewOrderTransaction Summary:");
+        System.out.println("*** New Order Transaction Summary ***");
         System.out.printf(
                 "1. (%d, %d, %d), C_LAST:%s, C_CREDIT:%s, C_DISCOUNT:%.2f\n",
                 warehouseId, districtId, customerId, cLast, cCredit, cDiscount);
