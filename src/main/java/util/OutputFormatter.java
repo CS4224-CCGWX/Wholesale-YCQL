@@ -7,6 +7,13 @@ import com.datastax.driver.core.Row;
 public class OutputFormatter {
     private final static String delimiter = "\n";
 
+    public String formatCustomerName(Row customerInfo) {
+        return String.format("Customer Name: (%s, %s, %s)",
+                customerInfo.getString("C_FIRST"),
+                customerInfo.getString("C_MIDDLE"),
+                customerInfo.getString("C_LAST"));
+    }
+
     public String formatFullCustomerInfo(Row customerInfo) {
         StringBuilder sb = new StringBuilder();
         sb.append("Customer info: ");
@@ -97,5 +104,17 @@ public class OutputFormatter {
         sb.append(delimiter);
         sb.append(result);
         return sb.toString();
+    }
+
+    public String formatOrderIdAndTimestamp(int id, Date timestamp) {
+        return String.format("order id: %d, entry date and time: %s", id, timestamp.toString());
+    }
+
+    public String formatPopularItemQuantity(String name, double quantity) {
+        return String.format("Item name: %s, quantity: %.2f", name, quantity);
+    }
+
+    public String formatPopularItemRatio(String name, double ratio) {
+        return String.format("Item name: %s, The percentage of orders in S that contain the popular item t: %.2f", name, ratio);
     }
 }
