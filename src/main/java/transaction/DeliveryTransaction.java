@@ -20,8 +20,6 @@ public class DeliveryTransaction extends AbstractTransaction {
     }
 
     public void execute() {
-        QueryFormatter queryFormatter = new QueryFormatter();
-
         List<Row> res;
         /*
         (a) Let N denote the value of the smallest order number O ID for district (W ID,DISTRICT NO)

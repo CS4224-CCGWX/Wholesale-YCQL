@@ -211,4 +211,14 @@ public class PreparedQueries {
             FROM district
             WHERE D_W_ID = ?, D_ID = ?;
             """;
+
+    // For Related-Customer Transaction
+    public final static String getRelatedCustomers = """
+            SELECT t2.OL_C_ID as customer_id
+            FROM order_line as t1 INNER JOIN order_line as t2
+                ON t1.OL_I_ID = t2.OL_I_ID
+            WHERE t1.OL_W_ID = ? AND t1.OL_D_ID = ? AND t1.OL_C_ID = ? AND t2.OL_W_ID <> t1.OL_W_ID
+            GROUP BY t2.OL_C_ID
+            HAVING count(*) >= 2;
+            """;
 }
