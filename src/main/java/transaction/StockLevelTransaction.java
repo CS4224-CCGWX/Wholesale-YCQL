@@ -1,10 +1,12 @@
 package transaction;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
+import util.FieldConstants;
 import util.OutputFormatter;
 import util.PreparedQueries;
 
@@ -30,10 +32,6 @@ public class StockLevelTransaction extends AbstractTransaction {
     private int lastOrderToBeExamined;
     private OutputFormatter outputFormatter = new OutputFormatter();
 
-    private final static String nextAvailableOrderNumberField = "D_NEXT_O_ID";
-    private final static String orderLineItemIdField = "OL_L_ID";
-    private final static String stockQuantityField = "S_QUANTITY";
-
     public StockLevelTransaction(Session session, int warehouseId, int districtId, double threshold, int lastOrderToBeExamined) {
         super(session);
         this.warehouseId = warehouseId;
@@ -45,18 +43,18 @@ public class StockLevelTransaction extends AbstractTransaction {
     public void execute() {
         // 1. Let N denote the value of the next available order number D_NEXT_O_ID for district (W_ID,D_ID)
         List<Row> result = executeQuery(PreparedQueries.getNextAvailableOrderNumber, warehouseId, districtId);
-        int N = result.get(0).getInt(nextAvailableOrderNumberField);
+        int N = result.get(0).getInt(FieldConstants.nextAvailableOrderNumberField);
 
         // 2. Let S denote the set of items from the last L orders for district (W_ID,D_ID); i.e.,
         //     *  S = {t.OL_I_ID | t ∈ Order-Line, t.OL_D_ID = D_ID, t.OL_W_ID = W_ID, t.OL_O_ID ∈ [N−L, N)}
-        result = executeQuery(PreparedQueries.getLastLOrdersForDistrict, warehouseId, districtId, N - lastOrderToBeExamined, N);
+        result = executeQuery(PreparedQueries.getLastLOrderLinesItemIdForDistrict, warehouseId, districtId, N - lastOrderToBeExamined, N);
 
         // 3. Output the total number of items in S where its stock quantity at W ID is below the threshold;
         long res = 0;
         for (Row orderLineInfo : result) {
-            int itemId = orderLineInfo.getInt(orderLineItemIdField);
+            int itemId = orderLineInfo.getInt(FieldConstants.orderLineItemIdField);
             Row stockInfo = executeQuery(PreparedQueries.getStockQuantityForWarehouseItem, warehouseId, itemId).get(0);
-            double quantity = stockInfo.getDecimal(stockQuantityField).doubleValue();
+            double quantity = stockInfo.getDecimal(FieldConstants.stockQuantityField).doubleValue();
             if (quantity < threshold) {
                 ++res;
             }
