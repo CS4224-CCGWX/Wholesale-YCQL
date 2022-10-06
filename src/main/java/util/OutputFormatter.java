@@ -1,6 +1,7 @@
 package util;
 
 import java.util.Date;
+import java.util.List;
 
 import com.datastax.driver.core.Row;
 
@@ -116,6 +117,15 @@ public class OutputFormatter {
         return String.format("Customer: (%s, %s, %s), Balance: %.2f, Warehouse: %s, District: %s",
                 cInfo.getString("C_FIRST"),cInfo.getString("C_MIDDLE"), cInfo.getString("C_LAST"),
                 cInfo.getDecimal("C_BALANCE").doubleValue(), warehouseName, districtName);
+    }
+
+    public String formatRelatedCustomerOutput(List<Row> resultRows) {
+        StringBuilder sb = new StringBuilder();
+        for (Row row : resultRows) {
+            sb.append(row.getString("customer_id"));
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     public String formatOrderIdAndTimestamp(int id, Date timestamp) {

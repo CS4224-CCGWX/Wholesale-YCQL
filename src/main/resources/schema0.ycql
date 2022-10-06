@@ -88,13 +88,14 @@ CREATE TABLE IF NOT EXISTS order_line (
     OL_D_ID int,
     OL_O_ID int,
     OL_NUMBER int,
+    OL_C_ID int,
     OL_I_ID int,
     OL_DELIVERY_D timestamp,
     OL_AMOUNT decimal,
     OL_SUPPLY_W_ID int,
     OL_QUANTITY decimal,
     OL_DIST_INFO varchar,
-    PRIMARY KEY ((OL_W_ID, OL_D_ID, OL_O_ID, OL_NUMBER))
+    PRIMARY KEY ((OL_W_ID, OL_D_ID), OL_O_ID, OL_NUMBER)
 );
 
 DROP TABLE IF EXISTS stock;

@@ -2,7 +2,9 @@ package transaction;
 
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import util.PreparedQueries;
 import util.QueryFormatter;
+import util.TimeFormatter;
 
 import java.util.List;
 
@@ -18,8 +20,6 @@ public class DeliveryTransaction extends AbstractTransaction {
     }
 
     public void execute() {
-        QueryFormatter queryFormatter = new QueryFormatter();
-
         List<Row> res;
         /*
         (a) Let N denote the value of the smallest order number O ID for district (W ID,DISTRICT NO)
@@ -30,19 +30,20 @@ public class DeliveryTransaction extends AbstractTransaction {
          */
 
         for (int districtNo = 1; districtNo <= 10; districtNo++) {
-            res = executeQuery(queryFormatter.getOrderToDeliverInDistrict(warehouseId, districtNo));
+            res = executeQuery(PreparedQueries.getOrderToDeliverInDistrict, warehouseId, districtNo);
             int orderId = res.get(0).getInt("O_ID");
             int customerId = res.get(0).getInt("O_C_ID");
 
             /*
             (b) Update the order X by setting O CARRIER ID to CARRIER ID
              */
-            executeQuery(queryFormatter.updateCarrierIdInOrder(warehouseId, districtNo, orderId, carrierId));
+            executeQuery(PreparedQueries.updateCarrierIdInOrder, carrierId, warehouseId, districtNo, orderId);
 
             /*
             (c) Update all the order-lines in X by setting OL DELIVERY D to the current date and time
              */
-            executeQuery(queryFormatter.updateDeliveryDateInOrderLine(warehouseId, districtNo, orderId));
+            executeQuery(PreparedQueries.updateDeliveryDateInOrderLine,
+                    TimeFormatter.getCurrentTimestamp(), warehouseId, districtNo, orderId);
 
             /*
             (d) Update customer C as follows:
@@ -51,10 +52,10 @@ public class DeliveryTransaction extends AbstractTransaction {
             • Increment C DELIVERY CNT by 1
              */
 
-            res = executeQuery(queryFormatter.getOrderTotalPrice(warehouseId, districtNo, orderId));
+            res = executeQuery(PreparedQueries.getOrderTotalPrice, warehouseId, districtNo, orderId);
             double totalPrice = res.get(0).getDouble("total_price");
 
-            executeQuery(queryFormatter.updateCustomerDeliveryInfo(warehouseId, districtNo, orderId, totalPrice));
+            executeQuery(PreparedQueries.updateCustomerDeliveryInfo, totalPrice, warehouseId, districtNo, orderId);
 
         }
     }
