@@ -19,15 +19,22 @@ public class NewOrderTransaction extends AbstractTransaction {
     private final int warehouseId;
     private final int districtId;
     private final int nOrderLines;
-    public NewOrderTransaction(Session session, int cid, int wid, int did, int n) {
+    private final List<Integer> itemIds;
+    private final List<Integer> quantities;
+    private final List<Integer> supplyWarehouseIds;
+    public NewOrderTransaction(Session session, int cid, int wid, int did, int n,
+                               List<Integer> itemIds, List<Integer> quantities, List<Integer> supplyWarehouseIds) {
         super(session);
         customerId = cid;
         warehouseId = wid;
         districtId = did;
         nOrderLines = n;
+        this.itemIds = itemIds;
+        this.quantities = quantities;
+        this.supplyWarehouseIds = supplyWarehouseIds;
     }
 
-    public void execute(List<Integer> itemIds,List<Integer> supplyWarehouseIds, List<Integer> quantities) {
+    public void execute() {
         /*
           1. N denotes the next available order number D_NEXT_O_ID for district (W_ID, D_ID)
           Update district (W_ID, D_ID) by incrementing D_NEXT_O_ID by 1.
