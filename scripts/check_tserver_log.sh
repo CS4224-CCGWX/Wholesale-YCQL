@@ -1,0 +1,1 @@
+cat /home/stuproj/cs4224i/yugabyte-data/$1-tserver/yb-data/tserver/logs/yb-tserver.INFO

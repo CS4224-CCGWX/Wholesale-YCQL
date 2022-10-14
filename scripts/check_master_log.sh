@@ -1,0 +1,1 @@
+cat /home/stuproj/cs4224i/yugabyte-data/$1-master/yb-data/master/logs/yb-master.INFO
