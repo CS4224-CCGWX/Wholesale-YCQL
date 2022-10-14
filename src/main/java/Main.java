@@ -1,11 +1,9 @@
-package com.yugabyte.sample.apps;
-
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 
 import parser.DataLoader;
 
-public class LoadData {
+public class Main {
     public static void main(String[] args) {
         Cluster cluster = Cluster.builder()
                 .addContactPoint("localhost")
