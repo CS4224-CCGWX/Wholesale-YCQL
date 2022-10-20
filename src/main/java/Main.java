@@ -5,13 +5,16 @@ import parser.DataLoader;
 
 class Main {
     public static void main(String[] args) {
+        String ip = args[0];
+        String schemaPath = args[1];
+        String dataPath = args[2];
+
         Cluster cluster = Cluster.builder()
-                .addContactPoint("localhost")
+                .addContactPoint(ip)
                 .build();
         Session session = cluster.connect();
 
-        String schemaPath = args[0];
-        String dataPath = args[1];
+
 
         DataLoader dataLoader = new DataLoader(session, schemaPath, dataPath);
         dataLoader.loadAll();
