@@ -18,4 +18,4 @@ else
     exit -1
 fi
 
-java -jar target/Wholesale-YCQL-1.0-SNAPSHOT.jar $ip $schema $data
+java -jar target/Wholesale-YCQL-1.0.jar $ip $schema $data
