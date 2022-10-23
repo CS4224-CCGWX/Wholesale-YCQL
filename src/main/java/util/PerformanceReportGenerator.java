@@ -16,7 +16,7 @@ public class PerformanceReportGenerator {
         System.err.printf(outputFormatter.formatTotalTransactions(count));
         System.err.printf(outputFormatter.formatTotalElapsedTime(totalTime));
         System.err.printf(outputFormatter.formatThroughput((double) count / totalTime));
-        System.err.printf(outputFormatter.formatAverage(convertToMs(sum / count)));
+        System.err.printf(outputFormatter.formatAverage((double) convertToMs(sum) / count));
         System.err.printf(outputFormatter.formatMedian(convertToMs(getMedian(latencyList))));
         System.err.printf(outputFormatter.formatPercentile(95, convertToMs(getByPercentile(latencyList, 95))));
         System.err.printf(outputFormatter.formatPercentile(99, convertToMs(getByPercentile(latencyList, 99))));

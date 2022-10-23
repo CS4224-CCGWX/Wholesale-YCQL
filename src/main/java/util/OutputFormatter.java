@@ -154,11 +154,11 @@ public class OutputFormatter {
     }
 
     public String formatThroughput(double throughput) {
-        return String.format("Transaction throughput: %2f per second\n", throughput);
+        return String.format("Transaction throughput: %.2f per second\n", throughput);
     }
 
-    public String formatAverage(long latency) {
-        return String.format("Average latency: %dms\n", latency);
+    public String formatAverage(double latency) {
+        return String.format("Average latency: %.2fms\n", latency);
     }
 
     public String formatMedian(long latency) {
