@@ -16,6 +16,14 @@ public class TransactionParser {
         this.session = session;
     }
 
+    public boolean hasNext() {
+        return this.scanner.hasNext();
+    }
+
+    public void close() {
+        this.scanner.close();
+    }
+
     public AbstractTransaction parseNextTransaction() {
         if (!scanner.hasNext()) return null;
 

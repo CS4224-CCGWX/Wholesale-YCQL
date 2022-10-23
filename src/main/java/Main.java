@@ -1,7 +1,5 @@
-import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import com.datastax.driver.core.Cluster;
@@ -56,14 +54,13 @@ class Main {
         session.execute("USE wholesale;");
 
         TransactionParser transactionParser = new TransactionParser(session);
-        Scanner scanner = new Scanner(System.in);
         OutputFormatter outputFormatter = new OutputFormatter();
 
         List<Long> latencyList = new ArrayList<>();
         long fileStart, fileEnd, txStart, txEnd, elapsedTime;
 
         fileStart = System.nanoTime();
-        while (scanner.hasNext()) {
+        while (transactionParser.hasNext()) {
             AbstractTransaction transaction = transactionParser.parseNextTransaction();
             System.out.println(OutputFormatter.linebreak);
             System.out.println(outputFormatter.formatTransactionID(latencyList.size()));
@@ -85,6 +82,6 @@ class Main {
         PerformanceReportGenerator.generatePerformanceReport(latencyList, totalElapsedTime);
 
         session.close();
-        scanner.close();
+        transactionParser.close();
     }
 }
