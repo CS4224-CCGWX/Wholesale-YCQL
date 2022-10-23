@@ -1,5 +1,5 @@
 curr_node=$1
-tx_path=$2
+tx_file_id=$2
 consistency_level=${3-'all'}
 
 if [[ $curr_node == "xcnd20" ]]; then
@@ -17,5 +17,10 @@ else
     exit -1
 fi
 
-echo "Run transaction file "$tx_path" at consistency_level: "$consistency_level
-java -jar target/Wholesale-YCQL-1.0.jar run $ip $consistency_level < $tx_path
+input_path = "/project_files/xact_files/$(tx_file_id).txt"
+mkdir log
+output_path = "/log/$(tx_file_id).out"$
+err_path = "/log/$(tx_file_id).err"$
+
+echo "Run transaction file "$input_path" at consistency_level: "$consistency_level
+java -jar target/Wholesale-YCQL-1.0.jar run $ip $consistency_level < $input_path > $output_path 2> $err_path
