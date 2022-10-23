@@ -1,6 +1,0 @@
-mkdir /home/stuproj/cs4224i/yugabyte-data/xcnd22-master
-
-$yb/yb-master \
---master_addresses 192.168.48.239:7100,192.168.48.240:7100,192.168.48.241:7100 \
---rpc_bind_addresses 192.168.48.241:7100 \
---fs_data_dirs "/home/stuproj/cs4224i/yugabyte-data/xcnd22-master" >& /home/stuproj/cs4224i/yugabyte-data/xcnd22-master/yb-master.out &

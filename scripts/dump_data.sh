@@ -1,8 +1,12 @@
 schema="/home/stuproj/cs4224i/Wholesale-YCQL/src/main/resources/schema0.ycql"
 DELIM=","
 YCQLSH="/temp/yugabyte-2.14.1.0/bin/ycqlsh"
-dataDir="/home/stuproj/cs4224i/project_files/data_files"
+dataDir="/home/stuproj/cs4224i/Wholesale-YCQL/project_files/data_files"
 bsz=500
+
+echo "***** Remove null in dataset *****"
+python $dataDir/replace_null.py
+
 
 echo "***** Start dump data *****"
 echo "Defining schema"
