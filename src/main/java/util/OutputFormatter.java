@@ -7,6 +7,7 @@ import com.datastax.driver.core.Row;
 
 public class OutputFormatter {
     private final static String delimiter = "\n";
+    public final static String linebreak = "=======================================";
 
     public String formatCustomerName(Row customerInfo) {
         return String.format("Customer Name: (%s, %s, %s)",
@@ -138,5 +139,33 @@ public class OutputFormatter {
 
     public String formatPopularItemRatio(String name, double ratio) {
         return String.format("Item name: %s, The percentage of orders in S that contain the popular item t: %.2f", name, ratio);
+    }
+
+    public String formatTransactionID(int i) {
+        return String.format("Transaction ID: %d", i);
+    }
+
+    public String formatTotalTransactions(int count) {
+        return String.format("Total number of transactions: %d\n", count);
+    }
+
+    public String formatTotalElapsedTime(long totalTime) {
+        return String.format("Total elapsed time: %ds\n", totalTime);
+    }
+
+    public String formatThroughput(double throughput) {
+        return String.format("Transaction throughput: %2f per second\n", throughput);
+    }
+
+    public String formatAverage(long latency) {
+        return String.format("Average latency: %dms\n", latency);
+    }
+
+    public String formatMedian(long latency) {
+        return String.format("Median latency: %dms\n", latency);
+    }
+
+    public String formatPercentile(int percentile, long latency) {
+        return String.format("%dth percentile transaction latency: %dms\n", percentile, latency);
     }
 }

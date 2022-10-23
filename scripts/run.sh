@@ -1,7 +1,6 @@
-schema="/home/stuproj/cs4224i/Wholesale-YCQL/src/main/resources/schema0.ycql"
-data="/home/stuproj/cs4224i/project_files/data_files"
-
 curr_node=$1
+tx_path=$2
+consistency_level=${3-'all'}
 
 if [[ $curr_node == "xcnd20" ]]; then
     ip="192.168.48.239"
@@ -18,4 +17,5 @@ else
     exit -1
 fi
 
-java -jar target/Wholesale-YCQL-1.0.jar load_data $ip $schema $data
+echo "Run transaction file "$tx_path" at consistency_level: "$consistency_level
+java -jar target/Wholesale-YCQL-1.0.jar run $ip $consistency_level < $tx_path
