@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS stock (
     S_DIST_02 text,
     S_DIST_03 text,
     S_DIST_04 text,
+    S_DIST_05 text,
     S_DIST_06 text,
     S_DIST_07 text,
     S_DIST_08 text,
