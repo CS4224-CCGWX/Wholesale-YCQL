@@ -65,7 +65,7 @@ public class PaymentTransaction extends AbstractTransaction {
         customerBalance += payment;
         float customerYtd = customerResult.getFloat("C_YTD_PAYMENT");
         customerYtd += payment;
-        executeQuery(PreparedQueries.formatUpdateCustomerPaymentInfo(customerBalance, customerYtd), warehouseId, districtId, customerId);
+        executeQuery(PreparedQueries.updateCustomerPaymentInfo, customerBalance, customerYtd, warehouseId, districtId, customerId);
 
         // Output
         StringBuilder sb = new StringBuilder();

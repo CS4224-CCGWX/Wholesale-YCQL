@@ -129,12 +129,6 @@ public class PreparedQueries {
         return String.format(updateCustomerDeliveryInfo, total);
     }
 
-    // For payment transactions
-//    public final static String updateWarehouseYearToDateAmount =
-//                    "UPDATE warehouse "
-//                    + "SET W_YTD = ? "
-//                    + "WHERE W_ID = ?;";
-
     public final static String updateWarehouseYearToDateAmount =
             "UPDATE warehouse "
                     + "SET W_YTD = ? "
@@ -143,11 +137,6 @@ public class PreparedQueries {
 //     public static String formatUpdateWarehouseYearToDateAmount(double payment) {
 //         return String.format(updateWarehouseYearToDateAmount, String.valueOf(payment));
 //     }
-
-//    public final static String updateDistrictYearToDateAmount =
-//                    "UPDATE district "
-//                    + "SET D_YTD = ? "
-//                    + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     public final static String updateDistrictYearToDateAmount =
             "UPDATE district "
@@ -165,7 +154,7 @@ public class PreparedQueries {
 
    public final static String updateCustomerPaymentInfo =
            "UPDATE customer "
-                   + "SET C_BALANCE = %s, C_YTD_PAYMENT = %s, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
+                   + "SET C_BALANCE = ?, C_YTD_PAYMENT = ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
    public static String formatUpdateCustomerPaymentInfo(double balance, float payment) {
