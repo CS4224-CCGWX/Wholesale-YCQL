@@ -43,6 +43,8 @@ else
 fi
 echo "***** Using Cassandra Loader with host: $ip *****"
 
+# Cassandra-loader reference: https://github.com/yugabyte/cassandra-loader#options
+# DateTime format reference: https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
 echo "Load customer table"
 $C_LOADER \
     -f $dataDir/customer.csv \
