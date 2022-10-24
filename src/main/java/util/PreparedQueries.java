@@ -98,25 +98,25 @@ public class PreparedQueries {
 
     // For payment transactions
     public final static String updateWarehouseYearToDateAmount =
-            "BEGIN TRANSACTION "
-                    + "UPDATE warehouse "
+//            "BEGIN TRANSACTION; "
+                    "UPDATE warehouse "
                     + "SET W_YTD = W_YTD + ? "
-                    + "WHERE W_ID = ? "
-                    + "END TRANSACTION;";
+                    + "WHERE W_ID = ?;";
+//                    + "END TRANSACTION;";
 
     public final static String updateDistrictYearToDateAmount =
-            "BEGIN TRANSACTION "
-                    + "UPDATE district "
+//            "BEGIN TRANSACTION; "
+                    "UPDATE district "
                     + "SET D_YTD = D_YTD + ? "
-                    + "WHERE D_W_ID = ? AND D_ID = ? "
-                    + "END TRANSACTION;";
+                    + "WHERE D_W_ID = ? AND D_ID = ?;";
+//                    + "END TRANSACTION;";
 
     public final static String updateCustomerPaymentInfo =
-            "BEGIN TRANSACTION "
-                    + "UPDATE customer "
+//            "BEGIN TRANSACTION; "
+                    "UPDATE customer "
                     + "SET C_BALANCE = C_BALANCE - ?, C_YTD_PAYMENT = C_YTD_PAYMENT + ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
-                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ? "
-                    + "END TRANSACTION;";
+                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
+//                    + "END TRANSACTION;";
 
     public final static String getFullCustomerInfo =
             "SELECT C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, "

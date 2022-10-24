@@ -26,5 +26,6 @@
 hs_err_pid*
 target/
 project_files/
+log/
 
 *.err*

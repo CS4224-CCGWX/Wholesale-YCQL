@@ -19,6 +19,8 @@ public abstract class AbstractTransaction {
         defaultConsistencyLevel = ConsistencyLevel.ALL;
     }
 
+    public abstract void execute();
+
     protected List<Row> executeQuery(String query) {
         Statement statement = new SimpleStatement(query)
                 .setConsistencyLevel(getConsistencyLevel(query));
@@ -45,6 +47,25 @@ public abstract class AbstractTransaction {
 
     public void setDefaultConsistencyLevel(ConsistencyLevel consistencyLevel) {
         this.defaultConsistencyLevel = consistencyLevel;
+    }
+
+    public void setDefaultConsistencyLevel(String s) {
+        ConsistencyLevel level;
+        switch (s) {
+        case "any": level = ConsistencyLevel.ANY;break;
+        case "one": level = ConsistencyLevel.ONE;break;
+        case "two": level = ConsistencyLevel.TWO;break;
+        case "three": level = ConsistencyLevel.THREE;break;
+        case "quorum": level = ConsistencyLevel.QUORUM;break;
+        case "all": level = ConsistencyLevel.ALL;break;
+        case "local_quorum": level = ConsistencyLevel.LOCAL_QUORUM;break;
+        case "each_quorum": level = ConsistencyLevel.EACH_QUORUM;break;
+        case "serial": level = ConsistencyLevel.SERIAL;break;
+        case "local_serial": level = ConsistencyLevel.LOCAL_SERIAL;break;
+        case "local_one": level = ConsistencyLevel.LOCAL_ONE;break;
+        default:level = ConsistencyLevel.ALL;break;
+        }
+        this.defaultConsistencyLevel = level;
     }
 
     private ConsistencyLevel getConsistencyLevel(String query) {
