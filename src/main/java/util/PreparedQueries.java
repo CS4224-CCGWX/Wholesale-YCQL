@@ -132,31 +132,31 @@ public class PreparedQueries {
     // For payment transactions
 //    public final static String updateWarehouseYearToDateAmount =
 //                    "UPDATE warehouse "
-//                    + "SET W_YTD = W_YTD + ? "
+//                    + "SET W_YTD = ? "
 //                    + "WHERE W_ID = ?;";
 
     public final static String updateWarehouseYearToDateAmount =
             "UPDATE warehouse "
-                    + "SET W_YTD = %s "
+                    + "SET W_YTD = ? "
                     + "WHERE W_ID = ?;";
 
-    public static String formatUpdateWarehouseYearToDateAmount(double payment) {
-        return String.format(updateWarehouseYearToDateAmount, String.valueOf(payment));
-    }
+//     public static String formatUpdateWarehouseYearToDateAmount(double payment) {
+//         return String.format(updateWarehouseYearToDateAmount, String.valueOf(payment));
+//     }
 
 //    public final static String updateDistrictYearToDateAmount =
 //                    "UPDATE district "
-//                    + "SET D_YTD = D_YTD + ? "
+//                    + "SET D_YTD = ? "
 //                    + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     public final static String updateDistrictYearToDateAmount =
             "UPDATE district "
-                    + "SET D_YTD = %s "
+                    + "SET D_YTD = ? "
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
 
-    public static String formatUpdateDistrictYearToDateAmount(double payment) {
-        return String.format(updateDistrictYearToDateAmount, String.valueOf(payment));
-    }
+//     public static String formatUpdateDistrictYearToDateAmount(double payment) {
+//         return String.format(updateDistrictYearToDateAmount, String.valueOf(payment));
+//     }
 
 //     public final static String updateCustomerPaymentInfo =
 //                     "UPDATE customer "
