@@ -44,7 +44,7 @@ public class OutputFormatter {
         sb.append(String.format("Phone: %s", customerInfo.getString("C_PHONE")));
         sb.append(delimiter);
 
-        sb.append(String.format("Since: %s", customerInfo.getTimestamp("C_SINCE")));
+        sb.append(String.format("Since: %s", TimeFormatter.formatTimestamp(customerInfo.getTimestamp("C_SINCE"))));
         sb.append(delimiter);
 
         sb.append(String.format("Credit status: %s", customerInfo.getString("C_CREDIT")));

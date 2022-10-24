@@ -88,7 +88,7 @@ public class PaymentTransaction extends AbstractTransaction {
         sb.append(delimiter);
 
         // 4. Payment amount PAYMENT
-        sb.append(String.format("Payment: %f", payment));
+        sb.append(String.format("Payment: %.2f", payment));
         sb.append(delimiter);
 
         System.out.print(sb);
