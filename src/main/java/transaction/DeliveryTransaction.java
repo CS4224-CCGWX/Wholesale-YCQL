@@ -55,7 +55,7 @@ public class DeliveryTransaction extends AbstractTransaction {
             res = executeQuery(PreparedQueries.getOrderTotalPrice, warehouseId, districtNo, orderId);
             double totalPrice = res.get(0).getDouble("total_price");
 
-            executeQuery(PreparedQueries.updateCustomerDeliveryInfo, totalPrice, warehouseId, districtNo, orderId);
+            executeQuery(PreparedQueries.formatUpdateCustomerDeliveryInfo(totalPrice), warehouseId, districtNo, orderId);
 
         }
     }

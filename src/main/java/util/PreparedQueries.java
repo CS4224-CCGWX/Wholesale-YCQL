@@ -1,5 +1,11 @@
 package util;
 
+/**
+ * Some prepared statements are changed to mitigate the bug of yugabyte: function + issue:
+ * https://github.com/yugabyte/yugabyte-db/issues/3559
+ * https://stackoverflow.com/questions/60044197/yugabyte-c-sharp-driver-found-too-many-matches-for-builtin-function
+ */
+
 public class PreparedQueries {
     // For NewOrderTransaction
     public final static String getDistrictNextOrderId =
@@ -33,16 +39,34 @@ public class PreparedQueries {
                     + "WHERE S_W_ID = ?, S_I_ID = ?;";
 
     // update stock qty that increments remote count
+//    public final static String updateStockQtyIncrRemoteCnt =
+//            "UPDATE stock "
+//                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
+//                    + "WHERE S_W_ID = ?, S_I_ID = ?;";
+
     public final static String updateStockQtyIncrRemoteCnt =
             "UPDATE stock "
-                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
+                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + %d, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
                     + "WHERE S_W_ID = ?, S_I_ID = ?;";
 
+    public static String formatUpdateStockQtyIncrRemoteCnt(int quantity) {
+        return String.format(updateStockQtyIncrRemoteCnt, quantity);
+    }
+
     // update stock qty that NOT increments remote count
+//    public final static String updateStockQty =
+//            "UPDATE stock "
+//                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1 "
+//                    + "WHERE S_W_ID = ?, S_I_ID = ?;";
+
     public final static String updateStockQty =
             "UPDATE stock "
-                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1 "
+                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + %d, S_ORDER_CNT = S_ORDER_CNT + 1 "
                     + "WHERE S_W_ID = ?, S_I_ID = ?;";
+
+    public static String formatUpdateStockQty(int quantity) {
+        return String.format(updateStockQty, quantity);
+    }
 
     public final static String getItemPriceAndName =
             "SELECT I_PRICE, I_NAME "
@@ -91,32 +115,62 @@ public class PreparedQueries {
                     + "FROM order_line "
                     + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?;";
 
+//    public final static String updateCustomerDeliveryInfo =
+//            "UPDATE customer "
+//                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + ? "
+//                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
+
     public final static String updateCustomerDeliveryInfo =
             "UPDATE customer "
-                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + ? "
+                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + %f "
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
+
+    public static String formatUpdateCustomerDeliveryInfo(double total) {
+        return String.format(updateCustomerDeliveryInfo, total);
+    }
 
     // For payment transactions
+//    public final static String updateWarehouseYearToDateAmount =
+//                    "UPDATE warehouse "
+//                    + "SET W_YTD = W_YTD + ? "
+//                    + "WHERE W_ID = ?;";
+
     public final static String updateWarehouseYearToDateAmount =
-//            "BEGIN TRANSACTION; "
-                    "UPDATE warehouse "
-                    + "SET W_YTD = W_YTD + ? "
+            "UPDATE warehouse "
+                    + "SET W_YTD = W_YTD + %f "
                     + "WHERE W_ID = ?;";
-//                    + "END TRANSACTION;";
+
+    public static String formatUpdateWarehouseYearToDateAmount(double payment) {
+        return String.format(updateWarehouseYearToDateAmount, payment);
+    }
+
+//    public final static String updateDistrictYearToDateAmount =
+//                    "UPDATE district "
+//                    + "SET D_YTD = D_YTD + ? "
+//                    + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     public final static String updateDistrictYearToDateAmount =
-//            "BEGIN TRANSACTION; "
-                    "UPDATE district "
-                    + "SET D_YTD = D_YTD + ? "
+            "UPDATE district "
+                    + "SET D_YTD = D_YTD + %f "
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
-//                    + "END TRANSACTION;";
+
+    public static String formatUpdateDistrictYearToDateAmount(double payment) {
+        return String.format(updateDistrictYearToDateAmount, payment);
+    }
+
+//    public final static String updateCustomerPaymentInfo =
+//                    "UPDATE customer "
+//                    + "SET C_BALANCE = C_BALANCE - ?, C_YTD_PAYMENT = C_YTD_PAYMENT + ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
+//                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
     public final static String updateCustomerPaymentInfo =
-//            "BEGIN TRANSACTION; "
-                    "UPDATE customer "
-                    + "SET C_BALANCE = C_BALANCE - ?, C_YTD_PAYMENT = C_YTD_PAYMENT + ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
+            "UPDATE customer "
+                    + "SET C_BALANCE = C_BALANCE - %f, C_YTD_PAYMENT = C_YTD_PAYMENT + %f, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
-//                    + "END TRANSACTION;";
+
+    public static String formatUpdateCustomerPaymentInfo(double payment) {
+        return String.format(updateCustomerPaymentInfo, payment, payment);
+    }
 
     public final static String getFullCustomerInfo =
             "SELECT C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, "
