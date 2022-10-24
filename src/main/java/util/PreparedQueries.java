@@ -158,19 +158,19 @@ public class PreparedQueries {
         return String.format(updateDistrictYearToDateAmount, String.valueOf(payment));
     }
 
-    public final static String updateCustomerPaymentInfo =
-                    "UPDATE customer "
-                    + "SET C_BALANCE = ?, C_YTD_PAYMENT = ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
-                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
+//     public final static String updateCustomerPaymentInfo =
+//                     "UPDATE customer "
+//                     + "SET C_BALANCE = ?, C_YTD_PAYMENT = ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
+//                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
-//    public final static String updateCustomerPaymentInfo =
-//            "UPDATE customer "
-//                    + "SET C_BALANCE = C_BALANCE - %s, C_YTD_PAYMENT = C_YTD_PAYMENT + %s, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
-//                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
-//
-//    public static String formatUpdateCustomerPaymentInfo(double payment) {
-//        return String.format(updateCustomerPaymentInfo, String.valueOf(payment), String.valueOf(payment));
-//    }
+   public final static String updateCustomerPaymentInfo =
+           "UPDATE customer "
+                   + "SET C_BALANCE = %s, C_YTD_PAYMENT = %s, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
+                   + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
+
+   public static String formatUpdateCustomerPaymentInfo(double balance, float payment) {
+       return String.format(updateCustomerPaymentInfo, String.valueOf(balance), String.valueOf(payment));
+   }
 
     public final static String getFullCustomerInfo =
             "SELECT C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, "

@@ -1,7 +1,5 @@
 package transaction;
 
-import java.util.List;
-
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
@@ -65,7 +63,7 @@ public class PaymentTransaction extends AbstractTransaction {
         customerBalance += payment;
         float customerYtd = customerResult.getFloat("C_YTD_PAYMENT");
         customerYtd += payment;
-        executeQuery(PreparedQueries.updateCustomerPaymentInfo, customerBalance, customerYtd, warehouseId, districtId, customerId);
+        executeQuery(PreparedQueries.formatUpdateCustomerPaymentInfo(customerBalance, customerYtd), warehouseId, districtId, customerId);
 
         // Output
         StringBuilder sb = new StringBuilder();
