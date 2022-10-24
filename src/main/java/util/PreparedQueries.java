@@ -39,34 +39,16 @@ public class PreparedQueries {
                     + "WHERE S_W_ID = ?, S_I_ID = ?;";
 
     // update stock qty that increments remote count
-//    public final static String updateStockQtyIncrRemoteCnt =
-//            "UPDATE stock "
-//                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
-//                    + "WHERE S_W_ID = ?, S_I_ID = ?;";
-
     public final static String updateStockQtyIncrRemoteCnt =
             "UPDATE stock "
-                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + %d, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
+                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
                     + "WHERE S_W_ID = ?, S_I_ID = ?;";
-
-    public static String formatUpdateStockQtyIncrRemoteCnt(int quantity) {
-        return String.format(updateStockQtyIncrRemoteCnt, quantity);
-    }
 
     // update stock qty that NOT increments remote count
-//    public final static String updateStockQty =
-//            "UPDATE stock "
-//                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1 "
-//                    + "WHERE S_W_ID = ?, S_I_ID = ?;";
-
     public final static String updateStockQty =
             "UPDATE stock "
-                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + %d, S_ORDER_CNT = S_ORDER_CNT + 1 "
+                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1 "
                     + "WHERE S_W_ID = ?, S_I_ID = ?;";
-
-    public static String formatUpdateStockQty(int quantity) {
-        return String.format(updateStockQty, quantity);
-    }
 
     public final static String getItemPriceAndName =
             "SELECT I_PRICE, I_NAME "
@@ -115,19 +97,10 @@ public class PreparedQueries {
                     + "FROM order_line "
                     + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?;";
 
-//    public final static String updateCustomerDeliveryInfo =
-//            "UPDATE customer "
-//                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + ? "
-//                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
-
     public final static String updateCustomerDeliveryInfo =
             "UPDATE customer "
-                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + %.4f "
+                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + ? "
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
-
-    public static String formatUpdateCustomerDeliveryInfo(double total) {
-        return String.format(updateCustomerDeliveryInfo, total);
-    }
 
     public final static String updateWarehouseYearToDateAmount =
             "UPDATE warehouse "
@@ -156,10 +129,6 @@ public class PreparedQueries {
            "UPDATE customer "
                    + "SET C_BALANCE = ?, C_YTD_PAYMENT = ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
-
-   public static String formatUpdateCustomerPaymentInfo(double balance, float payment) {
-       return String.format(updateCustomerPaymentInfo, String.valueOf(balance), String.valueOf(payment));
-   }
 
     public final static String getFullCustomerInfo =
             "SELECT C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, "
