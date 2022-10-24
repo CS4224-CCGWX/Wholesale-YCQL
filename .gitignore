@@ -29,3 +29,5 @@ project_files/
 log/
 
 *.err*
+
+cassandra-loader
