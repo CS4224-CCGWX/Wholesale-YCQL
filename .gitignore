@@ -31,3 +31,4 @@ log/
 *.err*
 
 cassandra-loader
+cassandra-loader-bad-dir
