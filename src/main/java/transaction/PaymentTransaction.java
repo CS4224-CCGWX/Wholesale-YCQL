@@ -51,7 +51,7 @@ public class PaymentTransaction extends AbstractTransaction {
         executeQuery(PreparedQueries.formatUpdateWarehouseYearToDateAmount(warehouseYtd), warehouseId);
 
         // 2. Update the district (C W ID,C D ID) by incrementing D YTD by PAYMENT
-        Row districtResult = executeQuery(PreparedQueries.getDistrictAddressAndYtd).get(0);
+        Row districtResult = executeQuery(PreparedQueries.getDistrictAddressAndYtd, warehouseId, districtId).get(0);
         double districtYtd = districtResult.getDecimal("D_YTD").doubleValue();
         districtYtd += payment;
         executeQuery(PreparedQueries.formatUpdateDistrictYearToDateAmount(districtYtd), warehouseId, districtId);
