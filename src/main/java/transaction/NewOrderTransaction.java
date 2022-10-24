@@ -105,9 +105,9 @@ public class NewOrderTransaction extends AbstractTransaction {
               - Increment S_REMOTE_CNT by 1 if supplyWarehouseIds[i] != warehouseID
              */
             if(supplyWarehouseId != warehouseId) {
-                this.executeQuery(PreparedQueries.updateStockQtyIncrRemoteCnt, adjustQty, quantity, supplyWarehouseId, itemId);
+                this.executeQuery(PreparedQueries.formatUpdateStockQtyIncrRemoteCnt(quantity), adjustQty, supplyWarehouseId, itemId);
             } else {
-                this.executeQuery(PreparedQueries.updateStockQty, adjustQty, quantity, supplyWarehouseId, itemId);
+                this.executeQuery(PreparedQueries.formatUpdateStockQty(quantity), adjustQty, supplyWarehouseId, itemId);
             }
             /*
               3.3. ITEM_AMOUNT = quantities[i] * I_PRICE, where I_PRICE is price of itemIds[i]

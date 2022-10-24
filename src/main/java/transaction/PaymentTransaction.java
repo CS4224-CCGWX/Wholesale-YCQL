@@ -47,18 +47,16 @@ public class PaymentTransaction extends AbstractTransaction {
      */
     public void execute() {
         // 1. Update the warehouse C W ID by incrementing W YTD by PAYMENT
-        executeQuery(PreparedQueries.updateWarehouseYearToDateAmount, payment, warehouseId);
+        executeQuery(PreparedQueries.formatUpdateWarehouseYearToDateAmount(payment), warehouseId);
 
         // 2. Update the district (C W ID,C D ID) by incrementing D YTD by PAYMENT
-//        executeQuery(queryFormatter.updateDistrictYearToDateAmount(warehouseId, districtId, payment));
-        executeQuery(PreparedQueries.updateDistrictYearToDateAmount, payment, warehouseId, districtId);
+        executeQuery(PreparedQueries.formatUpdateDistrictYearToDateAmount(payment), warehouseId, districtId);
 
         // 3. Update the customer (C W ID, C D ID, C ID) as follows:
         // • Decrement C BALANCE by PAYMENT
         // • Increment C YTD PAYMENT by PAYMENT
         // • Increment C PAYMENT CNT by 1
-//        executeQuery(queryFormatter.updateCustomerPaymentInfo(warehouseId, districtId, customerId, payment));
-        executeQuery(PreparedQueries.updateCustomerPaymentInfo, payment, payment, warehouseId, districtId, customerId);
+        executeQuery(PreparedQueries.formatUpdateCustomerPaymentInfo(payment), warehouseId, districtId, customerId);
 
         // Output
         StringBuilder sb = new StringBuilder();
