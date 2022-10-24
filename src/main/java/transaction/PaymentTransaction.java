@@ -7,14 +7,12 @@ import com.datastax.driver.core.Session;
 
 import util.OutputFormatter;
 import util.PreparedQueries;
-import util.QueryFormatter;
 
 public class PaymentTransaction extends AbstractTransaction {
     private int warehouseId;
     private int districtId;
     private int customerId;
     private double payment;
-    private static QueryFormatter queryFormatter = new QueryFormatter();
     private static OutputFormatter outputFormatter = new OutputFormatter();
     private static final String delimiter = "\n";
 

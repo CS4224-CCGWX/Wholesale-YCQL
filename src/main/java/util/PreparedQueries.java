@@ -122,7 +122,7 @@ public class PreparedQueries {
 
     public final static String updateCustomerDeliveryInfo =
             "UPDATE customer "
-                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + %f "
+                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + %.4f "
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
     public static String formatUpdateCustomerDeliveryInfo(double total) {
@@ -137,7 +137,7 @@ public class PreparedQueries {
 
     public final static String updateWarehouseYearToDateAmount =
             "UPDATE warehouse "
-                    + "SET W_YTD = W_YTD + %f "
+                    + "SET W_YTD = W_YTD + %.2f "
                     + "WHERE W_ID = ?;";
 
     public static String formatUpdateWarehouseYearToDateAmount(double payment) {
@@ -151,7 +151,7 @@ public class PreparedQueries {
 
     public final static String updateDistrictYearToDateAmount =
             "UPDATE district "
-                    + "SET D_YTD = D_YTD + %f "
+                    + "SET D_YTD = D_YTD + %.2f "
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     public static String formatUpdateDistrictYearToDateAmount(double payment) {
@@ -165,7 +165,7 @@ public class PreparedQueries {
 
     public final static String updateCustomerPaymentInfo =
             "UPDATE customer "
-                    + "SET C_BALANCE = C_BALANCE - %f, C_YTD_PAYMENT = C_YTD_PAYMENT + %f, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
+                    + "SET C_BALANCE = C_BALANCE - %.2f, C_YTD_PAYMENT = C_YTD_PAYMENT + %f, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
     public static String formatUpdateCustomerPaymentInfo(double payment) {
