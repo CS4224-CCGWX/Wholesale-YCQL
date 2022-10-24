@@ -63,7 +63,7 @@ public class PaymentTransaction extends AbstractTransaction {
         Row customerResult = executeQuery(PreparedQueries.getFullCustomerInfo, warehouseId, districtId, customerId).get(0);
         double customerBalance = customerResult.getDecimal("C_BALANCE").doubleValue();
         customerBalance += payment;
-        double customerYtd = customerResult.getDecimal("C_YTD_PAYMENT").doubleValue();
+        float customerYtd = customerResult.getFloat("C_YTD_PAYMENT");
         customerYtd += payment;
         executeQuery(PreparedQueries.updateCustomerPaymentInfo, customerBalance, customerYtd, warehouseId, districtId, customerId);
 
