@@ -104,6 +104,7 @@ public class OutputFormatter {
     public String formatStockLevelTransactionOutput(long result, String transactionInfo) {
         StringBuilder sb = new StringBuilder(transactionInfo);
         sb.append(delimiter);
+        sb.append("Result: ");
         sb.append(result);
         return sb.toString();
     }

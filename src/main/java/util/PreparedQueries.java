@@ -137,11 +137,11 @@ public class PreparedQueries {
 
     public final static String updateWarehouseYearToDateAmount =
             "UPDATE warehouse "
-                    + "SET W_YTD = W_YTD + %.2f "
+                    + "SET W_YTD = W_YTD + %s "
                     + "WHERE W_ID = ?;";
 
     public static String formatUpdateWarehouseYearToDateAmount(double payment) {
-        return String.format(updateWarehouseYearToDateAmount, payment);
+        return String.format(updateWarehouseYearToDateAmount, String.valueOf(payment));
     }
 
 //    public final static String updateDistrictYearToDateAmount =
@@ -151,11 +151,11 @@ public class PreparedQueries {
 
     public final static String updateDistrictYearToDateAmount =
             "UPDATE district "
-                    + "SET D_YTD = D_YTD + %.2f "
+                    + "SET D_YTD = D_YTD + %s "
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     public static String formatUpdateDistrictYearToDateAmount(double payment) {
-        return String.format(updateDistrictYearToDateAmount, payment);
+        return String.format(updateDistrictYearToDateAmount, String.valueOf(payment));
     }
 
 //    public final static String updateCustomerPaymentInfo =
@@ -165,11 +165,11 @@ public class PreparedQueries {
 
     public final static String updateCustomerPaymentInfo =
             "UPDATE customer "
-                    + "SET C_BALANCE = C_BALANCE - %.2f, C_YTD_PAYMENT = C_YTD_PAYMENT + %f, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
+                    + "SET C_BALANCE = C_BALANCE - %s, C_YTD_PAYMENT = C_YTD_PAYMENT + %s, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
     public static String formatUpdateCustomerPaymentInfo(double payment) {
-        return String.format(updateCustomerPaymentInfo, payment, payment);
+        return String.format(updateCustomerPaymentInfo, String.valueOf(payment), String.valueOf(payment));
     }
 
     public final static String getFullCustomerInfo =
@@ -210,7 +210,7 @@ public class PreparedQueries {
 
     public final static String getLastLOrderLinesItemIdForDistrict =
             "SELECT OL_I_ID "
-                    + "FROM order-line WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID >= ? AND OL_O_ID < ?;";
+                    + "FROM order_line WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID >= ? AND OL_O_ID < ?;";
 
     public final static String getStockQuantityForWarehouseItem =
             "SELECT S_QUANTITY "
@@ -249,12 +249,12 @@ public class PreparedQueries {
 
     public final static String getPopularItems =
             "SELECT DISTINCT OL_I_ID "
-                    + "FROM order-line "
+                    + "FROM order_line "
                     + "WHERE OL_O_ID = ? AND OL_D_ID = ? AND OL_W_ID = ? AND OL_QUANTITY = ?;";
 
     public final static String getMaxOLQuantity =
             "SELECT max(OL_QUANTITY) "
-                    + "FROM order-line "
+                    + "FROM order_line "
                     + "WHERE OL_O_ID = ? AND OL_D_ID = ? AND OL_W_ID = ?;";
 
     public final static String getItemNameById =
@@ -267,6 +267,6 @@ public class PreparedQueries {
 
     public final static String checkItemExistInOrder =
             "SELECT 1 "
-                    + "FROM order-line "
+                    + "FROM order_line "
                     + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ? AND OL_I_ID = ?;";
 }
