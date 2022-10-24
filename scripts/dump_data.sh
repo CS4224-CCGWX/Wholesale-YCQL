@@ -9,7 +9,7 @@ python $dataDir/replace_null.py
 
 echo "***** Start dump data *****"
 echo "Defining schema"
-#$YCQLSH -f $schema --request-timeout=3600
+$YCQLSH -f $schema --request-timeout=3600
 
 echo "Load warehouse table"
 $YCQLSH -e "USE wholesale; COPY warehouse (W_ID, W_NAME, W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP, W_TAX, W_YTD) FROM '$dataDir/warehouse.csv' WITH DELIMITER='$DELIM' AND MAXBATCHSIZE=$bsz;"
@@ -50,7 +50,7 @@ $C_LOADER \
     -f $dataDir/customer.csv \
     -schema "wholesale.customer(C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, C_CITY, C_STATE, C_ZIP, C_PHONE, C_SINCE, C_CREDIT, C_CREDIT_LIM, C_DISCOUNT, C_BALANCE, C_YTD_PAYMENT, C_PAYMENT_CNT, C_DELIVERY_CNT, C_DATA)" \
     -batchSize $customer_bsz \
-    -dateFormat 'yyyy-MM-dd HH:mm:ss.SSSX' \
+    -dateFormat 'yyyy-MM-dd HH:mm:ss.SSS' \
     -delim $DELIM \
     -host $ip \
     -badDir $badDir
@@ -61,7 +61,7 @@ $C_LOADER \
     -f $dataDir/order.csv \
     -schema "wholesale.\"order\"(O_W_ID, O_D_ID, O_ID, O_C_ID, O_CARRIER_ID, O_OL_CNT, O_ALL_LOCAL, O_ENTRY_D)" \
     -batchSize $order_bsz \
-    -dateFormat 'yyyy-MM-dd HH:mm:ss.SSSX' \
+    -dateFormat 'yyyy-MM-dd HH:mm:ss.SSS' \
     -delim $DELIM \
     -host $ip \
     -badDir $badDir
@@ -82,7 +82,7 @@ $C_LOADER \
     -f $dataDir/order-line.csv \
     -schema "wholesale.order_line(OL_W_ID, OL_D_ID, OL_O_ID, OL_NUMBER, OL_I_ID, OL_DELIVERY_D, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY, OL_DIST_INFO)" \
     -batchSize $order_line_bsz \
-    -dateFormat 'yyyy-MM-dd HH:mm:ss.SSSX' \
+    -dateFormat 'yyyy-MM-dd HH:mm:ss.SSS' \
     -delim $DELIM \
     -host $ip \
     -badDir $badDir
