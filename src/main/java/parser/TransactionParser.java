@@ -27,9 +27,9 @@ public class TransactionParser {
     public AbstractTransaction parseNextTransaction() {
         if (!scanner.hasNext()) return null;
 
-        String txType = scanner.next();
         String line = scanner.nextLine();
         String[] inputs = line.split(SEPARATOR);
+        String txType = inputs[0];
 
         switch (txType) {
             case "N":
@@ -54,12 +54,12 @@ public class TransactionParser {
     }
 
     private NewOrderTransaction parseNewOrderTransaction(String[] inputs) {
+        int index = 1;
+        int c_id = Integer.parseInt(inputs[index++]);
+        int w_id = Integer.parseInt(inputs[index++]);
+        int d_id = Integer.parseInt(inputs[index++]);
 
-        int c_id = Integer.parseInt(inputs[0]);
-        int w_id = Integer.parseInt(inputs[1]);
-        int d_id = Integer.parseInt(inputs[2]);
-
-        int m = Integer.parseInt(inputs[3]);
+        int m = Integer.parseInt(inputs[index++]);
 
         ArrayList<Integer> i_ids = new ArrayList<>();
         ArrayList<Integer> w_ids = new ArrayList<>();
@@ -76,40 +76,45 @@ public class TransactionParser {
     }
 
     private PaymentTransaction parsePaymentTransaction(String[] inputs) {
-        int w_id = Integer.parseInt(inputs[0]);
-        int d_id = Integer.parseInt(inputs[1]);
-        int c_id = Integer.parseInt(inputs[2]);
-        double payment = Double.parseDouble(inputs[3]);
+        int index = 1;
+        int w_id = Integer.parseInt(inputs[index++]);
+        int d_id = Integer.parseInt(inputs[index++]);
+        int c_id = Integer.parseInt(inputs[index++]);
+        double payment = Double.parseDouble(inputs[index++]);
 
         return new PaymentTransaction(session, w_id, d_id, c_id, payment);
     }
 
     private DeliveryTransaction parseDeliveryTransaction(String[] inputs) {
-        int w_id = Integer.parseInt(inputs[0]);
-        int carrier_id = Integer.parseInt(inputs[1]);
+        int index = 1;
+        int w_id = Integer.parseInt(inputs[index++]);
+        int carrier_id = Integer.parseInt(inputs[index++]);
         return new DeliveryTransaction(session, w_id, carrier_id);
     }
 
     private OrderStatusTransaction parseOrderStatusTransaction(String[] inputs) {
-        int w_id = Integer.parseInt(inputs[0]);
-        int d_id = Integer.parseInt(inputs[1]);
-        int c_id = Integer.parseInt(inputs[2]);
+        int index = 1;
+        int w_id = Integer.parseInt(inputs[index++]);
+        int d_id = Integer.parseInt(inputs[index++]);
+        int c_id = Integer.parseInt(inputs[index++]);
         return new OrderStatusTransaction(session, w_id, d_id, c_id);
     }
 
     private StockLevelTransaction parseStockLevelTransaction(String[] inputs) {
-        int w_id = Integer.parseInt(inputs[0]);
-        int d_id = Integer.parseInt(inputs[1]);
-        double t = Double.parseDouble(inputs[2]);
-        int l = Integer.parseInt(inputs[3]);
+        int index = 1;
+        int w_id = Integer.parseInt(inputs[index++]);
+        int d_id = Integer.parseInt(inputs[index++]);
+        double t = Double.parseDouble(inputs[index++]);
+        int l = Integer.parseInt(inputs[index++]);
 
         return new StockLevelTransaction(session, w_id, d_id, t, l);
     }
 
     private PopularItemTransaction parsePopularItemTransaction(String[] inputs) {
-        int w_id = Integer.parseInt(inputs[0]);
-        int d_id = Integer.parseInt(inputs[1]);
-        int l = Integer.parseInt(inputs[2]);
+        int index = 1;
+        int w_id = Integer.parseInt(inputs[index++]);
+        int d_id = Integer.parseInt(inputs[index++]);
+        int l = Integer.parseInt(inputs[index++]);
         return new PopularItemTransaction(session, w_id, d_id, l);
     }
 
@@ -118,9 +123,10 @@ public class TransactionParser {
     }
 
     private RelatedCustomerTransaction parseRelatedCustomerTransaction(String[] inputs) {
-        int w_id = Integer.parseInt(inputs[0]);
-        int d_id = Integer.parseInt(inputs[1]);
-        int c_id = Integer.parseInt(inputs[2]);
+        int index = 1;
+        int w_id = Integer.parseInt(inputs[index++]);
+        int d_id = Integer.parseInt(inputs[index++]);
+        int c_id = Integer.parseInt(inputs[index++]);
         return new RelatedCustomerTransaction(session, w_id, d_id, c_id);
     }
 }
