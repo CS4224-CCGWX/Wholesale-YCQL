@@ -103,10 +103,10 @@ class Main {
 
     private static CqlSession getCloudSession() {
         String HOST = "ap-southeast-1.586de502-1a37-4886-b28a-3c7f12766c5f.aws.ybdb.io";
+        String LOCAL_DATA_CENTER = "ap-southeast-1";
         String USER = "wangpei";
         String PASSWORD = "123456Ab";
-        String SSL_CERT_PATH = "~/Downloads/root.crt";
-        String LOCAL_DATA_CENTER = "ap-southeast-1";
+        String SSL_CERT_PATH = "~/Desktop/Wholesale-YCQL/src/main/resources/root.crt";
 
         CqlSession session = CqlSession
                 .builder()
