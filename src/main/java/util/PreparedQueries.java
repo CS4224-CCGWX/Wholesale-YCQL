@@ -217,7 +217,7 @@ public class PreparedQueries {
 
     public final static String getItemNameByIds =
             "SELECT I_NAME "
-                    + "FROM item WHERE I_ID = (?);";
+                    + "FROM item WHERE I_ID IN (?);";
 
     public final static String getCustomerName =
             "SELECT C_FIRST, C_MIDDLE, C_LAST "
