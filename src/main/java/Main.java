@@ -1,9 +1,16 @@
+import java.io.FileInputStream;
+import java.net.InetSocketAddress;
+import java.security.KeyStore;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import parser.DataLoader;
 import parser.TransactionParser;
@@ -13,9 +20,13 @@ import util.OutputFormatter;
 import util.PerformanceReportGenerator;
 
 class Main {
+    static String SSL_CERT_PATH = "~/Downloads/root.crt";
+    static String USER = "wangpei";
+    static String PASSWORD = "123456Ab";
+
     public static void main(String[] args) {
         String action = args[0];
-        switch (action) {
+        switch(action) {
         case "load_data": {
             loadData(args);
             break;
@@ -35,29 +46,34 @@ class Main {
     }
 
     private static void loadData(String[] args) {
+        // Load partial data on the cloud
         String ip = args[1];
-        String schemaPath = args[2];
-        String dataPath = args[3];
 
-        Cluster cluster = Cluster.builder()
-                .addContactPoint(ip)
+        CqlSession session = CqlSession
+                .builder()
+                .addContactPoint(new InetSocketAddress(ip, 9042))
+                .withSslContext(createSSLHandler(SSL_CERT_PATH))
+                .withAuthCredentials(USER, PASSWORD)
+                .withLocalDatacenter("datacenter1")
                 .build();
-        Session session = cluster.connect();
 
-        DataLoader dataLoader = new DataLoader(session, schemaPath, dataPath);
-        dataLoader.loadAll();
+        defSchema(session);
+        insertSomeData(session);
     }
 
     private static void run(String[] args) {
         String ip = args[1];
         String consistencyLevel = "";
 
-        Cluster cluster = Cluster.builder()
-                .addContactPoint(ip)
+        CqlSession session = CqlSession
+                .builder()
+                .addContactPoint(new InetSocketAddress(ip, 9042))
+                .withSslContext(createSSLHandler(SSL_CERT_PATH))
+                .withAuthCredentials(USER, PASSWORD)
+                .withLocalDatacenter("datacenter1")
                 .build();
-        Session session = cluster.connect();
         session.execute("USE wholesale;");
-        
+
         TransactionParser transactionParser = new TransactionParser(session);
         OutputFormatter outputFormatter = new OutputFormatter();
 
@@ -92,15 +108,174 @@ class Main {
 
     private static void summary(String[] args) {
         String ip = args[1];
-        Cluster cluster = Cluster.builder()
-                .addContactPoint(ip)
+        CqlSession session = CqlSession
+                .builder()
+                .addContactPoint(new InetSocketAddress(ip, 9042))
+                .withSslContext(createSSLHandler(SSL_CERT_PATH))
+                .withAuthCredentials(USER, PASSWORD)
+                .withLocalDatacenter("datacenter1")
                 .build();
-        Session session = cluster.connect();
         session.execute("USE wholesale;");
 
         AbstractTransaction summaryTransaction = new SummaryTransaction(session);
         summaryTransaction.execute();
 
         session.close();
+    }
+
+    private static SSLContext createSSLHandler(String certfile) {
+        try {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            FileInputStream fis = new FileInputStream(certfile);
+            X509Certificate ca;
+            try {
+                ca = (X509Certificate) cf.generateCertificate(fis);
+            } catch (Exception e) {
+                System.err.println("Exception generating certificate from input file: " + e);
+                return null;
+            } finally {
+                fis.close();
+            }
+
+            // Create a KeyStore containing our trusted CAs
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+
+            // Create a TrustManager that trusts the CAs in our KeyStore
+            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(keyStore);
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, tmf.getTrustManagers(), null);
+            return sslContext;
+        } catch (Exception e) {
+            System.err.println("Exception creating sslContext: " + e);
+            return null;
+        }
+    }
+
+    private static void defSchema(CqlSession session) {
+        // def schema
+        session.execute("CREATE KEYSPACE IF NOT EXISTS wholesale;");
+        session.execute("USE wholesale;");
+        session.execute("DROP TABLE IF EXISTS warehouse;");
+        session.execute("CREATE TABLE IF NOT EXISTS warehouse (\n" +
+                "    W_ID int,\n" +
+                "    W_NAME varchar,\n" +
+                "    W_STREET_1 varchar,\n" +
+                "    W_STREET_2 varchar,\n" +
+                "    W_CITY varchar,\n" +
+                "    W_STATE text,\n" +
+                "    W_ZIP text,\n" +
+                "    W_TAX decimal,\n" +
+                "    W_YTD decimal,\n" +
+                "    PRIMARY KEY (W_ID)\n" +
+                ");");
+        session.execute("DROP TABLE IF EXISTS district;");
+        session.execute("CREATE TABLE IF NOT EXISTS district (\n" +
+                "    D_W_ID int,\n" +
+                "    D_ID int,\n" +
+                "    D_NAME varchar,\n" +
+                "    D_STREET_1 varchar,\n" +
+                "    D_STREET_2 varchar,\n" +
+                "    D_CITY varchar,\n" +
+                "    D_STATE text,\n" +
+                "    D_ZIP text,\n" +
+                "    D_TAX decimal,\n" +
+                "    D_YTD decimal,\n" +
+                "    D_NEXT_O_ID int,\n" +
+                "    D_NEXT_DELIVER_O_ID int,\n" +
+                "    PRIMARY KEY ((D_W_ID, D_ID))\n" +
+                ");");
+        session.execute("DROP TABLE IF EXISTS customer;");
+        session.execute("CREATE TABLE IF NOT EXISTS customer (\n" +
+                "    C_W_ID int,\n" +
+                "    C_D_ID int,\n" +
+                "    C_ID int,\n" +
+                "    C_FIRST varchar,\n" +
+                "    C_MIDDLE text,\n" +
+                "    C_LAST varchar,\n" +
+                "    C_STREET_1 varchar,\n" +
+                "    C_STREET_2 varchar,\n" +
+                "    C_CITY varchar,\n" +
+                "    C_STATE text,\n" +
+                "    C_ZIP text,\n" +
+                "    C_PHONE text,\n" +
+                "    C_SINCE timestamp,\n" +
+                "    C_CREDIT text,\n" +
+                "    C_CREDIT_LIM decimal,\n" +
+                "    C_DISCOUNT decimal,\n" +
+                "    C_BALANCE decimal,\n" +
+                "    C_YTD_PAYMENT float,\n" +
+                "    C_PAYMENT_CNT int,\n" +
+                "    C_DELIVERY_CNT int,\n" +
+                "    C_DATA varchar,\n" +
+                "    PRIMARY KEY ((C_W_ID, C_D_ID, C_ID))\n" +
+                ");");
+        session.execute("DROP TABLE IF EXISTS \"order\";");
+        session.execute("CREATE TABLE IF NOT EXISTS \"order\" (\n" +
+                "    O_W_ID int,\n" +
+                "    O_D_ID int,\n" +
+                "    O_ID int,\n" +
+                "    O_C_ID int,\n" +
+                "    O_CARRIER_ID int,\n" +
+                "    O_OL_CNT int,\n" +
+                "    O_ALL_LOCAL int,\n" +
+                "    O_ENTRY_D timestamp,\n" +
+                "    PRIMARY KEY ((O_W_ID, O_D_ID), O_ID)\n" +
+                ");");
+        session.execute("DROP TABLE IF EXISTS item;");
+        session.execute("CREATE TABLE IF NOT EXISTS item (\n" +
+                "    I_ID int,\n" +
+                "    I_NAME varchar,\n" +
+                "    I_PRICE decimal,\n" +
+                "    I_IM_ID int,\n" +
+                "    I_DATA varchar,\n" +
+                "    PRIMARY KEY (I_ID)\n" +
+                ");");
+        session.execute("DROP TABLE IF EXISTS order_line;");
+        session.execute("CREATE TABLE IF NOT EXISTS order_line (\n" +
+                "    OL_W_ID int,\n" +
+                "    OL_D_ID int,\n" +
+                "    OL_O_ID int,\n" +
+                "    OL_NUMBER int,\n" +
+                "    OL_C_ID int,\n" +
+                "    OL_I_ID int,\n" +
+                "    OL_DELIVERY_D timestamp,\n" +
+                "    OL_AMOUNT decimal,\n" +
+                "    OL_SUPPLY_W_ID int,\n" +
+                "    OL_QUANTITY decimal,\n" +
+                "    OL_DIST_INFO varchar,\n" +
+                "    PRIMARY KEY ((OL_W_ID, OL_D_ID), OL_O_ID, OL_NUMBER)\n" +
+                ");");
+        session.execute("DROP TABLE IF EXISTS stock;");
+        session.execute("CREATE TABLE IF NOT EXISTS stock (\n" +
+                "    S_W_ID int,\n" +
+                "    S_I_ID int,\n" +
+                "    S_QUANTITY decimal,\n" +
+                "    S_YTD decimal,\n" +
+                "    S_ORDER_CNT int,\n" +
+                "    S_REMOTE_CNT int,\n" +
+                "    S_DIST_01 text,\n" +
+                "    S_DIST_02 text,\n" +
+                "    S_DIST_03 text,\n" +
+                "    S_DIST_04 text,\n" +
+                "    S_DIST_05 text,\n" +
+                "    S_DIST_06 text,\n" +
+                "    S_DIST_07 text,\n" +
+                "    S_DIST_08 text,\n" +
+                "    S_DIST_09 text,\n" +
+                "    S_DIST_10 text,\n" +
+                "    S_DATA varchar,\n" +
+                "    PRIMARY KEY ((S_W_ID, S_I_ID))\n" +
+                ");");
+    }
+
+    private static void insertSomeData(CqlSession session) {
+        session.execute("USE wholesale;");
+        session.execute("INSERT INTO ")
     }
 }

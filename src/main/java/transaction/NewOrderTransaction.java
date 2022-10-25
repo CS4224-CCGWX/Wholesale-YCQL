@@ -3,8 +3,8 @@ package transaction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import util.PreparedQueries;
 import util.QueryFormatter;
@@ -22,7 +22,7 @@ public class NewOrderTransaction extends AbstractTransaction {
     private final List<Integer> itemIds;
     private final List<Integer> quantities;
     private final List<Integer> supplyWarehouseIds;
-    public NewOrderTransaction(Session session, int cid, int wid, int did, int n,
+    public NewOrderTransaction(CqlSession session, int cid, int wid, int did, int n,
                                List<Integer> itemIds, List<Integer> quantities, List<Integer> supplyWarehouseIds) {
         super(session);
         customerId = cid;

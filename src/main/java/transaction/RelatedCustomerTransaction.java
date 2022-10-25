@@ -1,7 +1,7 @@
 package transaction;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
 import jnr.ffi.Struct;
 import util.OutputFormatter;
 import util.PreparedQueries;
@@ -20,7 +20,7 @@ public class RelatedCustomerTransaction extends AbstractTransaction {
 
     private final OutputFormatter outputFormatter = new OutputFormatter();
 
-    public RelatedCustomerTransaction(Session session, int wid, int did, int cid) {
+    public RelatedCustomerTransaction(CqlSession session, int wid, int did, int cid) {
         super(session);
         warehouseId = wid;
         districtId = did;

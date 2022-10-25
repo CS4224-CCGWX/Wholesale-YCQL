@@ -3,18 +3,18 @@ package transaction;
 import java.util.List;
 import java.util.Map;
 
-import com.datastax.driver.core.ConsistencyLevel;
-import com.datastax.driver.core.SimpleStatement;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.Statement;
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.Statement;
 
 public abstract class AbstractTransaction {
-    protected Session session;
+    protected CqlSession session;
     private ConsistencyLevel defaultConsistencyLevel;
 
-    AbstractTransaction(Session s) {
+    AbstractTransaction(CqlSession s) {
         session = s;
         defaultConsistencyLevel = ConsistencyLevel.ALL;
     }

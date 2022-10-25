@@ -1,7 +1,7 @@
 package transaction;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import util.OutputFormatter;
 import util.PreparedQueries;
@@ -14,7 +14,7 @@ public class PaymentTransaction extends AbstractTransaction {
     private static OutputFormatter outputFormatter = new OutputFormatter();
     private static final String delimiter = "\n";
 
-    public PaymentTransaction(Session session, int warehouseId, int districtId, int customerId, double payment) {
+    public PaymentTransaction(CqlSession session, int warehouseId, int districtId, int customerId, double payment) {
         super(session);
         this.warehouseId = warehouseId;
         this.districtId = districtId;

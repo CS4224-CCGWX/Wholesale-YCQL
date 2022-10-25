@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
 import com.opencsv.CSVWriter;
 
 import util.PreparedQueries;
@@ -25,7 +25,7 @@ public class SummaryTransaction extends AbstractTransaction {
      * v. select sum(OL AMOUNT), sum(OL QUANTITY) from Order-Line
      * vi. select sum(S QUANTITY), sum(S YTD), sum(S ORDER CNT), sum(S REMOTE CNT) from Stock
      */
-    public SummaryTransaction(Session session) {
+    public SummaryTransaction(CqlSession session) {
         super(session);
     }
 

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import jnr.ffi.annotations.In;
 import util.FieldConstants;
@@ -51,7 +51,7 @@ public class PopularItemTransaction extends AbstractTransaction {
     private OutputFormatter outputFormatter = new OutputFormatter();
     private static final String delimiter = "\n";
 
-    public PopularItemTransaction (Session session, int warehouseId, int districtId, int lastOrderToBeExamined) {
+    public PopularItemTransaction (CqlSession session, int warehouseId, int districtId, int lastOrderToBeExamined) {
         super(session);
         this.warehouseId = warehouseId;
         this.districtId = districtId;

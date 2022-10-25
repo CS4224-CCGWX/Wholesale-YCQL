@@ -3,7 +3,7 @@ package util;
 import java.util.Date;
 import java.util.List;
 
-import com.datastax.driver.core.Row;
+import com.datastax.oss.driver.api.core.cql.Row;
 
 public class OutputFormatter {
     private final static String delimiter = "\n";

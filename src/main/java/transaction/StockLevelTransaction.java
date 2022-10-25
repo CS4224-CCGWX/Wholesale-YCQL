@@ -2,8 +2,8 @@ package transaction;
 
 import java.util.List;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import util.FieldConstants;
 import util.OutputFormatter;
@@ -31,7 +31,7 @@ public class StockLevelTransaction extends AbstractTransaction {
     private int lastOrderToBeExamined;
     private OutputFormatter outputFormatter = new OutputFormatter();
 
-    public StockLevelTransaction(Session session, int warehouseId, int districtId, double threshold, int lastOrderToBeExamined) {
+    public StockLevelTransaction(CqlSession session, int warehouseId, int districtId, double threshold, int lastOrderToBeExamined) {
         super(session);
         this.warehouseId = warehouseId;
         this.districtId = districtId;

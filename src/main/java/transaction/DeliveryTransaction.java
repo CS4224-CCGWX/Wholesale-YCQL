@@ -1,7 +1,7 @@
 package transaction;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
 import util.PreparedQueries;
 import util.QueryFormatter;
 import util.TimeFormatter;
@@ -13,7 +13,7 @@ public class DeliveryTransaction extends AbstractTransaction {
     private int warehouseId;
     private int carrierId;
 
-    public DeliveryTransaction(Session session, int warehouseId, int carrierId) {
+    public DeliveryTransaction(CqlSession session, int warehouseId, int carrierId) {
         super(session);
         this.warehouseId = warehouseId;
         this.carrierId = carrierId;
