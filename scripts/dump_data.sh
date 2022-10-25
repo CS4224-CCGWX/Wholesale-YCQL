@@ -79,8 +79,8 @@ $C_LOADER \
 
 echo "Load order_line table"
 $C_LOADER \
-    -f $dataDir/order-line.csv \
-    -schema "wholesale.order_line(OL_W_ID, OL_D_ID, OL_O_ID, OL_NUMBER, OL_I_ID, OL_DELIVERY_D, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY, OL_DIST_INFO)" \
+    -f $dataDir/order-line-with-cid.csv \
+    -schema "wholesale.order_line(OL_W_ID, OL_D_ID, OL_O_ID, OL_NUMBER, OL_I_ID, OL_DELIVERY_D, OL_AMOUNT, OL_SUPPLY_W_ID, OL_QUANTITY, OL_DIST_INFO, OL_C_ID)" \
     -batchSize $order_line_bsz \
     -dateFormat 'yyyy-MM-dd HH:mm:ss.SSS' \
     -delim $DELIM \
