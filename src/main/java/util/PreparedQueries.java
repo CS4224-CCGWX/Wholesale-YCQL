@@ -215,9 +215,9 @@ public class PreparedQueries {
                     + "FROM order_line "
                     + "WHERE OL_O_ID = ? AND OL_D_ID = ? AND OL_W_ID = ?;";
 
-    public final static String getItemNameById =
+    public final static String getItemNameByIds =
             "SELECT I_NAME "
-                    + "FROM item WHERE I_ID = ?;";
+                    + "FROM item WHERE I_ID = (?);";
 
     public final static String getCustomerName =
             "SELECT C_FIRST, C_MIDDLE, C_LAST "

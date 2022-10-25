@@ -131,7 +131,7 @@ public class OutputFormatter {
     }
 
     public String formatOrderIdAndTimestamp(int id, Date timestamp) {
-        return String.format("order id: %d, entry date and time: %s", id, timestamp.toString());
+        return String.format("order id: %d, entry date and time: %s", id, TimeFormatter.formatTimestamp(timestamp));
     }
 
     public String formatPopularItemQuantity(String name, double quantity) {
