@@ -1,6 +1,5 @@
 package transaction;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.datastax.driver.core.Row;
@@ -8,8 +7,7 @@ import com.datastax.driver.core.Session;
 
 import util.OutputFormatter;
 import util.PreparedQueries;
-import util.QueryFormatter;
-import util.TimeFormatter;
+
 
 public class TopBalanceTransaction extends AbstractTransaction {
     static final int K = 10;
@@ -35,13 +33,12 @@ public class TopBalanceTransaction extends AbstractTransaction {
         OutputFormatter outputFormatter = new OutputFormatter();
         List<Row> customersInfo = this.executeQuery(PreparedQueries.getTopKBalanceCustomers, K);
         System.out.println("*** Top Balance Transaction Summary ***");
-        for(Row cInfo : customersInfo) {
+        for (Row cInfo : customersInfo) {
             int warehouseId = cInfo.getInt("C_W_ID");
             int districtId = cInfo.getInt("C_D_ID");
             String warehouseName = this.executeQuery(PreparedQueries.getWarehouseName, warehouseId).get(0).getString("W_NAME");
             String districtName = this.executeQuery(PreparedQueries.getDistrictName, warehouseId, districtId).get(0).getString("D_NAME");
             System.out.println(outputFormatter.formatTopBalanceCustomerInfo(cInfo, warehouseName, districtName));
         }
-
     }
 }
