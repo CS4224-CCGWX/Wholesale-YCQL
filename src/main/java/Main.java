@@ -20,9 +20,6 @@ import util.OutputFormatter;
 import util.PerformanceReportGenerator;
 
 class Main {
-    static String SSL_CERT_PATH = "~/Downloads/root.crt";
-    static String USER = "wangpei";
-    static String PASSWORD = "123456Ab";
 
     public static void main(String[] args) {
         String action = args[0];
@@ -49,14 +46,7 @@ class Main {
         // Load partial data on the cloud
         String ip = args[1];
 
-        CqlSession session = CqlSession
-                .builder()
-                .addContactPoint(new InetSocketAddress(ip, 9042))
-                .withSslContext(createSSLHandler(SSL_CERT_PATH))
-                .withAuthCredentials(USER, PASSWORD)
-                .withLocalDatacenter("datacenter1")
-                .build();
-
+        CqlSession session = getCloudSession();
         defSchema(session);
         insertSomeData(session);
     }
@@ -65,13 +55,7 @@ class Main {
         String ip = args[1];
         String consistencyLevel = "";
 
-        CqlSession session = CqlSession
-                .builder()
-                .addContactPoint(new InetSocketAddress(ip, 9042))
-                .withSslContext(createSSLHandler(SSL_CERT_PATH))
-                .withAuthCredentials(USER, PASSWORD)
-                .withLocalDatacenter("datacenter1")
-                .build();
+        CqlSession session = getCloudSession();
         session.execute("USE wholesale;");
 
         TransactionParser transactionParser = new TransactionParser(session);
@@ -108,19 +92,31 @@ class Main {
 
     private static void summary(String[] args) {
         String ip = args[1];
-        CqlSession session = CqlSession
-                .builder()
-                .addContactPoint(new InetSocketAddress(ip, 9042))
-                .withSslContext(createSSLHandler(SSL_CERT_PATH))
-                .withAuthCredentials(USER, PASSWORD)
-                .withLocalDatacenter("datacenter1")
-                .build();
+        CqlSession session = getCloudSession();
         session.execute("USE wholesale;");
 
         AbstractTransaction summaryTransaction = new SummaryTransaction(session);
         summaryTransaction.execute();
 
         session.close();
+    }
+
+    private static CqlSession getCloudSession() {
+        String HOST = "ap-southeast-1.586de502-1a37-4886-b28a-3c7f12766c5f.aws.ybdb.io";
+        String USER = "wangpei";
+        String PASSWORD = "123456Ab";
+        String SSL_CERT_PATH = "~/Downloads/root.crt";
+        String LOCAL_DATA_CENTER = "ap-southeast-1";
+
+        CqlSession session = CqlSession
+                .builder()
+                .addContactPoint(new InetSocketAddress(HOST, 9042))
+                .withSslContext(createSSLHandler(SSL_CERT_PATH))
+                .withAuthCredentials(USER, PASSWORD)
+                .withLocalDatacenter(LOCAL_DATA_CENTER)
+                .build();
+
+        return session;
     }
 
     private static SSLContext createSSLHandler(String certfile) {
