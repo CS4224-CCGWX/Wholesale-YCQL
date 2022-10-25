@@ -2,8 +2,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
-
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 

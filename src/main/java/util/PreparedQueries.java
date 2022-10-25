@@ -239,10 +239,10 @@ public class PreparedQueries {
             "SELECT SUM(C_BALANCE), SUM(C_YTD_PAYMENT), SUM(C_PAYMENT_CNT), SUM(C_DELIVERY_CNT) FROM customer;";
 
     public final static String getOrderSummary =
-            "SELECT MAX(O_ID), SUM(O_OL_CNT) from \"order\";";
+            "SELECT MAX(O_ID), SUM(O_OL_CNT) from \"order\" WHERE O_W_ID = ?;";
 
     public final static String getOrderLineSummary =
-            "SELECT SUM(OL_AMOUNT), SUM(OL_QUANTITY) from order_line OL_I_ID = ?;";
+            "SELECT SUM(OL_AMOUNT), SUM(OL_QUANTITY) from order_line OL_W_ID = ?;";
 
     public final static String getStockSummary =
             "SELECT SUM(S_QUANTITY), SUM(S_YTD), SUM(S_ORDER_CNT), SUM(S_REMOTE_CNT) from stock WHERE S_W_ID = ?;";
