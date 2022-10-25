@@ -45,6 +45,15 @@ public abstract class AbstractTransaction {
         return res.all();
     }
 
+    protected List<Row> executeQueryWithTimeout(String query, int timeout, Object... values) {
+        Statement statement = new SimpleStatement(query, values)
+                .setConsistencyLevel(getConsistencyLevel(query))
+                .setReadTimeoutMillis(timeout);
+        ResultSet res = session.execute(query);
+
+        return res.all();
+    }
+
     public void setDefaultConsistencyLevel(ConsistencyLevel consistencyLevel) {
         this.defaultConsistencyLevel = consistencyLevel;
     }

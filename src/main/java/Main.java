@@ -8,6 +8,7 @@ import com.datastax.driver.core.Session;
 import parser.DataLoader;
 import parser.TransactionParser;
 import transaction.AbstractTransaction;
+import transaction.SummaryTransaction;
 import util.OutputFormatter;
 import util.PerformanceReportGenerator;
 
@@ -21,6 +22,10 @@ class Main {
         }
         case "run": {
             run(args);
+            break;
+        }
+        case "summary": {
+            summary(args);
             break;
         }
         default: {
@@ -83,5 +88,19 @@ class Main {
 
         session.close();
         transactionParser.close();
+    }
+
+    private static void summary(String[] args) {
+        String ip = args[1];
+        Cluster cluster = Cluster.builder()
+                .addContactPoint(ip)
+                .build();
+        Session session = cluster.connect();
+        session.execute("USE wholesale;");
+
+        AbstractTransaction summaryTransaction = new SummaryTransaction(session);
+        summaryTransaction.execute();
+
+        session.close();
     }
 }
