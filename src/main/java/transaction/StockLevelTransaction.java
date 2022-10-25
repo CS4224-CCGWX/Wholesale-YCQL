@@ -1,6 +1,5 @@
 package transaction;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import com.datastax.driver.core.Row;
@@ -60,7 +59,7 @@ public class StockLevelTransaction extends AbstractTransaction {
             }
         }
 
-        System.out.print(outputFormatter.formatStockLevelTransactionOutput(res, this.toString()));
+        System.out.println(outputFormatter.formatStockLevelTransactionOutput(res, this.toString()));
     }
 
     public String toString() {

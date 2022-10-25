@@ -20,8 +20,8 @@ $YCQLSH -e "USE wholesale; COPY district (D_W_ID, D_ID, D_NAME, D_STREET_1, D_ST
 # Load large tables with Cassadra Loader
 C_LOADER="/home/stuproj/cs4224i/Wholesale-YCQL/cassandra-loader"
 badDir="/home/stuproj/cs4224i/Wholesale-YCQL/cassandra-loader-bad-dir"
-customer_bsz=100
-order_bsz=100
+customer_bsz=1000
+order_bsz=1000
 item_bsz=5000
 order_line_bsz=1000
 stock_bsz=10000

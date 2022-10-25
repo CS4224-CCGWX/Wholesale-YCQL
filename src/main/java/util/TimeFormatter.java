@@ -10,4 +10,8 @@ public class TimeFormatter {
     public static String getCurrentTimestamp() {
         return dateFormatter.format(new Date());
     }
+
+    public static String formatTimestamp(Date date) {
+        return dateFormatter.format(date);
+    }
 }

@@ -16,7 +16,7 @@ public class OutputFormatter {
                 customerInfo.getString("C_LAST"));
     }
 
-    public String formatFullCustomerInfo(Row customerInfo) {
+    public String formatFullCustomerInfo(Row customerInfo, double balance) {
         StringBuilder sb = new StringBuilder();
         sb.append("Customer info: ");
         sb.append(delimiter);
@@ -44,19 +44,19 @@ public class OutputFormatter {
         sb.append(String.format("Phone: %s", customerInfo.getString("C_PHONE")));
         sb.append(delimiter);
 
-        sb.append(String.format("Since: %s", customerInfo.getString("C_SINCE")));
+        sb.append(String.format("Since: %s", TimeFormatter.formatTimestamp(customerInfo.getTimestamp("C_SINCE"))));
         sb.append(delimiter);
 
         sb.append(String.format("Credit status: %s", customerInfo.getString("C_CREDIT")));
         sb.append(delimiter);
 
-        sb.append(String.format("Credit limit: %f", customerInfo.getDecimal("C_CREDIT_LIM").doubleValue()));
+        sb.append(String.format("Credit limit: %s", customerInfo.getDecimal("C_CREDIT_LIM").doubleValue()));
         sb.append(delimiter);
 
-        sb.append(String.format("Discount: %f", customerInfo.getDecimal("C_DISCOUNT").doubleValue()));
+        sb.append(String.format("Discount: %s", customerInfo.getDecimal("C_DISCOUNT").doubleValue()));
         sb.append(delimiter);
 
-        sb.append(String.format("Balance: %f", customerInfo.getDecimal("C_BALANCE").doubleValue()));
+        sb.append(String.format("Balance: %s", balance));
 
         return sb.toString();
     }
@@ -104,6 +104,7 @@ public class OutputFormatter {
     public String formatStockLevelTransactionOutput(long result, String transactionInfo) {
         StringBuilder sb = new StringBuilder(transactionInfo);
         sb.append(delimiter);
+        sb.append("Result: ");
         sb.append(result);
         return sb.toString();
     }
