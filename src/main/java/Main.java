@@ -52,7 +52,7 @@ class Main {
                 .build();
         Session session = cluster.connect();
         session.execute("USE wholesale;");
-
+        
         TransactionParser transactionParser = new TransactionParser(session);
         OutputFormatter outputFormatter = new OutputFormatter();
 
