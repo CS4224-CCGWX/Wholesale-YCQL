@@ -1,20 +1,16 @@
 package transaction;
 
-import java.util.List;
-
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
 import util.OutputFormatter;
 import util.PreparedQueries;
-import util.QueryFormatter;
 
 public class PaymentTransaction extends AbstractTransaction {
     private int warehouseId;
     private int districtId;
     private int customerId;
     private double payment;
-    private static QueryFormatter queryFormatter = new QueryFormatter();
     private static OutputFormatter outputFormatter = new OutputFormatter();
     private static final String delimiter = "\n";
 
@@ -47,20 +43,32 @@ public class PaymentTransaction extends AbstractTransaction {
      */
     public void execute() {
         // 1. Update the warehouse C W ID by incrementing W YTD by PAYMENT
-        executeQuery(PreparedQueries.formatUpdateWarehouseYearToDateAmount(payment), warehouseId);
+        Row warehouseResult = executeQuery(PreparedQueries.getWarehouseAddressAndYtd, warehouseId).get(0);
+        double warehouseYtd = warehouseResult.getDecimal("W_YTD").doubleValue();
+        warehouseYtd += payment;
+        // executeQuery(PreparedQueries.formatUpdateWarehouseYearToDateAmount(warehouseYtd), warehouseId);
+        executeQuery(PreparedQueries.updateWarehouseYearToDateAmount, warehouseYtd, warehouseId);
 
         // 2. Update the district (C W ID,C D ID) by incrementing D YTD by PAYMENT
-        executeQuery(PreparedQueries.formatUpdateDistrictYearToDateAmount(payment), warehouseId, districtId);
+        Row districtResult = executeQuery(PreparedQueries.getDistrictAddressAndYtd, warehouseId, districtId).get(0);
+        double districtYtd = districtResult.getDecimal("D_YTD").doubleValue();
+        districtYtd += payment;
+        // executeQuery(PreparedQueries.formatUpdateDistrictYearToDateAmount(districtYtd), warehouseId, districtId);
+        executeQuery(PreparedQueries.updateDistrictYearToDateAmount, districtYtd, warehouseId, districtId);
 
         // 3. Update the customer (C W ID, C D ID, C ID) as follows:
         // • Decrement C BALANCE by PAYMENT
         // • Increment C YTD PAYMENT by PAYMENT
         // • Increment C PAYMENT CNT by 1
-        executeQuery(PreparedQueries.formatUpdateCustomerPaymentInfo(payment), warehouseId, districtId, customerId);
+        Row customerResult = executeQuery(PreparedQueries.getFullCustomerInfo, warehouseId, districtId, customerId).get(0);
+        double customerBalance = customerResult.getDecimal("C_BALANCE").doubleValue();
+        customerBalance += payment;
+        float customerYtd = customerResult.getFloat("C_YTD_PAYMENT");
+        customerYtd += payment;
+        executeQuery(PreparedQueries.updateCustomerPaymentInfo, customerBalance, customerYtd, warehouseId, districtId, customerId);
 
         // Output
         StringBuilder sb = new StringBuilder();
-        List<Row> result;
 
         /*
          *  1. Customer’s identifier (C W ID, C D ID, C ID), name (C FIRST, C MIDDLE, C LAST), address
@@ -68,24 +76,19 @@ public class PaymentTransaction extends AbstractTransaction {
          *     C CREDIT LIM, C DISCOUNT, C BALANCE
          */
 //        result = executeQuery(queryFormatter.getFullCustomerInfo(warehouseId, districtId, customerId));
-        result = executeQuery(PreparedQueries.getFullCustomerInfo, warehouseId, districtId, customerId);
-        sb.append(outputFormatter.formatFullCustomerInfo(result.get(0)));
+        sb.append(outputFormatter.formatFullCustomerInfo(customerResult, customerBalance));
         sb.append(delimiter);
 
         // 2. Warehouse’s address (W STREET 1, W STREET 2, W CITY, W STATE, W ZIP)
-//        result = executeQuery(queryFormatter.getWarehouseAddress(warehouseId));
-        result = executeQuery(PreparedQueries.getWarehouseAddress, warehouseId);
-        sb.append(outputFormatter.formatWarehouseAddress(result.get(0)));
+        sb.append(outputFormatter.formatWarehouseAddress(warehouseResult));
         sb.append(delimiter);
 
         // 3. District’s address (D STREET 1, D STREET 2, D CITY, D STATE, D ZIP)
-//        result = executeQuery(queryFormatter.getDistrictAddress(warehouseId, districtId));
-        result = executeQuery(PreparedQueries.getDistrictAddress, warehouseId, districtId);
-        sb.append(outputFormatter.formatDistrictAddress(result.get(0)));
+        sb.append(outputFormatter.formatDistrictAddress(districtResult));
         sb.append(delimiter);
 
         // 4. Payment amount PAYMENT
-        sb.append(String.format("Payment: %f", payment));
+        sb.append(String.format("Payment: %.2f", payment));
         sb.append(delimiter);
 
         System.out.print(sb);

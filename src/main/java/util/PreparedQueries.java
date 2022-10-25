@@ -39,34 +39,16 @@ public class PreparedQueries {
                     + "WHERE S_W_ID = ?, S_I_ID = ?;";
 
     // update stock qty that increments remote count
-//    public final static String updateStockQtyIncrRemoteCnt =
-//            "UPDATE stock "
-//                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
-//                    + "WHERE S_W_ID = ?, S_I_ID = ?;";
-
     public final static String updateStockQtyIncrRemoteCnt =
             "UPDATE stock "
-                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + %d, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
+                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
                     + "WHERE S_W_ID = ?, S_I_ID = ?;";
-
-    public static String formatUpdateStockQtyIncrRemoteCnt(int quantity) {
-        return String.format(updateStockQtyIncrRemoteCnt, quantity);
-    }
 
     // update stock qty that NOT increments remote count
-//    public final static String updateStockQty =
-//            "UPDATE stock "
-//                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1 "
-//                    + "WHERE S_W_ID = ?, S_I_ID = ?;";
-
     public final static String updateStockQty =
             "UPDATE stock "
-                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + %d, S_ORDER_CNT = S_ORDER_CNT + 1 "
+                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1 "
                     + "WHERE S_W_ID = ?, S_I_ID = ?;";
-
-    public static String formatUpdateStockQty(int quantity) {
-        return String.format(updateStockQty, quantity);
-    }
 
     public final static String getItemPriceAndName =
             "SELECT I_PRICE, I_NAME "
@@ -115,74 +97,50 @@ public class PreparedQueries {
                     + "FROM order_line "
                     + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?;";
 
-//    public final static String updateCustomerDeliveryInfo =
-//            "UPDATE customer "
-//                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + ? "
-//                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
-
     public final static String updateCustomerDeliveryInfo =
             "UPDATE customer "
-                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + %f "
+                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + ? "
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
-
-    public static String formatUpdateCustomerDeliveryInfo(double total) {
-        return String.format(updateCustomerDeliveryInfo, total);
-    }
-
-    // For payment transactions
-//    public final static String updateWarehouseYearToDateAmount =
-//                    "UPDATE warehouse "
-//                    + "SET W_YTD = W_YTD + ? "
-//                    + "WHERE W_ID = ?;";
 
     public final static String updateWarehouseYearToDateAmount =
             "UPDATE warehouse "
-                    + "SET W_YTD = W_YTD + %f "
+                    + "SET W_YTD = ? "
                     + "WHERE W_ID = ?;";
 
-    public static String formatUpdateWarehouseYearToDateAmount(double payment) {
-        return String.format(updateWarehouseYearToDateAmount, payment);
-    }
-
-//    public final static String updateDistrictYearToDateAmount =
-//                    "UPDATE district "
-//                    + "SET D_YTD = D_YTD + ? "
-//                    + "WHERE D_W_ID = ? AND D_ID = ?;";
+//     public static String formatUpdateWarehouseYearToDateAmount(double payment) {
+//         return String.format(updateWarehouseYearToDateAmount, String.valueOf(payment));
+//     }
 
     public final static String updateDistrictYearToDateAmount =
             "UPDATE district "
-                    + "SET D_YTD = D_YTD + %f "
+                    + "SET D_YTD = ? "
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
 
-    public static String formatUpdateDistrictYearToDateAmount(double payment) {
-        return String.format(updateDistrictYearToDateAmount, payment);
-    }
+//     public static String formatUpdateDistrictYearToDateAmount(double payment) {
+//         return String.format(updateDistrictYearToDateAmount, String.valueOf(payment));
+//     }
 
-//    public final static String updateCustomerPaymentInfo =
-//                    "UPDATE customer "
-//                    + "SET C_BALANCE = C_BALANCE - ?, C_YTD_PAYMENT = C_YTD_PAYMENT + ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
-//                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
+//     public final static String updateCustomerPaymentInfo =
+//                     "UPDATE customer "
+//                     + "SET C_BALANCE = ?, C_YTD_PAYMENT = ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
+//                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
-    public final static String updateCustomerPaymentInfo =
-            "UPDATE customer "
-                    + "SET C_BALANCE = C_BALANCE - %f, C_YTD_PAYMENT = C_YTD_PAYMENT + %f, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
-                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
-
-    public static String formatUpdateCustomerPaymentInfo(double payment) {
-        return String.format(updateCustomerPaymentInfo, payment, payment);
-    }
+   public final static String updateCustomerPaymentInfo =
+           "UPDATE customer "
+                   + "SET C_BALANCE = ?, C_YTD_PAYMENT = ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
+                   + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
     public final static String getFullCustomerInfo =
             "SELECT C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, "
-                    + "C_CITY, C_STATE, C_ZIP, C_PHONE, C_SINCE, C_CREDIT, C_CREDIT_LIM, C_DISCOUNT, C_BALANCE "
+                    + "C_CITY, C_STATE, C_ZIP, C_PHONE, C_SINCE, C_CREDIT, C_CREDIT_LIM, C_DISCOUNT, C_BALANCE, C_YTD_PAYMENT "
                     + "FROM customer WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
-    public final static String getWarehouseAddress =
-            "SELECT W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP "
+    public final static String getWarehouseAddressAndYtd =
+            "SELECT W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP, W_YTD "
                     + "FROM warehouse WHERE W_ID = ?;";
 
-    public final static String getDistrictAddress =
-            "SELECT D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP "
+    public final static String getDistrictAddressAndYtd =
+            "SELECT D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP, D_YTD "
                     + "FROM district WHERE D_W_ID = ? AND D_ID = ?;";
 
     // For order status transaction
@@ -210,7 +168,7 @@ public class PreparedQueries {
 
     public final static String getLastLOrderLinesItemIdForDistrict =
             "SELECT OL_I_ID "
-                    + "FROM order-line WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID >= ? AND OL_O_ID < ?;";
+                    + "FROM order_line WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID >= ? AND OL_O_ID < ?;";
 
     public final static String getStockQuantityForWarehouseItem =
             "SELECT S_QUANTITY "
@@ -249,12 +207,12 @@ public class PreparedQueries {
 
     public final static String getPopularItems =
             "SELECT DISTINCT OL_I_ID "
-                    + "FROM order-line "
+                    + "FROM order_line "
                     + "WHERE OL_O_ID = ? AND OL_D_ID = ? AND OL_W_ID = ? AND OL_QUANTITY = ?;";
 
     public final static String getMaxOLQuantity =
             "SELECT max(OL_QUANTITY) "
-                    + "FROM order-line "
+                    + "FROM order_line "
                     + "WHERE OL_O_ID = ? AND OL_D_ID = ? AND OL_W_ID = ?;";
 
     public final static String getItemNameById =
@@ -267,6 +225,6 @@ public class PreparedQueries {
 
     public final static String checkItemExistInOrder =
             "SELECT 1 "
-                    + "FROM order-line "
+                    + "FROM order_line "
                     + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ? AND OL_I_ID = ?;";
 }
