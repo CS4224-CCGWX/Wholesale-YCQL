@@ -5,17 +5,17 @@ dataDir="/home/stuproj/cs4224i/Wholesale-YCQL/project_files/data_files"
 bsz=500
 
 echo "***** Remove null in dataset *****"
-python $dataDir/replace_null.py
+python preprocess/precompute.py
 
 echo "***** Start dump data *****"
 echo "Defining schema"
-$YCQLSH -f $schema --request-timeout=3600
+# $YCQLSH -f $schema --request-timeout=3600
 
 echo "Load warehouse table"
 $YCQLSH -e "USE wholesale; COPY warehouse (W_ID, W_NAME, W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP, W_TAX, W_YTD) FROM '$dataDir/warehouse.csv' WITH DELIMITER='$DELIM' AND MAXBATCHSIZE=$bsz;"
 
-echo "Load district table"
-$YCQLSH -e "USE wholesale; COPY district (D_W_ID, D_ID, D_NAME, D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP, D_TAX, D_YTD, D_NEXT_O_ID) FROM '$dataDir/district.csv' WITH DELIMITER='$DELIM' AND MAXBATCHSIZE=$bsz;"
+# echo "Load district table"
+# $YCQLSH -e "USE wholesale; COPY district (D_W_ID, D_ID, D_NAME, D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP, D_TAX, D_YTD, D_NEXT_O_ID, D_NEXT_DELIVER_O_ID) FROM '$dataDir/district-with-delivery.csv' WITH DELIMITER='$DELIM' AND MAXBATCHSIZE=$bsz;"
 
 # Load large tables with Cassadra Loader
 C_LOADER="/home/stuproj/cs4224i/Wholesale-YCQL/cassandra-loader"
@@ -45,6 +45,19 @@ echo "***** Using Cassandra Loader with host: $ip *****"
 
 # Cassandra-loader reference: https://github.com/yugabyte/cassandra-loader#options
 # DateTime format reference: https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
+echo "Load district table"
+$C_LOADER \
+    -f $dataDir/district-with-delivery.csv \
+    -schema "wholesale.district(D_W_ID, D_ID, D_NAME, D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP, D_TAX, D_YTD, D_NEXT_O_ID, D_NEXT_DELIVER_O_ID)" \
+    -batchSize $customer_bsz \
+    -dateFormat 'yyyy-MM-dd HH:mm:ss.SSS' \
+    -delim $DELIM \
+    -host $ip \
+    -badDir $badDir
+# $YCQLSH -e "USE wholesale; COPY customer (C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, C_CITY, C_STATE, C_ZIP, C_PHONE, C_SINCE, C_CREDIT, C_CREDIT_LIM, C_DISCOUNT, C_BALANCE, C_YTD_PAYMENT, C_PAYMENT_CNT, C_DELIVERY_CNT, C_DATA) FROM '$dataDir/customer.csv' WITH DELIMITER='$DELIM' AND MAXBATCHSIZE=$bsz;"
+
+
+
 echo "Load customer table"
 $C_LOADER \
     -f $dataDir/customer.csv \

@@ -34,10 +34,9 @@ def get_cid_in_order_line():
     order_lines_with_cid.to_csv(order_lines_with_cid_path, header = False, index = False)
 
 def compute_next_order_to_deliver():
-    print("t")
     if (os.path.exists(district_with_delivery_path)): 
         return
-    print("t")
+
     W_ID_idx = 0
     D_ID_idx = 1
     O_CARRIER_ID_idx = 4

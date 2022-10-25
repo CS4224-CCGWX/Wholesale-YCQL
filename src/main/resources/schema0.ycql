@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS "order" (
     O_C_ID int,
     O_CARRIER_ID int,
     O_OL_CNT int,
-    O_ALL_LOCAL decimal,
+    O_ALL_LOCAL int,
     O_ENTRY_D timestamp,
     PRIMARY KEY ((O_W_ID, O_D_ID), O_ID)
 );
