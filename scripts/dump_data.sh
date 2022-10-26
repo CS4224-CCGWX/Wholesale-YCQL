@@ -1,4 +1,5 @@
 # to change crlf to lf 
+# sed -i 's/\r$//' filename
 # https://stackoverflow.com/questions/11616835/r-command-not-found-bashrc-bash-profile
 
 schema="/home/stuproj/cs4224i/Wholesale-YCQL/src/main/resources/schema0.ycql"

@@ -84,4 +84,8 @@ public abstract class AbstractTransaction {
             return defaultConsistencyLevel;
         }
     }
+
+    public void print(String stringToPrint) {
+        System.out.println(stringToPrint);
+    }
 }
