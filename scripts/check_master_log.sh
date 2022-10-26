@@ -1,1 +1,2 @@
-cat /home/stuproj/cs4224i/yugabyte-data/$1-master/yb-data/master/logs/yb-master.INFO
+diskDir="/mnt/ramdisk"
+cat $diskDir/yugabyte-data/yb-data/master/logs/yb-master.INFO
