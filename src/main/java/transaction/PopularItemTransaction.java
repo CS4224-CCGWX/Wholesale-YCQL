@@ -1,5 +1,6 @@
 package transaction;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,7 +82,7 @@ public class PopularItemTransaction extends AbstractTransaction {
         // 3
         for (Row orderInfo : resultS) {
             int orderId = orderInfo.getInt(FieldConstants.orderIdField);
-            Date timestamp = orderInfo.getTimestamp(FieldConstants.orderEntryTimestampField);
+            LocalDate timestamp = orderInfo.getLocalDate(FieldConstants.orderEntryTimestampField);
             builder.append(outputFormatter.formatOrderIdAndTimestamp(orderId, timestamp));
             builder.append(delimiter);
 
@@ -91,7 +92,7 @@ public class PopularItemTransaction extends AbstractTransaction {
             builder.append(delimiter);
 
             double maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
-                    .get(0).getDecimal(0).doubleValue();
+                    .get(0).getBigDecimal(0).doubleValue();
             List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, maxQuantity);
 
             builder.append("Popular items:");

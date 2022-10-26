@@ -40,19 +40,19 @@ public class SummaryTransaction extends AbstractTransaction {
             System.out.println("Warehouse Summary");
             Row result = executeQuery(PreparedQueries.getWarehouseYtdSummary).get(0);
             String[] temp = new String[1];
-            temp[0] = String.valueOf(result.getDecimal(0).doubleValue());
+            temp[0] = String.valueOf(result.getBigDecimal(0).doubleValue());
             writer.writeNext(temp);
 
             System.out.println("District Summary");
             result = executeQuery(PreparedQueries.getDistrictSummary).get(0);
-            temp[0] = String.valueOf(result.getDecimal(0).doubleValue());
+            temp[0] = String.valueOf(result.getBigDecimal(0).doubleValue());
             writer.writeNext(temp);
-            temp[0] = String.valueOf(result.getDecimal(1).doubleValue());
+            temp[0] = String.valueOf(result.getBigDecimal(1).doubleValue());
             writer.writeNext(temp);
 
             System.out.println("Customer Summary");
             result = executeQuery(PreparedQueries.getCustomerSummary, timeout).get(0);
-            temp[0] = String.valueOf(result.getDecimal(0).doubleValue());
+            temp[0] = String.valueOf(result.getBigDecimal(0).doubleValue());
             writer.writeNext(temp);
             temp[0] = String.valueOf(result.getFloat(1));
             writer.writeNext(temp);
@@ -68,7 +68,7 @@ public class SummaryTransaction extends AbstractTransaction {
             for (int i = 1; i <= numOfWarehouses; ++i) {
                 result = executeQuery(PreparedQueries.getOrderSummary, timeout, i).get(0);
                 maxOId = Math.max(maxOId, result.getInt(0));
-                oolCount += result.getDecimal(1).doubleValue();
+                oolCount += result.getBigDecimal(1).doubleValue();
                 System.out.printf("Finish Order Summary at warehouse: %d\n", i);
             }
             arr.add(new String[]{String.valueOf(maxOId)});
@@ -80,8 +80,8 @@ public class SummaryTransaction extends AbstractTransaction {
             double olAmount = 0, olQuantity = 0;
             for (int i = 1; i <= numOfWarehouses; ++i) {
                 result = executeQuery(PreparedQueries.getOrderLineSummary, timeout, i).get(0);
-                olAmount += result.getDecimal(0).doubleValue();
-                olQuantity += result.getDecimal(1).doubleValue();
+                olAmount += result.getBigDecimal(0).doubleValue();
+                olQuantity += result.getBigDecimal(1).doubleValue();
                 System.out.printf("Finish Order Line Summary at warehouse: %d\n", i);
             }
             arr.add(new String[]{String.valueOf(olAmount)});
@@ -94,8 +94,8 @@ public class SummaryTransaction extends AbstractTransaction {
             long soCount = 0, srCount = 0;
             for (int i = 1; i <= numOfWarehouses; ++i) {
                 result = executeQuery(PreparedQueries.getStockSummary, timeout, i).get(0);
-                sAmount += result.getDecimal(0).doubleValue();
-                sQuantity += result.getDecimal(1).doubleValue();
+                sAmount += result.getBigDecimal(0).doubleValue();
+                sQuantity += result.getBigDecimal(1).doubleValue();
                 soCount += result.getLong(2);
                 srCount += result.getLong(3);
                 System.out.printf("Finish Stock Summary at warehouse: %d\n", i);
