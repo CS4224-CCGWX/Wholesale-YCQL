@@ -24,10 +24,11 @@ master2="192.168.48.240"
 master3="192.168.48.241"
 port="7100"
 
-mkdir /home/stuproj/cs4224i/yugabyte-data/${curr_node}-tserver
+diskDir="/mnt/ramdisk"
+mkdir $diskDir/yugabyte-data/
 
 $yb/yb-tserver \
 --tserver_master_addrs $master1:$port,$master2:$port,$master3:$port \
 --rpc_bind_addresses $ip \
---fs_data_dirs "/home/stuproj/cs4224i/yugabyte-data/${curr_node}-tserver" >& /home/stuproj/cs4224i/yugabyte-data/${curr_node}-tserver/yb-tserver.out &
+--fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-tserver.out &
 # --fs_data_dirs "/export/data/ybdisk1,/export/data/ybdisk2"
