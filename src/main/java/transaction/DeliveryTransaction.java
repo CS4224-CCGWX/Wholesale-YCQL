@@ -1,8 +1,9 @@
 package transaction;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
+import util.PreparedQueries;
+import util.QueryFormatter;
 import util.TimeFormatter;
 
 import java.util.ArrayList;
@@ -21,7 +22,9 @@ public class DeliveryTransaction extends AbstractTransaction {
     final String GET_ORDER_LINE_UNDER_ORDER = "SELECT OL_AMOUNT, OL_C_ID, OL_NUMBER FROM order_line WHERE OL_W_ID = %d AND OL_D_ID = %d AND OL_O_ID = %d";
     final String GET_CUSTOMER_BALANCE_OF_ORDER = "SELECT C_BALANCE FROM customer WHERE C_W_ID = %d AND C_D_ID = %d AND C_ID = %d";
     final String UPDATE_CUSTOMER_BALANCE_AND_DCOUNT = "UPDATE customer SET C_BALANCE = %f AND C_DELIVERY_CNT = C_DELIVERY_CNT + 1 WHERE C_W_ID = %d AND C_D_ID = %d AND C_ID = %d";
-    public DeliveryTransaction(Session session, int warehouseId, int carrierId) {
+
+
+    public DeliveryTransaction(CqlSession session, int warehouseId, int carrierId) {
         super(session);
         this.warehouseId = warehouseId;
         this.carrierId = carrierId;
@@ -65,7 +68,7 @@ public class DeliveryTransaction extends AbstractTransaction {
             }
             int customerId = orderLines.get(0).getInt("OL_C_ID");
             for (Row orderLine : orderLines) {
-                orderAmount += orderLine.getDecimal("OL_AMOUNT").doubleValue();
+                orderAmount += orderLine.getBigDecimal("OL_AMOUNT").doubleValue();
                 orderLineNums.add(orderLine.getInt("OL_NUMBER"));
             }
 
@@ -77,7 +80,7 @@ public class DeliveryTransaction extends AbstractTransaction {
 
             // (d)
             List<Row> customers = executeQuery(String.format(GET_CUSTOMER_BALANCE_OF_ORDER, warehouseId, districtNo, customerId));
-            double updatedBalance = customers.get(0).getDecimal(0).doubleValue() + orderAmount;
+            double updatedBalance = customers.get(0).getBigDecimal(0).doubleValue() + orderAmount;
             executeQuery(String.format(UPDATE_CUSTOMER_BALANCE_AND_DCOUNT, updatedBalance, warehouseId, districtNo, customerId));
             print(String.format("Updated the info of customer (%d, %d, %d)", warehouseId, districtNo, customerId));
 

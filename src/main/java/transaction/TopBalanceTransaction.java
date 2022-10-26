@@ -2,8 +2,8 @@ package transaction;
 
 import java.util.List;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import util.OutputFormatter;
 import util.PreparedQueries;
@@ -12,7 +12,7 @@ import util.PreparedQueries;
 public class TopBalanceTransaction extends AbstractTransaction {
     static final int K = 10;
 
-    public TopBalanceTransaction(Session session) {
+    public TopBalanceTransaction(CqlSession session) {
         super(session);
     }
 
