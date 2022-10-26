@@ -103,6 +103,8 @@ class Main {
     private static CqlSession getSessionByIp(String ip) {
         return CqlSession
                 .builder()
+                .addContactPoint(new InetSocketAddress(ip, 9042))
+                .withLocalDatacenter("datacenter1")
                 .withKeyspace(CqlIdentifier.fromCql("wholesale"))
                 .build();
     }

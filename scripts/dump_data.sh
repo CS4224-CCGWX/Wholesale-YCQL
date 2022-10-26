@@ -13,7 +13,7 @@ python preprocess/precompute.py
 
 echo "***** Start dump data *****"
 echo "Defining schema"
-# $YCQLSH -f $schema --request-timeout=3600
+$YCQLSH -f $schema --request-timeout=3600
 
 echo "Load warehouse table"
 $YCQLSH -e "USE wholesale; COPY warehouse (W_ID, W_NAME, W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP, W_TAX, W_YTD) FROM '$dataDir/warehouse.csv' WITH DELIMITER='$DELIM' AND MAXBATCHSIZE=$bsz;"
