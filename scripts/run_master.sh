@@ -26,9 +26,10 @@ port="7100"
 
 # $ybb/yb-ctl create \
 # --rf 3 \
-mkdir /home/stuproj/cs4224i/yugabyte-data/
+diskDir="/mnt/ramdisk"
+mkdir $diskDir/yugabyte-data/
 
 $yb/yb-master \
 --master_addresses "$master1:$port,$master2:$port,$master3:$port" \
 --rpc_bind_addresses "$ip:$port" \
---fs_data_dirs "/home/stuproj/cs4224i/yugabyte-data/${curr_node}-master" >& /home/stuproj/cs4224i/yugabyte-data/${curr_node}-master/yb-master.out &
+--fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-master.out &

@@ -1,5 +1,6 @@
 package transaction;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import util.FieldConstants;
 import util.OutputFormatter;
@@ -54,7 +55,7 @@ public class PopularItemTransaction extends AbstractTransaction {
     private OutputFormatter outputFormatter = new OutputFormatter();
     private static final String delimiter = "\n";
 
-    public PopularItemTransaction (Session session, int warehouseId, int districtId, int lastOrderToBeExamined) {
+    public PopularItemTransaction (CqlSession session, int warehouseId, int districtId, int lastOrderToBeExamined) {
         super(session);
         this.warehouseId = warehouseId;
         this.districtId = districtId;
@@ -82,7 +83,7 @@ public class PopularItemTransaction extends AbstractTransaction {
         builder.append(delimiter);
         for (Row orderInfo : resultS) {
             int orderId = orderInfo.getInt(FieldConstants.orderIdField);
-            Date timestamp = orderInfo.getTimestamp(FieldConstants.orderEntryTimestampField);
+            LocalDate timestamp = orderInfo.getLocalDate(FieldConstants.orderEntryTimestampField);
             builder.append(outputFormatter.formatOrderIdAndTimestamp(orderId, timestamp));
             builder.append(delimiter);
 
@@ -92,9 +93,9 @@ public class PopularItemTransaction extends AbstractTransaction {
             builder.append(delimiter);
 
             long maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
-                    .get(0).getDecimal(0).longValue();
+                    .get(0).getBigDecimal(0).longValue();
             List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, maxQuantity);
-            
+
             // builder.append(String.format("max quantity: %d", maxQuantity));
 
             builder.append("Popular items:");

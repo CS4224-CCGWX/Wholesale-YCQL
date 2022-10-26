@@ -1,7 +1,7 @@
 package parser;
 
 
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.CqlSession;
 import transaction.*;
 
 import java.util.ArrayList;
@@ -9,10 +9,10 @@ import java.util.Scanner;
 
 public class TransactionParser {
     Scanner scanner = new Scanner(System.in);
-    Session session;
+    CqlSession session;
     final String SEPARATOR = ",";
 
-    public TransactionParser(Session session) {
+    public TransactionParser(CqlSession session) {
         this.session = session;
     }
 

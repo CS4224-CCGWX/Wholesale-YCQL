@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS district (
     D_TAX decimal,
     D_YTD decimal,
     D_NEXT_O_ID int,
+    D_NEXT_DELIVER_O_ID int,
     PRIMARY KEY ((D_W_ID, D_ID))
 );
 
@@ -67,7 +68,7 @@ CREATE TABLE IF NOT EXISTS "order" (
     O_C_ID int,
     O_CARRIER_ID int,
     O_OL_CNT int,
-    O_ALL_LOCAL decimal,
+    O_ALL_LOCAL int,
     O_ENTRY_D timestamp,
     PRIMARY KEY ((O_W_ID, O_D_ID), O_ID)
 );

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import util.OutputFormatter;
 import util.PreparedQueries;
@@ -18,7 +18,7 @@ public class OrderStatusTransaction extends AbstractTransaction {
     private final int customerDistrictId;
     private final int customerId;
 
-    public OrderStatusTransaction(Session session, int cWId, int cDId, int cId) {
+    public OrderStatusTransaction(CqlSession session, int cWId, int cDId, int cId) {
         super(session);
         customerWarehouseId = cWId;
         customerDistrictId = cDId;
@@ -50,7 +50,7 @@ public class OrderStatusTransaction extends AbstractTransaction {
         Row lastOrderInfo = this.executeQuery(PreparedQueries.getCustomerLastOrderInfo, customerWarehouseId, customerDistrictId, customerId).get(0);
         int lastOrderId = lastOrderInfo.getInt("O_ID");
         int carrierId = lastOrderInfo.getInt("O_CARRIER_ID");
-        Date orderDateTime =  lastOrderInfo.getTimestamp("O_ENTRY_D");
+        Instant orderDateTime =  lastOrderInfo.getInstant("O_ENTRY_D");
         System.out.println(outputFormatter.formatLastOrderInfo(lastOrderId, carrierId, orderDateTime));
 
         List<Row> itemsInfo = this.executeQuery(PreparedQueries.getCustomerLastOrderItemsInfo, customerWarehouseId, customerDistrictId, lastOrderId);
