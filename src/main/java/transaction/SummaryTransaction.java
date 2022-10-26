@@ -51,7 +51,7 @@ public class SummaryTransaction extends AbstractTransaction {
             writer.writeNext(temp);
 
             System.out.println("Customer Summary");
-            result = executeQuery(PreparedQueries.getCustomerSummary, timeout).get(0);
+            result = executeQueryWithTimeout(PreparedQueries.getCustomerSummary, timeout).get(0);
             temp[0] = String.valueOf(result.getBigDecimal(0).doubleValue());
             writer.writeNext(temp);
             temp[0] = String.valueOf(result.getFloat(1));
@@ -66,7 +66,7 @@ public class SummaryTransaction extends AbstractTransaction {
             int maxOId = 0;
             double oolCount = 0;
             for (int i = 1; i <= numOfWarehouses; ++i) {
-                result = executeQuery(PreparedQueries.getOrderSummary, timeout, i).get(0);
+                result = executeQueryWithTimeout(PreparedQueries.getOrderSummary, timeout, i).get(0);
                 maxOId = Math.max(maxOId, result.getInt(0));
                 oolCount += result.getBigDecimal(1).doubleValue();
                 System.out.printf("Finish Order Summary at warehouse: %d\n", i);
@@ -79,7 +79,7 @@ public class SummaryTransaction extends AbstractTransaction {
             arr = new ArrayList<>();
             double olAmount = 0, olQuantity = 0;
             for (int i = 1; i <= numOfWarehouses; ++i) {
-                result = executeQuery(PreparedQueries.getOrderLineSummary, timeout, i).get(0);
+                result = executeQueryWithTimeout(PreparedQueries.getOrderLineSummary, timeout, i).get(0);
                 olAmount += result.getBigDecimal(0).doubleValue();
                 olQuantity += result.getBigDecimal(1).doubleValue();
                 System.out.printf("Finish Order Line Summary at warehouse: %d\n", i);
@@ -93,7 +93,7 @@ public class SummaryTransaction extends AbstractTransaction {
             double sAmount = 0, sQuantity = 0;
             long soCount = 0, srCount = 0;
             for (int i = 1; i <= numOfWarehouses; ++i) {
-                result = executeQuery(PreparedQueries.getStockSummary, timeout, i).get(0);
+                result = executeQueryWithTimeout(PreparedQueries.getStockSummary, timeout, i).get(0);
                 sAmount += result.getBigDecimal(0).doubleValue();
                 sQuantity += result.getBigDecimal(1).doubleValue();
                 soCount += result.getLong(2);
