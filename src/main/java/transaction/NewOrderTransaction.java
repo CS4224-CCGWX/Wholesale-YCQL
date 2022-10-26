@@ -43,7 +43,12 @@ public class NewOrderTransaction extends AbstractTransaction {
         QueryFormatter queryFormatter = new QueryFormatter();
 
         List<Row> res;
-        res = this.executeQuery(PreparedQueries.getDistrictNextOrderIdAndTax, warehouseId, districtId);
+        // res = this.executeQuery(PreparedQueries.getDistrictNextOrderIdAndTax, warehouseId, districtId);
+        String getDistrictNextOrderIdAndTax = String.format(
+            "SELECT D_NEXT_O_ID, D_TAX FROM district WHERE D_W_ID = %d AND D_ID = %d;",
+            warehouseId, 
+            districtId);
+        res = this.executeQuery(getDistrictNextOrderIdAndTax);
         Row districtInfo = res.get(0);
         int orderId = districtInfo.getInt("D_NEXT_O_ID");
         this.executeQuery(PreparedQueries.incrementDistrictNextOrderId, warehouseId, districtId);
@@ -68,7 +73,13 @@ public class NewOrderTransaction extends AbstractTransaction {
             }
         }
         String orderDateTime = TimeFormatter.getCurrentTimestamp();
-        this.executeQuery(PreparedQueries.createNewOrder,orderId, districtId, warehouseId, customerId, orderDateTime, nOrderLines, isAllLocal);
+        // this.executeQuery(PreparedQueries.createNewOrder,orderId, districtId, warehouseId, customerId, orderDateTime, nOrderLines, isAllLocal);
+        String createNewOrder = String.format(
+            "INSERT INTO \"order\" "
+            + "(O_ID, O_D_ID, O_W_ID, O_C_ID, O_ENTRY_D, O_OL_CNT, O_ALL_LOCAL) "
+            + "VALUES (%d, %d, %d, %d, %s, %d, %d);",
+            orderId, districtId, warehouseId, customerId, orderDateTime, nOrderLines, isAllLocal);
+        this.executeQuery(createNewOrder);
 
         /*
           3. Initialize TOTAL_AMOUNT = 0
@@ -88,8 +99,14 @@ public class NewOrderTransaction extends AbstractTransaction {
               ADJUST_QTY = S_QUANTITY - quantities[i]
               if ADJUST_QTY < 10, then ADJUST_QTY += 100
              */
-            res = this.executeQuery(PreparedQueries.getStockQty, supplyWarehouseId, itemId);
-            int stockQty = res.get(0).getDecimal(0).intValue();
+            // res = this.executeQuery(PreparedQueries.getStockQty, supplyWarehouseId, itemId);
+            String getStockQty = String.format(
+                "SELECT S_QUANTITY "
+                + "FROM stock "
+                + "WHERE S_W_ID = %d, S_I_ID = %d;",
+                supplyWarehouseId, itemId);
+            res = this.executeQuery(getStockQty);
+            int stockQty = res.get(0).getBigDecimal(0).intValue();
 
             int adjustQty = stockQty - quantity;
             if (adjustQty < STOCK_REFILL_THRESHOLD) {
@@ -105,16 +122,30 @@ public class NewOrderTransaction extends AbstractTransaction {
               - Increment S_REMOTE_CNT by 1 if supplyWarehouseIds[i] != warehouseID
              */
             if(supplyWarehouseId != warehouseId) {
-                this.executeQuery(PreparedQueries.updateStockQtyIncrRemoteCnt, (long)adjustQty, (long)quantity, supplyWarehouseId, itemId);
+                //this.executeQuery(PreparedQueries.updateStockQtyIncrRemoteCnt, (long)adjustQty, (long)quantity, supplyWarehouseId, itemId);
+                String updateStockQtyIncrRemoteCnt = String.format(
+                    "UPDATE stock "
+                    + "SET S_QUANTITY = %d, S_YTD = S_YTD + %d, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
+                    + "WHERE S_W_ID = %d, S_I_ID = %d;",
+                    (long)adjustQty, (long)quantity, supplyWarehouseId, itemId
+                );
+                this.executeQuery(updateStockQtyIncrRemoteCnt);
             } else {
-                this.executeQuery(PreparedQueries.updateStockQty, (long)adjustQty, (long)quantity, supplyWarehouseId, itemId);
+                //this.executeQuery(PreparedQueries.updateStockQty, (long)adjustQty, (long)quantity, supplyWarehouseId, itemId);
+                String updateStockQty= String.format(
+                    "UPDATE stock "
+                    + "SET S_QUANTITY = %d, S_YTD = S_YTD + %d, S_ORDER_CNT = S_ORDER_CNT + 1 "
+                    + "WHERE S_W_ID = %d, S_I_ID = %d;",
+                    (long)adjustQty, (long)quantity, supplyWarehouseId, itemId
+                );
+                this.executeQuery(updateStockQty);
             }
             /*
               3.3. ITEM_AMOUNT = quantities[i] * I_PRICE, where I_PRICE is price of itemIds[i]
               TOTAL_AMOUNT += ITEM_AMOUNT
              */
             Row itemInfo = this.executeQuery(PreparedQueries.getItemPriceAndName, itemId).get(0);
-            double price = itemInfo.getDecimal("I_PRICE").doubleValue();
+            double price = itemInfo.getBigDecimal("I_PRICE").doubleValue();
             double itemAmount = quantity * price;
             itemAmounts.add(itemAmount);
             itemNames.add(itemInfo.getString("I_NAME"));
@@ -134,10 +165,22 @@ public class NewOrderTransaction extends AbstractTransaction {
               - OL_DIST_INFO = S_DIST_xx where xx=D_ID
              */
             String distIdStr = queryFormatter.distIdStr(districtId);
-            res = this.executeQuery(PreparedQueries.getStockDistInfo, distIdStr, warehouseId, itemId);
+            // res = this.executeQuery(PreparedQueries.getStockDistInfo, distIdStr, warehouseId, itemId);
+            String getStockDistInfo = String.format(
+                "SELECT S_DIST_%s "
+                + "FROM stock "
+                + "WHERE S_W_ID = %d, S_I_ID = %d;",
+                distIdStr, warehouseId, itemId);
+            res = this.executeQuery(getStockDistInfo);
             String distInfo = res.get(0).getString(0);
-            this.executeQuery(PreparedQueries.createNewOrderLine,
-                    orderId, districtId, warehouseId, customerId, i, itemId, supplyWarehouseId, quantity, itemAmount, distInfo);
+            // this.executeQuery(PreparedQueries.createNewOrderLine, orderId, districtId, warehouseId, customerId, i, itemId, supplyWarehouseId, quantity, itemAmount, distInfo);
+            String createNewOrderLine = String.format(
+                "INSERT INTO order_line "
+                + "(OL_O_ID, OL_D_ID, OL_W_ID, OL_C_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DIST_INFO) "
+                + "VALUES (%d, %d, %d, %d, %d, %d, %d, %d, %f, %s);",
+                orderId, districtId, warehouseId, customerId, i, itemId, supplyWarehouseId, (long)quantity, itemAmount, distInfo
+            );
+            this.executeQuery(createNewOrderLine);
         }
 
         /*
@@ -147,9 +190,21 @@ public class NewOrderTransaction extends AbstractTransaction {
           and C_DISCOUNT is the discount for customer C_ID.
          */
         double dTax = districtInfo.getBigDecimal("D_TAX").doubleValue();
-        res = this.executeQuery(PreparedQueries.getWarehouseTax, warehouseId);
+        //res = this.executeQuery(PreparedQueries.getWarehouseTax, warehouseId);
+        String getWarehouseTax = String.format(
+            "SELECT W_TAX "
+            + "FROM warehouse "
+            + "WHERE W_ID = %d;",warehouseId);
+        res = this.executeQuery(getWarehouseTax);
         double wTax = res.get(0).getDouble(0);
-        res = this.executeQuery(PreparedQueries.getCustomerLastAndCreditAndDiscount, warehouseId, districtId, customerId);
+        // res = this.executeQuery(PreparedQueries.getCustomerLastAndCreditAndDiscount, warehouseId, districtId, customerId);
+        String getCustomerLastAndCreditAndDiscount = String.format(
+            "SELECT C_LAST, C_CREDIT, C_DISCOUNT "
+            + "FROM customer "
+            + "WHERE C_W_ID = %d, C_D_ID = %d, C_ID = %d;",
+            warehouseId, districtId, customerId
+        );
+        res = this.executeQuery(getCustomerLastAndCreditAndDiscount);
         Row cInfo = res.get(0);
         double cDiscount = cInfo.getBigDecimal("C_DISCOUNT").doubleValue();
 
