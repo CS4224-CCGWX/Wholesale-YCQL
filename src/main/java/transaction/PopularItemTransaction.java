@@ -1,9 +1,13 @@
 package transaction;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringJoiner;
 
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.CqlSession;
@@ -72,7 +76,9 @@ public class PopularItemTransaction extends AbstractTransaction {
                 N - lastOrderToBeExamined, N);
 
         Map<Integer, String> popularItemsMap = new HashMap<>();
+        List<Set<Integer>> popularItemIdsPerOrderList = new ArrayList<>();
 
+        // 3
         for (Row orderInfo : resultS) {
             int orderId = orderInfo.getInt(FieldConstants.orderIdField);
             Date timestamp = orderInfo.getTimestamp(FieldConstants.orderEntryTimestampField);
@@ -86,32 +92,41 @@ public class PopularItemTransaction extends AbstractTransaction {
 
             double maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
                     .get(0).getDecimal(0).doubleValue();
-            List<Row> getPopularItemsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, maxQuantity);
+            List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, maxQuantity);
 
             builder.append("Popular items:");
             builder.append(delimiter);
-            for (Row popularItem : getPopularItemsResult) {
+
+            StringJoiner itemIdsJoiner = new StringJoiner(",");
+            Set<Integer> popularItemIds = new HashSet<>();
+            for (Row popularItem : getPopularItemIdsResult) {
                 int itemId = popularItem.getInt(FieldConstants.orderLineItemIdField);
-                String itemName = executeQuery(PreparedQueries.getItemNameById, itemId).get(0).getString(FieldConstants.itemNameField);
-                popularItemsMap.put(itemId, itemName);
+                popularItemIds.add(itemId);
+                itemIdsJoiner.add(String.valueOf(itemId));
+            }
+
+            List<Row> popularItemsResult = executeQuery(PreparedQueries.getItemNameByIds, itemIdsJoiner.toString());
+            for (Row popularItem : popularItemsResult) {
+                String itemName = popularItem.getString(FieldConstants.itemNameField);
+                popularItemsMap.putIfAbsent(popularItem.getInt(FieldConstants.itemIdField), itemName);
                 builder.append("\t");
                 builder.append(outputFormatter.formatPopularItemQuantity(itemName, maxQuantity));
                 builder.append(delimiter);
             }
+
+            popularItemIdsPerOrderList.add(popularItemIds);
         }
 
-        System.out.print(builder.toString());
+        System.out.print(builder);
         builder = new StringBuilder();
 
+        // 4
         int totalOrders = resultS.size();
         for (Map.Entry<Integer, String> entry : popularItemsMap.entrySet()) {
             int itemId = entry.getKey();
             int count = 0;
-            for (Row orderInfo : resultS) {
-                int orderId = orderInfo.getInt(FieldConstants.orderIdField);
-                Row r = executeQuery(PreparedQueries.checkItemExistInOrder, warehouseId, districtId, orderId, itemId).get(0);
-                boolean isItemExistInOrder = r.getBool(0);
-                if (isItemExistInOrder) {
+            for (Set<Integer> itemIdsPerOrder : popularItemIdsPerOrderList) {
+                if (itemIdsPerOrder.contains(itemId)) {
                     ++count;
                 }
             }
@@ -120,7 +135,7 @@ public class PopularItemTransaction extends AbstractTransaction {
             builder.append(delimiter);
         }
 
-        System.out.print(builder.toString());
+        System.out.print(builder);
     }
 
     public String toString() {

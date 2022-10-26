@@ -1,10 +1,12 @@
 # to change crlf to lf 
 # https://stackoverflow.com/questions/11616835/r-command-not-found-bashrc-bash-profile
 
-schema="/home/stuproj/cs4224i/Wholesale-YCQL/src/main/resources/schema0.ycql"
+
+
+schema="/root/Wholesale-YCQL/src/main/resources/schema0.ycql"
 DELIM=","
-YCQLSH="/temp/yugabyte-2.14.1.0/bin/ycqlsh"
-dataDir="/home/stuproj/cs4224i/Wholesale-YCQL/project_files/data_files"
+YCQLSH="/home/yugabyte/bin/ycqlsh"
+dataDir="/root/Wholesale-YCQL/project_files/data_files"
 bsz=500
 
 echo "***** Remove null in dataset *****"
@@ -12,7 +14,7 @@ python preprocess/precompute.py
 
 echo "***** Start dump data *****"
 echo "Defining schema"
-# $YCQLSH -f $schema --request-timeout=3600
+$YCQLSH -f $schema --request-timeout=3600
 
 echo "Load warehouse table"
 $YCQLSH -e "USE wholesale; COPY warehouse (W_ID, W_NAME, W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP, W_TAX, W_YTD) FROM '$dataDir/warehouse.csv' WITH DELIMITER='$DELIM' AND MAXBATCHSIZE=$bsz;"
@@ -21,8 +23,8 @@ $YCQLSH -e "USE wholesale; COPY warehouse (W_ID, W_NAME, W_STREET_1, W_STREET_2,
 # $YCQLSH -e "USE wholesale; COPY district (D_W_ID, D_ID, D_NAME, D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP, D_TAX, D_YTD, D_NEXT_O_ID, D_NEXT_DELIVER_O_ID) FROM '$dataDir/district-with-delivery.csv' WITH DELIMITER='$DELIM' AND MAXBATCHSIZE=$bsz;"
 
 # Load large tables with Cassadra Loader
-C_LOADER="/home/stuproj/cs4224i/Wholesale-YCQL/cassandra-loader"
-badDir="/home/stuproj/cs4224i/Wholesale-YCQL/cassandra-loader-bad-dir"
+C_LOADER="/root/Wholesale-YCQL/cassandra-loader"
+badDir="/root/Wholesale-YCQL/cassandra-loader-bad-dir"
 customer_bsz=1000
 order_bsz=1000
 item_bsz=5000
@@ -44,7 +46,10 @@ else
     echo "Using default node xcnd20"
     ip="192.168.48.239"
 fi
+
+ip="localhost"
 echo "***** Using Cassandra Loader with host: $ip *****"
+
 
 # Cassandra-loader reference: https://github.com/yugabyte/cassandra-loader#options
 # DateTime format reference: https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
