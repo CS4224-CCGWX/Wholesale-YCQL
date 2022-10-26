@@ -13,7 +13,6 @@ import java.util.StringJoiner;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.CqlSession;
 
-import jnr.ffi.annotations.In;
 import util.FieldConstants;
 import util.OutputFormatter;
 import util.PreparedQueries;
@@ -80,6 +79,8 @@ public class PopularItemTransaction extends AbstractTransaction {
         List<Set<Integer>> popularItemIdsPerOrderList = new ArrayList<>();
 
         // 3
+        builder.append("Part 3");
+        builder.append(delimiter);
         for (Row orderInfo : resultS) {
             int orderId = orderInfo.getInt(FieldConstants.orderIdField);
             LocalDate timestamp = orderInfo.getLocalDate(FieldConstants.orderEntryTimestampField);
@@ -91,9 +92,11 @@ public class PopularItemTransaction extends AbstractTransaction {
             builder.append(outputFormatter.formatCustomerName(customerInfo));
             builder.append(delimiter);
 
-            double maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
-                    .get(0).getBigDecimal(0).doubleValue();
+            long maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
+                    .get(0).getBigDecimal(0).longValue();
             List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, maxQuantity);
+
+            // builder.append(String.format("max quantity: %d", maxQuantity));
 
             builder.append("Popular items:");
             builder.append(delimiter);
@@ -102,11 +105,17 @@ public class PopularItemTransaction extends AbstractTransaction {
             Set<Integer> popularItemIds = new HashSet<>();
             for (Row popularItem : getPopularItemIdsResult) {
                 int itemId = popularItem.getInt(FieldConstants.orderLineItemIdField);
+                // if (popularItemIds.add(itemId)) {
+                //     itemIdsJoiner.add(String.valueOf(itemId));
+                // }
                 popularItemIds.add(itemId);
                 itemIdsJoiner.add(String.valueOf(itemId));
             }
 
-            List<Row> popularItemsResult = executeQuery(PreparedQueries.getItemNameByIds, itemIdsJoiner.toString());
+            // builder.append(itemIdsJoiner.toString());
+            // builder.append(delimiter);
+
+            List<Row> popularItemsResult = executeQuery(String.format(PreparedQueries.getItemNameByIds, itemIdsJoiner.toString()));
             for (Row popularItem : popularItemsResult) {
                 String itemName = popularItem.getString(FieldConstants.itemNameField);
                 popularItemsMap.putIfAbsent(popularItem.getInt(FieldConstants.itemIdField), itemName);
@@ -122,6 +131,8 @@ public class PopularItemTransaction extends AbstractTransaction {
         builder = new StringBuilder();
 
         // 4
+        builder.append("Part 4");
+        builder.append(delimiter);
         int totalOrders = resultS.size();
         for (Map.Entry<Integer, String> entry : popularItemsMap.entrySet()) {
             int itemId = entry.getKey();

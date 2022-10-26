@@ -98,7 +98,7 @@ public class OutputFormatter {
         return String.format("\tItem number: %d, Supply warehouse ID: %d, Quantity: %d, Price: %.2f, Datetime: %s",
                 itemInfo.getInt("OL_I_ID"),
                 itemInfo.getInt("OL_SUPPLY_W_ID"),
-                itemInfo.getInt("OL_QUANTITY"),
+                itemInfo.getBigDecimal("OL_QUANTITY").intValue(),
                 itemInfo.getBigDecimal("OL_AMOUNT").doubleValue(),
                 itemInfo.getInstant("OL_DELIVERY_D").toString());
     }
