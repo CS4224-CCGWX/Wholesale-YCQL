@@ -1,14 +1,15 @@
 package transaction;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
 import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
+import com.datastax.oss.driver.api.core.cql.SimpleStatementBuilder;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.CqlSession;
-import com.datastax.oss.driver.api.core.cql.Statement;
 
 public abstract class AbstractTransaction {
     protected CqlSession session;
@@ -22,33 +23,39 @@ public abstract class AbstractTransaction {
     public abstract void execute();
 
     protected List<Row> executeQuery(String query) {
-        Statement statement = new SimpleStatement(query)
-                .setConsistencyLevel(getConsistencyLevel(query));
+        SimpleStatement statement = new SimpleStatementBuilder(query)
+                .setConsistencyLevel(getConsistencyLevel(query))
+                .build();
         ResultSet res = session.execute(statement);
 
         return res.all();
     }
 
     protected List<Row> executeQuery(String query, Object... values) {
-        Statement statement = new SimpleStatement(query, values)
-                .setConsistencyLevel(getConsistencyLevel(query));
+        SimpleStatement statement = new SimpleStatementBuilder(query)
+                .addPositionalValue(values)
+                .setConsistencyLevel(getConsistencyLevel(query))
+                .build();
         ResultSet res = session.execute(statement);
 
         return res.all();
     }
 
-    protected List<Row> executeQuery(String query, Map<String, Object> valueMap) {
-        Statement statement = new SimpleStatement(query, valueMap)
-                .setConsistencyLevel(getConsistencyLevel(query));
-        ResultSet res = session.execute(statement);
-
-        return res.all();
-    }
+//    protected List<Row> executeQuery(String query, Map<String, Object> valueMap) {
+//        SimpleStatement statement = new SimpleStatementBuilder(query, valueMap)
+//                .setConsistencyLevel(getConsistencyLevel(query))
+//                .build();
+//        ResultSet res = session.execute(statement);
+//
+//        return res.all();
+//    }
 
     protected List<Row> executeQueryWithTimeout(String query, int timeout, Object... values) {
-        Statement statement = new SimpleStatement(query, values)
+        SimpleStatement statement = new SimpleStatementBuilder(query)
+                .addPositionalValue(values)
                 .setConsistencyLevel(getConsistencyLevel(query))
-                .setReadTimeoutMillis(timeout);
+                .setTimeout(Duration.ofMillis(timeout))
+                .build();
         ResultSet res = session.execute(query);
 
         return res.all();

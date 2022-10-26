@@ -44,14 +44,14 @@ public class PaymentTransaction extends AbstractTransaction {
     public void execute() {
         // 1. Update the warehouse C W ID by incrementing W YTD by PAYMENT
         Row warehouseResult = executeQuery(PreparedQueries.getWarehouseAddressAndYtd, warehouseId).get(0);
-        double warehouseYtd = warehouseResult.getDecimal("W_YTD").doubleValue();
+        double warehouseYtd = warehouseResult.getBigDecimal("W_YTD").doubleValue();
         warehouseYtd += payment;
         // executeQuery(PreparedQueries.formatUpdateWarehouseYearToDateAmount(warehouseYtd), warehouseId);
         executeQuery(PreparedQueries.updateWarehouseYearToDateAmount, warehouseYtd, warehouseId);
 
         // 2. Update the district (C W ID,C D ID) by incrementing D YTD by PAYMENT
         Row districtResult = executeQuery(PreparedQueries.getDistrictAddressAndYtd, warehouseId, districtId).get(0);
-        double districtYtd = districtResult.getDecimal("D_YTD").doubleValue();
+        double districtYtd = districtResult.getBigDecimal("D_YTD").doubleValue();
         districtYtd += payment;
         // executeQuery(PreparedQueries.formatUpdateDistrictYearToDateAmount(districtYtd), warehouseId, districtId);
         executeQuery(PreparedQueries.updateDistrictYearToDateAmount, districtYtd, warehouseId, districtId);
@@ -61,7 +61,7 @@ public class PaymentTransaction extends AbstractTransaction {
         // • Increment C YTD PAYMENT by PAYMENT
         // • Increment C PAYMENT CNT by 1
         Row customerResult = executeQuery(PreparedQueries.getFullCustomerInfo, warehouseId, districtId, customerId).get(0);
-        double customerBalance = customerResult.getDecimal("C_BALANCE").doubleValue();
+        double customerBalance = customerResult.getBigDecimal("C_BALANCE").doubleValue();
         customerBalance += payment;
         float customerYtd = customerResult.getFloat("C_YTD_PAYMENT");
         customerYtd += payment;

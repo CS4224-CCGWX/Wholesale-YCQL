@@ -2,6 +2,7 @@ package util;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 
 public class TimeFormatter {
@@ -11,7 +12,7 @@ public class TimeFormatter {
         return dateFormatter.format(new Date());
     }
 
-    public static String formatTimestamp(Date date) {
-        return dateFormatter.format(date);
+    public static String formatTimestamp(Instant dateTime) {
+        return dateFormatter.format(dateTime);
     }
 }

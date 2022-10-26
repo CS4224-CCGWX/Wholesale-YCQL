@@ -272,6 +272,7 @@ class Main {
 
     private static void insertSomeData(CqlSession session) {
         session.execute("USE wholesale;");
-        session.execute("INSERT INTO ")
+        session.execute("INSERT INTO warehouse (W_ID, W_NAME, W_STREET_1, W_STREET_2, W_CITY, W_STATE, W_ZIP, W_TAX, W_YTD) VALUES (1,sxvnjhpd,dxvcrastvybcwvmgnyk,xvzxkgxtspsjdgylue,qflaqlocfljbepowfn,OM,123456789,0.0384,300000.0);");
+        session.execute("INSERT INTO district ((D_W_ID, D_ID, D_NAME, D_STREET_1, D_STREET_2, D_CITY, D_STATE, D_ZIP, D_TAX, D_YTD, D_NEXT_O_ID) VALUES (1,1,byiavt,tbbvflmyew,fpezdooohykpmx,oelrbuwtpmf,JV,123456789,0.1687,30000.0,3001);");
     }
 }

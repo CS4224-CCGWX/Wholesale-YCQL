@@ -1,5 +1,6 @@
 package util;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -44,16 +45,16 @@ public class OutputFormatter {
         sb.append(String.format("Phone: %s", customerInfo.getString("C_PHONE")));
         sb.append(delimiter);
 
-        sb.append(String.format("Since: %s", TimeFormatter.formatTimestamp(customerInfo.getTimestamp("C_SINCE"))));
+        sb.append(String.format("Since: %s", TimeFormatter.formatTimestamp(customerInfo.getInstant("C_SINCE"))));
         sb.append(delimiter);
 
         sb.append(String.format("Credit status: %s", customerInfo.getString("C_CREDIT")));
         sb.append(delimiter);
 
-        sb.append(String.format("Credit limit: %s", customerInfo.getDecimal("C_CREDIT_LIM").doubleValue()));
+        sb.append(String.format("Credit limit: %s", customerInfo.getBigDecimal("C_CREDIT_LIM").doubleValue()));
         sb.append(delimiter);
 
-        sb.append(String.format("Discount: %s", customerInfo.getDecimal("C_DISCOUNT").doubleValue()));
+        sb.append(String.format("Discount: %s", customerInfo.getBigDecimal("C_DISCOUNT").doubleValue()));
         sb.append(delimiter);
 
         sb.append(String.format("Balance: %s", balance));
@@ -84,10 +85,10 @@ public class OutputFormatter {
                 cInfo.getString("C_FIRST"),
                 cInfo.getString("C_MIDDLE"),
                 cInfo.getString("C_LAST"),
-                cInfo.getDecimal("C_BALANCE").doubleValue());
+                cInfo.getBigDecimal("C_BALANCE").doubleValue());
     }
 
-    public String formatLastOrderInfo(int lastOrderId, int carrierId, Date datetime) {
+    public String formatLastOrderInfo(int lastOrderId, int carrierId, Instant datetime) {
         return String.format("Last order ID: %d, Carrier ID: %d, Datetime: %s",
                 lastOrderId, carrierId, datetime.toString());
     }
@@ -97,8 +98,8 @@ public class OutputFormatter {
                 itemInfo.getInt("OL_I_ID"),
                 itemInfo.getInt("OL_SUPPLY_W_ID"),
                 itemInfo.getInt("OL_QUANTITY"),
-                itemInfo.getDecimal("OL_AMOUNT").doubleValue(),
-                itemInfo.getTimestamp("OL_DELIVERY_D").toString());
+                itemInfo.getBigDecimal("OL_AMOUNT").doubleValue(),
+                itemInfo.getInstant("OL_DELIVERY_D").toString());
     }
 
     public String formatStockLevelTransactionOutput(long result, String transactionInfo) {
@@ -118,7 +119,7 @@ public class OutputFormatter {
          */
         return String.format("Customer: (%s, %s, %s), Balance: %.2f, Warehouse: %s, District: %s",
                 cInfo.getString("C_FIRST"),cInfo.getString("C_MIDDLE"), cInfo.getString("C_LAST"),
-                cInfo.getDecimal("C_BALANCE").doubleValue(), warehouseName, districtName);
+                cInfo.getBigDecimal("C_BALANCE").doubleValue(), warehouseName, districtName);
     }
 
     public String formatRelatedCustomerOutput(List<Row> resultRows) {
@@ -130,7 +131,7 @@ public class OutputFormatter {
         return sb.toString();
     }
 
-    public String formatOrderIdAndTimestamp(int id, Date timestamp) {
+    public String formatOrderIdAndTimestamp(int id, Instant timestamp) {
         return String.format("order id: %d, entry date and time: %s", id, TimeFormatter.formatTimestamp(timestamp));
     }
 

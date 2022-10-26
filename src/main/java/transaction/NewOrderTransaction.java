@@ -146,12 +146,12 @@ public class NewOrderTransaction extends AbstractTransaction {
           D_TAX is the tax rate for district (W_ID, D_ID),
           and C_DISCOUNT is the discount for customer C_ID.
          */
-        double dTax = districtInfo.getDecimal("D_TAX").doubleValue();
+        double dTax = districtInfo.getBigDecimal("D_TAX").doubleValue();
         res = this.executeQuery(PreparedQueries.getWarehouseTax, warehouseId);
         double wTax = res.get(0).getDouble(0);
         res = this.executeQuery(PreparedQueries.getCustomerLastAndCreditAndDiscount, warehouseId, districtId, customerId);
         Row cInfo = res.get(0);
-        double cDiscount = cInfo.getDecimal("C_DISCOUNT").doubleValue();
+        double cDiscount = cInfo.getBigDecimal("C_DISCOUNT").doubleValue();
 
         totalAmount = totalAmount*(1 + dTax + wTax) * (1 - cDiscount);
 

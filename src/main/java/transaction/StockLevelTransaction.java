@@ -53,7 +53,7 @@ public class StockLevelTransaction extends AbstractTransaction {
         for (Row orderLineInfo : result) {
             int itemId = orderLineInfo.getInt(FieldConstants.orderLineItemIdField);
             Row stockInfo = executeQuery(PreparedQueries.getStockQuantityForWarehouseItem, warehouseId, itemId).get(0);
-            double quantity = stockInfo.getDecimal(FieldConstants.stockQuantityField).doubleValue();
+            double quantity = stockInfo.getBigDecimal(FieldConstants.stockQuantityField).doubleValue();
             if (quantity < threshold) {
                 ++res;
             }

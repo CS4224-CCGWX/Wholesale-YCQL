@@ -50,7 +50,7 @@ public class OrderStatusTransaction extends AbstractTransaction {
         Row lastOrderInfo = this.executeQuery(PreparedQueries.getCustomerLastOrderInfo, customerWarehouseId, customerDistrictId, customerId).get(0);
         int lastOrderId = lastOrderInfo.getInt("O_ID");
         int carrierId = lastOrderInfo.getInt("O_CARRIER_ID");
-        Date orderDateTime =  lastOrderInfo.getTimestamp("O_ENTRY_D");
+        Instant orderDateTime =  lastOrderInfo.getInstant("O_ENTRY_D");
         System.out.println(outputFormatter.formatLastOrderInfo(lastOrderId, carrierId, orderDateTime));
 
         List<Row> itemsInfo = this.executeQuery(PreparedQueries.getCustomerLastOrderItemsInfo, customerWarehouseId, customerDistrictId, lastOrderId);
