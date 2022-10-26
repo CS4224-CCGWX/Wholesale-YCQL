@@ -1,6 +1,6 @@
 package parser;
 
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,11 +18,11 @@ public class DataLoader {
 
     private final String YCQLSH_PATH = "/temp/yugabyte-2.14.1.0/bin/ycqlsh";
 
-    Session session;
+    CqlSession session;
     String schemaPath;
     String dataDir;
 
-    public DataLoader(Session session, String schemaPath, String dataDir) {
+    public DataLoader(CqlSession session, String schemaPath, String dataDir) {
         this.session = session;
         this.schemaPath = schemaPath;
         this.dataDir = dataDir;
