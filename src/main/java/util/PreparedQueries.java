@@ -206,7 +206,7 @@ public class PreparedQueries {
                     + "FROM \"order\" WHERE O_W_ID = ? AND O_D_ID = ? AND O_ID >= ? AND O_ID < ?;";
 
     public final static String getPopularItems =
-            "SELECT DISTINCT OL_I_ID "
+            "SELECT OL_I_ID "
                     + "FROM order_line "
                     + "WHERE OL_O_ID = ? AND OL_D_ID = ? AND OL_W_ID = ? AND OL_QUANTITY = ?;";
 
