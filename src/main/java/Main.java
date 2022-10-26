@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.CqlSession;
 
 import parser.DataLoader;
@@ -104,7 +105,7 @@ class Main {
     private static CqlSession getSessionByIp(String ip) {
         return CqlSession
                 .builder()
-                .addContactPoint(new InetSocketAddress(ip, 9042))
+                .withKeyspace(CqlIdentifier.fromCql("wholesale"))
                 .build();
     }
 
