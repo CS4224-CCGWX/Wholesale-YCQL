@@ -12,5 +12,6 @@ public class FieldConstants {
 
     public final static String stockQuantityField = "S_QUANTITY";
 
+    public final static String itemIdField = "I_ID";
     public final static String itemNameField = "I_NAME";
 }
