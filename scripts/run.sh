@@ -12,6 +12,8 @@ elif [[ $curr_node == "xcnd23" ]]; then
     ip="192.168.48.242"
 elif [[ $curr_node == "xcnd24" ]]; then
     ip="192.168.48.243"
+elif [[ $curr_node == "localhost" ]]; then
+    ip="localhost"
 else
     echo "Unknown node name: $curr_node"
     exit -1
