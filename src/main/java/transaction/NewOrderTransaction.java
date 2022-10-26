@@ -89,7 +89,7 @@ public class NewOrderTransaction extends AbstractTransaction {
               if ADJUST_QTY < 10, then ADJUST_QTY += 100
              */
             res = this.executeQuery(PreparedQueries.getStockQty, supplyWarehouseId, itemId);
-            int stockQty = res.get(0).getInt(0);
+            int stockQty = res.get(0).getDecimal(0).intValue();
 
             int adjustQty = stockQty - quantity;
             if (adjustQty < STOCK_REFILL_THRESHOLD) {
@@ -105,16 +105,16 @@ public class NewOrderTransaction extends AbstractTransaction {
               - Increment S_REMOTE_CNT by 1 if supplyWarehouseIds[i] != warehouseID
              */
             if(supplyWarehouseId != warehouseId) {
-                this.executeQuery(PreparedQueries.updateStockQtyIncrRemoteCnt, adjustQty, quantity, supplyWarehouseId, itemId);
+                this.executeQuery(PreparedQueries.updateStockQtyIncrRemoteCnt, (long)adjustQty, (long)quantity, supplyWarehouseId, itemId);
             } else {
-                this.executeQuery(PreparedQueries.updateStockQty, adjustQty, quantity, supplyWarehouseId, itemId);
+                this.executeQuery(PreparedQueries.updateStockQty, (long)adjustQty, (long)quantity, supplyWarehouseId, itemId);
             }
             /*
               3.3. ITEM_AMOUNT = quantities[i] * I_PRICE, where I_PRICE is price of itemIds[i]
               TOTAL_AMOUNT += ITEM_AMOUNT
              */
             Row itemInfo = this.executeQuery(PreparedQueries.getItemPriceAndName, itemId).get(0);
-            double price = itemInfo.getDouble("I_PRICE");
+            double price = itemInfo.getDecimal("I_PRICE").doubleValue();
             double itemAmount = quantity * price;
             itemAmounts.add(itemAmount);
             itemNames.add(itemInfo.getString("I_NAME"));
@@ -137,7 +137,7 @@ public class NewOrderTransaction extends AbstractTransaction {
             res = this.executeQuery(PreparedQueries.getStockDistInfo, distIdStr, warehouseId, itemId);
             String distInfo = res.get(0).getString(0);
             this.executeQuery(PreparedQueries.createNewOrderLine,
-                    orderId, districtId, warehouseId, i, itemId, supplyWarehouseId, quantity, itemAmount, distInfo);
+                    orderId, districtId, warehouseId, customerId, i, itemId, supplyWarehouseId, quantity, itemAmount, distInfo);
         }
 
         /*

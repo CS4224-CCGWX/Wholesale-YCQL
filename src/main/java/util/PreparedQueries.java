@@ -62,8 +62,8 @@ public class PreparedQueries {
 
     public final static String createNewOrderLine =
             "INSERT INTO order_line "
-                    + "(OL_O_ID, OL_D_ID, OL_W_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DIST_INFO) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    + "(OL_O_ID, OL_D_ID, OL_W_ID, OL_C_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DIST_INFO) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     public final static String getWarehouseTax =
             "SELECT W_TAX "
