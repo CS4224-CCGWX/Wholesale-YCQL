@@ -8,7 +8,6 @@ import java.util.Map;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
-import jnr.ffi.annotations.In;
 import util.FieldConstants;
 import util.OutputFormatter;
 import util.PreparedQueries;

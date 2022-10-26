@@ -203,7 +203,7 @@ public class PreparedQueries {
     // For popular item transactions
     public final static String getLastOrdersInfoForDistrict =
             "SELECT O_ID, O_ENTRY_D, O_C_ID "
-                    + "FROM order WHERE O_W_ID = ? AND O_D_ID = ? AND O_ID >= ? AND O_ID < ?;";
+                    + "FROM \"order\" WHERE O_W_ID = ? AND O_D_ID = ? AND O_ID >= ? AND O_ID < ?;";
 
     public final static String getPopularItems =
             "SELECT DISTINCT OL_I_ID "
