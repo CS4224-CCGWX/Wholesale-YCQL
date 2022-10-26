@@ -44,18 +44,18 @@ class Main {
 
     private static void loadData(String[] args) {
         // Load partial data on the cloud
-        String ip = args[1];
-
+        System.out.println("Loading partial data to cloud");
         CqlSession session = getCloudSession();
         defSchema(session);
         insertSomeData(session);
+        System.out.println("Finished");
     }
 
     private static void run(String[] args) {
         String ip = args[1];
         String consistencyLevel = "";
 
-        CqlSession session = getCloudSession();
+        CqlSession session = getSessionByIp(ip);
         session.execute("USE wholesale;");
 
         TransactionParser transactionParser = new TransactionParser(session);
@@ -92,13 +92,20 @@ class Main {
 
     private static void summary(String[] args) {
         String ip = args[1];
-        CqlSession session = getCloudSession();
+        CqlSession session = getSessionByIp(ip);
         session.execute("USE wholesale;");
 
         AbstractTransaction summaryTransaction = new SummaryTransaction(session);
         summaryTransaction.execute();
 
         session.close();
+    }
+
+    private static CqlSession getSessionByIp(String ip) {
+        return CqlSession
+                .builder()
+                .addContactPoint(new InetSocketAddress(ip, 9042))
+                .build();
     }
 
     private static CqlSession getCloudSession() {
