@@ -65,7 +65,7 @@ public class DeliveryTransaction extends AbstractTransaction {
             }
             int customerId = orderLines.get(0).getInt("OL_C_ID");
             for (Row orderLine : orderLines) {
-                orderAmount += orderLine.getDouble("OL_AMOUNT");
+                orderAmount += orderLine.getDecimal("OL_AMOUNT").doubleValue();
                 orderLineNums.add(orderLine.getInt("OL_NUMBER"));
             }
 
@@ -77,7 +77,7 @@ public class DeliveryTransaction extends AbstractTransaction {
 
             // (d)
             List<Row> customers = executeQuery(String.format(GET_CUSTOMER_BALANCE_OF_ORDER, warehouseId, districtNo, customerId));
-            double updatedBalance = customers.get(0).getDouble(0) + orderAmount;
+            double updatedBalance = customers.get(0).getDecimal(0).doubleValue() + orderAmount;
             executeQuery(String.format(UPDATE_CUSTOMER_BALANCE_AND_DCOUNT, updatedBalance, warehouseId, districtNo, customerId));
             print(String.format("Updated the info of customer (%d, %d, %d)", warehouseId, districtNo, customerId));
 
