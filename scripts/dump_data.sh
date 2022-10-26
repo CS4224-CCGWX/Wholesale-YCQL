@@ -1,10 +1,10 @@
 # to change crlf to lf 
 # https://stackoverflow.com/questions/11616835/r-command-not-found-bashrc-bash-profile
 
-schema="~/Wholesale-YCQL/src/main/resources/schema0.ycql"
+schema="/home/stuproj/cs4224i/Wholesale-YCQL/src/main/resources/schema0.ycql"
 DELIM=","
 YCQLSH="/temp/yugabyte-2.14.1.0/bin/ycqlsh"
-dataDir="~/Wholesale-YCQL/project_files/data_files"
+dataDir="/home/stuproj/cs4224i/Wholesale-YCQL/project_files/data_files"
 bsz=500
 
 echo "***** Remove null in dataset *****"
