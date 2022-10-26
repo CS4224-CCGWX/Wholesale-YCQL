@@ -57,7 +57,6 @@ class Main {
         String consistencyLevel = "";
 
         CqlSession session = getSessionByIp(ip);
-        session.execute("USE wholesale;");
 
         TransactionParser transactionParser = new TransactionParser(session);
         OutputFormatter outputFormatter = new OutputFormatter();
@@ -94,7 +93,6 @@ class Main {
     private static void summary(String[] args) {
         String ip = args[1];
         CqlSession session = getSessionByIp(ip);
-        session.execute("USE wholesale;");
 
         AbstractTransaction summaryTransaction = new SummaryTransaction(session);
         summaryTransaction.execute();
