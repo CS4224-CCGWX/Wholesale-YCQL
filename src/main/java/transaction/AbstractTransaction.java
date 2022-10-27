@@ -41,8 +41,13 @@ public abstract class AbstractTransaction {
         //         .addPositionalValue(values)
         //         .setConsistencyLevel(getConsistencyLevel(query))
         //         .build();
-        PreparedStatement preparedStatement = preparedStatementHashMap.getOrDefault(query, session.prepare(query));
-        preparedStatementHashMap.putIfAbsent(query, preparedStatement);
+        PreparedStatement preparedStatement;
+        if (preparedStatementHashMap.containsKey(query)) {
+            preparedStatement = preparedStatementHashMap.get(query);
+        } else {
+            preparedStatement = session.prepare(query);
+            preparedStatementHashMap.put(query, preparedStatement);
+        }
         BoundStatement statement = preparedStatement
                 .bind(values)
                 .setConsistencyLevel(getConsistencyLevel(query));
@@ -51,23 +56,19 @@ public abstract class AbstractTransaction {
         return res.all();
     }
 
-//    protected List<Row> executeQuery(String query, Map<String, Object> valueMap) {
-//        SimpleStatement statement = new SimpleStatementBuilder(query, valueMap)
-//                .setConsistencyLevel(getConsistencyLevel(query))
-//                .build();
-//        ResultSet res = session.execute(statement);
-//
-//        return res.all();
-//    }
-
     protected List<Row> executeQueryWithTimeout(String query, int timeout, Object... values) {
         // SimpleStatement statement = new SimpleStatementBuilder(query)
         //         .addPositionalValue(values)
         //         .setConsistencyLevel(getConsistencyLevel(query))
         //         .setTimeout(Duration.ofMillis(timeout))
         //         .build();
-        PreparedStatement preparedStatement = preparedStatementHashMap.getOrDefault(query, session.prepare(query));
-        preparedStatementHashMap.putIfAbsent(query, preparedStatement);
+        PreparedStatement preparedStatement;
+        if (preparedStatementHashMap.containsKey(query)) {
+            preparedStatement = preparedStatementHashMap.get(query);
+        } else {
+            preparedStatement = session.prepare(query);
+            preparedStatementHashMap.put(query, preparedStatement);
+        }
         BoundStatement statement = preparedStatement
                 .bind(values)
                 .setConsistencyLevel(getConsistencyLevel(query))
