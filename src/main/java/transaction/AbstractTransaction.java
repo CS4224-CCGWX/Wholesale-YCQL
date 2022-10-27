@@ -14,8 +14,6 @@ import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.CqlSession;
 
-import util.PreparedQueries;
-
 public abstract class AbstractTransaction {
     protected CqlSession session;
     private ConsistencyLevel defaultConsistencyLevel;
