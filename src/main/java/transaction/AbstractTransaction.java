@@ -33,13 +33,13 @@ public abstract class AbstractTransaction {
     }
 
     protected List<Row> executeQuery(String query, Object... values) {
-        // SimpleStatement statement = new SimpleStatementBuilder(query)
-        //         .addPositionalValue(values)
-        //         .setConsistencyLevel(getConsistencyLevel(query))
-        //         .build();
-        BoundStatement statement = session.prepare(query)
-                .bind(values)
-                .setConsistencyLevel(getConsistencyLevel(query));
+         SimpleStatement statement = new SimpleStatementBuilder(query)
+                 .addPositionalValue(values)
+                 .setConsistencyLevel(getConsistencyLevel(query))
+                 .build();
+//        BoundStatement statement = session.prepare(query)
+//                .bind(values)
+//                .setConsistencyLevel(getConsistencyLevel(query));
         ResultSet res = session.execute(statement);
 
         return res.all();
@@ -55,15 +55,15 @@ public abstract class AbstractTransaction {
 //    }
 
     protected List<Row> executeQueryWithTimeout(String query, int timeout, Object... values) {
-        // SimpleStatement statement = new SimpleStatementBuilder(query)
-        //         .addPositionalValue(values)
-        //         .setConsistencyLevel(getConsistencyLevel(query))
-        //         .setTimeout(Duration.ofMillis(timeout))
-        //         .build();
-        BoundStatement statement = session.prepare(query)
-                .bind(values)
-                .setConsistencyLevel(getConsistencyLevel(query))
-                .setTimeout(Duration.ofMillis(timeout));
+         SimpleStatement statement = new SimpleStatementBuilder(query)
+                 .addPositionalValue(values)
+                 .setConsistencyLevel(getConsistencyLevel(query))
+                 .setTimeout(Duration.ofMillis(timeout))
+                 .build();
+//        BoundStatement statement = session.prepare(query)
+//                .bind(values)
+//                .setConsistencyLevel(getConsistencyLevel(query))
+//                .setTimeout(Duration.ofMillis(timeout));
         ResultSet res = session.execute(statement);
 
         return res.all();

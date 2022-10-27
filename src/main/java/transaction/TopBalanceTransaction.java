@@ -31,7 +31,14 @@ public class TopBalanceTransaction extends AbstractTransaction {
                 (d) District name of customer D NAME
          */
         OutputFormatter outputFormatter = new OutputFormatter();
-        List<Row> customersInfo = this.executeQuery(PreparedQueries.getTopKBalanceCustomers, K);
+        // List<Row> customersInfo = this.executeQuery(PreparedQueries.getTopKBalanceCustomers, K);
+        String getTopKBalanceCustomers = String.format(
+                "SELECT C_W_ID, C_D_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST " +
+                "FROM customer_balance " +
+                "ORDER BY C_BALANCE DESC " +
+                "LIMIT %d", K
+        );
+        List<Row> customersInfo = this.executeQuery(getTopKBalanceCustomers);
         System.out.println("*** Top Balance Transaction Summary ***");
         for (Row cInfo : customersInfo) {
             int warehouseId = cInfo.getInt("C_W_ID");
