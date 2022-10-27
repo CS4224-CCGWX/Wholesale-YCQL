@@ -64,7 +64,7 @@ public class PaymentTransaction extends AbstractTransaction {
         // • Increment C PAYMENT CNT by 1
         Row customerResult = executeQuery(PreparedQueries.getFullCustomerInfo, warehouseId, districtId, customerId).get(0);
         double customerBalance = customerResult.getBigDecimal("C_BALANCE").doubleValue();
-        customerBalance += payment;
+        customerBalance -= payment;
         float customerYtd = customerResult.getFloat("C_YTD_PAYMENT");
         customerYtd += payment;
         executeQuery(PreparedQueries.updateCustomerPaymentInfo, BigDecimal.valueOf(customerBalance), customerYtd, warehouseId, districtId, customerId);
