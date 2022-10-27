@@ -1,5 +1,7 @@
 package transaction;
 
+import java.math.BigDecimal;
+
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.CqlSession;
 
@@ -47,14 +49,14 @@ public class PaymentTransaction extends AbstractTransaction {
         double warehouseYtd = warehouseResult.getBigDecimal("W_YTD").doubleValue();
         warehouseYtd += payment;
         // executeQuery(PreparedQueries.formatUpdateWarehouseYearToDateAmount(warehouseYtd), warehouseId);
-        executeQuery(PreparedQueries.updateWarehouseYearToDateAmount, warehouseYtd, warehouseId);
+        executeQuery(PreparedQueries.updateWarehouseYearToDateAmount, BigDecimal.valueOf(warehouseYtd), warehouseId);
 
         // 2. Update the district (C W ID,C D ID) by incrementing D YTD by PAYMENT
         Row districtResult = executeQuery(PreparedQueries.getDistrictAddressAndYtd, warehouseId, districtId).get(0);
         double districtYtd = districtResult.getBigDecimal("D_YTD").doubleValue();
         districtYtd += payment;
         // executeQuery(PreparedQueries.formatUpdateDistrictYearToDateAmount(districtYtd), warehouseId, districtId);
-        executeQuery(PreparedQueries.updateDistrictYearToDateAmount, districtYtd, warehouseId, districtId);
+        executeQuery(PreparedQueries.updateDistrictYearToDateAmount, BigDecimal.valueOf(districtYtd), warehouseId, districtId);
 
         // 3. Update the customer (C W ID, C D ID, C ID) as follows:
         // • Decrement C BALANCE by PAYMENT
@@ -65,7 +67,7 @@ public class PaymentTransaction extends AbstractTransaction {
         customerBalance += payment;
         float customerYtd = customerResult.getFloat("C_YTD_PAYMENT");
         customerYtd += payment;
-        executeQuery(PreparedQueries.updateCustomerPaymentInfo, customerBalance, customerYtd, warehouseId, districtId, customerId);
+        executeQuery(PreparedQueries.updateCustomerPaymentInfo, BigDecimal.valueOf(customerBalance), customerYtd, warehouseId, districtId, customerId);
 
         // Output
         StringBuilder sb = new StringBuilder();
