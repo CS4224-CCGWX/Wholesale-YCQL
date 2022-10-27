@@ -44,6 +44,7 @@ public abstract class AbstractTransaction {
         //         .setConsistencyLevel(getConsistencyLevel(query))
         //         .build();
         PreparedStatement preparedStatement = preparedStatementHashMap.getOrDefault(query, session.prepare(query));
+        preparedStatementHashMap.putIfAbsent(query, preparedStatement);
         BoundStatement statement = preparedStatement
                 .bind(values)
                 .setConsistencyLevel(getConsistencyLevel(query));
@@ -68,6 +69,7 @@ public abstract class AbstractTransaction {
         //         .setTimeout(Duration.ofMillis(timeout))
         //         .build();
         PreparedStatement preparedStatement = preparedStatementHashMap.getOrDefault(query, session.prepare(query));
+        preparedStatementHashMap.putIfAbsent(query, preparedStatement);
         BoundStatement statement = preparedStatement
                 .bind(values)
                 .setConsistencyLevel(getConsistencyLevel(query))
