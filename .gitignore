@@ -32,3 +32,6 @@ log/
 
 cassandra-loader
 cassandra-loader-bad-dir
+
+scripts/wp_*
+.DS_Store
