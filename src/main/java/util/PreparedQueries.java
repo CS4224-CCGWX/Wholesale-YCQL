@@ -189,7 +189,7 @@ public class PreparedQueries {
     public final static String getDistrictName =
             "SELECT D_NAME "
                     + "FROM district "
-                    + "WHERE D_W_ID = ?, D_ID = ?;";
+                    + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     // For Related-Customer Transaction
     public final static String getRelatedCustomers =
