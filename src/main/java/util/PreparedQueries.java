@@ -34,21 +34,21 @@ public class PreparedQueries {
                     + "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
     public final static String getStockQty =
-            "SELECT S_QUANTITY "
+            "SELECT S_QUANTITY, S_YTD "
                     + "FROM stock "
-                    + "WHERE S_W_ID = ?, S_I_ID = ?;";
+                    + "WHERE S_W_ID = ? AND S_I_ID = ?;";
 
     // update stock qty that increments remote count
     public final static String updateStockQtyIncrRemoteCnt =
             "UPDATE stock "
-                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
-                    + "WHERE S_W_ID = ?, S_I_ID = ?;";
+                    + "SET S_QUANTITY = ?, S_YTD = ?, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
+                    + "WHERE S_W_ID = ? AND S_I_ID = ?;";
 
     // update stock qty that NOT increments remote count
     public final static String updateStockQty =
             "UPDATE stock "
-                    + "SET S_QUANTITY = ?, S_YTD = S_YTD + ?, S_ORDER_CNT = S_ORDER_CNT + 1 "
-                    + "WHERE S_W_ID = ?, S_I_ID = ?;";
+                    + "SET S_QUANTITY = ?, S_YTD = ?, S_ORDER_CNT = S_ORDER_CNT + 1 "
+                    + "WHERE S_W_ID = ? AND S_I_ID = ?;";
 
     public final static String getItemPriceAndName =
             "SELECT I_PRICE, I_NAME "
@@ -56,9 +56,10 @@ public class PreparedQueries {
                     + "WHERE I_ID = ?;";
 
     public final static String getStockDistInfo =
-            "SELECT S_DIST_? "
+            // let it know the column name
+            "SELECT %s "
                     + "FROM stock "
-                    + "WHERE S_W_ID = ?, S_I_ID = ?;";
+                    + "WHERE S_W_ID = ? AND S_I_ID = ?;";
 
     public final static String createNewOrderLine =
             "INSERT INTO order_line "
@@ -73,7 +74,7 @@ public class PreparedQueries {
     public final static String getCustomerLastAndCreditAndDiscount =
             "SELECT C_LAST, C_CREDIT, C_DISCOUNT "
                     + "FROM customer "
-                    + "WHERE C_W_ID = ?, C_D_ID = ?, C_ID = ?;";
+                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
     // For delivery transaction
     public final static String getOrderToDeliverInDistrict =
