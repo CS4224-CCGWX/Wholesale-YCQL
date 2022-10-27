@@ -1,10 +1,12 @@
 package transaction;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.datastax.oss.driver.api.core.ConsistencyLevel;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.core.cql.SimpleStatementBuilder;
 import com.datastax.oss.driver.api.core.cql.BoundStatement;
@@ -15,6 +17,8 @@ import com.datastax.oss.driver.api.core.CqlSession;
 public abstract class AbstractTransaction {
     protected CqlSession session;
     private ConsistencyLevel defaultConsistencyLevel;
+
+    private static Map<String, PreparedStatement> preparedStatementHashMap = new HashMap<>();
 
     AbstractTransaction(CqlSession s) {
         session = s;
@@ -37,7 +41,9 @@ public abstract class AbstractTransaction {
         //         .addPositionalValue(values)
         //         .setConsistencyLevel(getConsistencyLevel(query))
         //         .build();
-        BoundStatement statement = session.prepare(query)
+        PreparedStatement preparedStatement = preparedStatementHashMap.getOrDefault(query, session.prepare(query));
+        preparedStatementHashMap.putIfAbsent(query, preparedStatement);
+        BoundStatement statement = preparedStatement
                 .bind(values)
                 .setConsistencyLevel(getConsistencyLevel(query));
         ResultSet res = session.execute(statement);
@@ -60,7 +66,9 @@ public abstract class AbstractTransaction {
         //         .setConsistencyLevel(getConsistencyLevel(query))
         //         .setTimeout(Duration.ofMillis(timeout))
         //         .build();
-        BoundStatement statement = session.prepare(query)
+        PreparedStatement preparedStatement = preparedStatementHashMap.getOrDefault(query, session.prepare(query));
+        preparedStatementHashMap.putIfAbsent(query, preparedStatement);
+        BoundStatement statement = preparedStatement
                 .bind(values)
                 .setConsistencyLevel(getConsistencyLevel(query))
                 .setTimeout(Duration.ofMillis(timeout));
