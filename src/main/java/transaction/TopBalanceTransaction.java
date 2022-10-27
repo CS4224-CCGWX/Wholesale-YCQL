@@ -100,6 +100,7 @@ public class TopBalanceTransaction extends AbstractTransaction {
             String cInfo = String.format("Customer: (%s, %s, %s), Balance: %.2f, Warehouse: %s, District: %s",
                         customer.first, customer.middle, customer.last,
                         customer.balance, warehouseName, districtName);
+            System.out.println(cInfo);
         }
     }
 }
