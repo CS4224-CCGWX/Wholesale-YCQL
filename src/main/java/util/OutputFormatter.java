@@ -1,8 +1,6 @@
 package util;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import com.datastax.oss.driver.api.core.cql.Row;
@@ -95,12 +93,19 @@ public class OutputFormatter {
     }
 
     public String formatItemInfo(Row itemInfo) {
-        return String.format("Item number: %d, Supply warehouse ID: %d, Quantity: %d, Price: %.2f, Datetime: %s",
+        Instant time = itemInfo.getInstant("OL_DELIVERY_D");
+        String deliverTime = null;
+        if (time == null) {
+            deliverTime = "Not delivered";
+        } else {
+            deliverTime = TimeFormatter.formatTime(time);
+        }
+        return String.format("Item number: %d, Supply warehouse ID: %d, Quantity: %d, Price: %.2f, Delivery time: %s",
                 itemInfo.getInt("OL_I_ID"),
                 itemInfo.getInt("OL_SUPPLY_W_ID"),
                 itemInfo.getBigDecimal("OL_QUANTITY").intValue(),
                 itemInfo.getBigDecimal("OL_AMOUNT").doubleValue(),
-                itemInfo.getInstant("OL_DELIVERY_D").toString());
+                deliverTime);
     }
 
     public String formatStockLevelTransactionOutput(long result, String transactionInfo) {
@@ -119,7 +124,7 @@ public class OutputFormatter {
         (d) District name of customer D NAME
          */
         return String.format("Customer: (%s, %s, %s), Balance: %.2f, Warehouse: %s, District: %s",
-                cInfo.getString("C_FIRST"),cInfo.getString("C_MIDDLE"), cInfo.getString("C_LAST"),
+                cInfo.getString("C_FIRST"), cInfo.getString("C_MIDDLE"), cInfo.getString("C_LAST"),
                 cInfo.getBigDecimal("C_BALANCE").doubleValue(), warehouseName, districtName);
     }
 
@@ -133,7 +138,7 @@ public class OutputFormatter {
     }
 
     public String formatOrderIdAndTimestamp(int id, Instant timestamp) {
-        return String.format("order id: %d, entry date and time: %s", id, TimeFormatter.formatTimestamp(timestamp));
+        return String.format("order id: %d, entry date and time: %s", id, TimeFormatter.formatTime(timestamp));
     }
 
     public String formatPopularItemQuantity(String name, double quantity) {

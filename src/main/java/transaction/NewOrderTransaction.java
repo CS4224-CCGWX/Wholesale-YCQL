@@ -1,7 +1,6 @@
 package transaction;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,8 +24,9 @@ public class NewOrderTransaction extends AbstractTransaction {
     private final List<Integer> itemIds;
     private final List<Integer> quantities;
     private final List<Integer> supplyWarehouseIds;
+
     public NewOrderTransaction(CqlSession session, int cid, int wid, int did, int n,
-                               List<Integer> itemIds, List<Integer> quantities, List<Integer> supplyWarehouseIds) {
+                               List<Integer> itemIds, List<Integer> supplyWarehouseIds, List<Integer> quantities) {
         super(session);
         customerId = cid;
         warehouseId = wid;
@@ -42,23 +42,24 @@ public class NewOrderTransaction extends AbstractTransaction {
         sb.append("*** New Order Transaction Information ***\n");
         sb.append(String.format("CID:%d, WID:%d, DID:%d, num order-lines:%d\n", customerId, warehouseId, districtId, nOrderLines));
         sb.append("Item IDs:");
-        for(int id : itemIds) {
+        for (int id : itemIds) {
             sb.append(",").append(id);
         }
         sb.append("\n");
         sb.append("Quantities:");
-        for(int qty : quantities) {
+        for (int qty : quantities) {
             sb.append(",").append(qty);
         }
         sb.append("\n");
         sb.append("Supply warehouse IDs:");
-        for(int id : supplyWarehouseIds) {
+        for (int id : supplyWarehouseIds) {
             sb.append(",").append(id);
         }
         sb.append("\n");
 
         return sb.toString();
     }
+
     public void execute() {
         /*
           1. N denotes the next available order number D_NEXT_O_ID for district (W_ID, D_ID)
@@ -91,13 +92,13 @@ public class NewOrderTransaction extends AbstractTransaction {
                           otherwise O_ALL_LOCAL = 1
          */
         int isAllLocal = 1;
-        for(int supplyWarehouseId : supplyWarehouseIds) {
-            if(supplyWarehouseId != warehouseId) {
-               isAllLocal = 0;
-               break;
+        for (int supplyWarehouseId : supplyWarehouseIds) {
+            if (supplyWarehouseId != warehouseId) {
+                isAllLocal = 0;
+                break;
             }
         }
-        Date orderDateTime = TimeFormatter.getCurrentTimestamp();
+        Date orderDateTime = TimeFormatter.getCurrentDate();
         this.executeQuery(PreparedQueries.createNewOrder, orderId, districtId, warehouseId, customerId, new Date().toInstant(), nOrderLines, isAllLocal);
 //        String createNewOrder = String.format(
 //            "INSERT INTO \"order\" "
@@ -114,7 +115,7 @@ public class NewOrderTransaction extends AbstractTransaction {
         List<Integer> adjustQuantities = new ArrayList<>();
         List<Double> itemAmounts = new ArrayList<>();
         List<String> itemNames = new ArrayList<>();
-        for(int i=0; i < nOrderLines; ++i) {
+        for (int i = 0; i < nOrderLines; ++i) {
             int itemId = itemIds.get(i);
             int supplyWarehouseId = supplyWarehouseIds.get(i);
             int quantity = quantities.get(i);
@@ -124,6 +125,7 @@ public class NewOrderTransaction extends AbstractTransaction {
               ADJUST_QTY = S_QUANTITY - quantities[i]
               if ADJUST_QTY < 10, then ADJUST_QTY += 100
              */
+
             Row qtyInfo = this.executeQuery(PreparedQueries.getStockQty, supplyWarehouseId, itemId).get(0);
 //            String getStockQty = String.format(
 //                "SELECT S_QUANTITY "
@@ -148,7 +150,7 @@ public class NewOrderTransaction extends AbstractTransaction {
               - increment S_ORDER_CNT by 1
               - Increment S_REMOTE_CNT by 1 if supplyWarehouseIds[i] != warehouseID
              */
-            if(supplyWarehouseId != warehouseId) {
+            if (supplyWarehouseId != warehouseId) {
                 this.executeQuery(PreparedQueries.updateStockQtyIncrRemoteCnt, BigDecimal.valueOf(adjustQty), BigDecimal.valueOf(stockYtd), supplyWarehouseId, itemId);
 //                String updateStockQtyIncrRemoteCnt = String.format(
 //                    "UPDATE stock "
@@ -235,7 +237,7 @@ public class NewOrderTransaction extends AbstractTransaction {
         Row cInfo = res.get(0);
         double cDiscount = cInfo.getBigDecimal("C_DISCOUNT").doubleValue();
 
-        totalAmount = totalAmount*(1 + dTax + wTax) * (1 - cDiscount);
+        totalAmount = totalAmount * (1 + dTax + wTax) * (1 - cDiscount);
 
 
         /*
@@ -257,7 +259,7 @@ public class NewOrderTransaction extends AbstractTransaction {
                 "Customer ID: (%d, %d, %d), Last name:%s, Credit:%s, C_DISCOUNT:%.4f\n",
                 warehouseId, districtId, customerId, cLast, cCredit, cDiscount);
         System.out.printf("Warehouse tax:%.4f, District tax:%.4f\n", wTax, dTax);
-        System.out.printf("Order ID:%d, Order entry date:%s\n", orderId, TimeFormatter.formatTimestamp(orderDateTime));
+        System.out.printf("Order ID:%d, Order entry date:%s\n", orderId, TimeFormatter.formatTime(orderDateTime));
         System.out.printf("#items:%d, Total amount:%.2f\n", nOrderLines, totalAmount);
         System.out.println("Items information:");
         for (int i = 0; i < nOrderLines; ++i) {
