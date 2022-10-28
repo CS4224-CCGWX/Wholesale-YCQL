@@ -20,6 +20,9 @@ public class TopBalanceTransaction extends AbstractTransaction {
         super(session);
     }
 
+    public String toString() {
+        return "*** Top Balance Transaction ***";
+    }
     public void execute() {
         /*
         This transaction finds the top-10 customers ranked in descending order of their outstanding balance payments.

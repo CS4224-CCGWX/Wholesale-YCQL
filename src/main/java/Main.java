@@ -74,7 +74,14 @@ class Main {
                 transaction.setDefaultConsistencyLevel(consistencyLevel);
             }
             txStart = System.nanoTime();
-            transaction.execute();
+            try {
+                transaction.execute();
+            } catch (Exception e) {
+                System.err.println(e.toString());
+                System.err.println("**************************************");
+                System.err.println(transaction.toString());
+            }
+
             txEnd = System.nanoTime();
             System.out.println(OutputFormatter.linebreak);
 
