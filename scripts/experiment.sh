@@ -7,14 +7,15 @@ submit_job() {
   consistency_level=${2-'all'}
   echo "submit job: "$job_id" with consistency level: "$consistency_level
 
-  node_id="xcnd"((20+$job_id%$nodes))
+  node_id="xcnd"$((20+$job_id%$nodes))
   echo "the job will be submitted to node: "$node_id
 
-  ssh $node_id "cd Wholesale-YCQL" && fork "./scripts/run.sh {$node_id} {$job_id} {$consistency_level}"
+  ssh $node_id "cd Wholesale-YCQL" && ./scripts/run.sh ${node_id} ${job_id} ${consistency_level}
 }
 
-for ((c=0; c<20; c++;))
+for ((c=0; c<20; c++))
 do
-  submit_job $c $consistency_level
+  submit_job $c $consistency_level &
 done
+wait
 exit 0
