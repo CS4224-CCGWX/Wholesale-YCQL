@@ -77,11 +77,15 @@ public class PreparedQueries {
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
     // For delivery transaction
-    public final static String getOrderToDeliverInDistrict =
-            "SELECT O_ID, O_C_ID from \"order\" "
-                    + "WHERE O_W_ID = ? AND O_D_ID = ? AND O_CARRIER_ID IS NULL "
-                    + "ORDER BY O_ID "
-                    + "LIMIT 1;";
+    public final static String getOrderIdToDeliver =
+            "SELECT D_NEXT_DELIVER_O_ID " +
+                    "FROM district " +
+                    "WHERE D_W_ID = ? AND D_ID = ?;";
+
+    public final static String updateOrderIdToDeliver =
+            "UPDATE district "
+                    + "SET D_NEXT_DELIVER_O_ID = D_NEXT_DELIVER_O_ID + 1 "
+                    + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     public final static String updateCarrierIdInOrder =
             "UPDATE \"order\" "
@@ -91,17 +95,21 @@ public class PreparedQueries {
     public final static String updateDeliveryDateInOrderLine =
             "UPDATE order_line "
                     + "SET OL_DELIVERY_D = ? "
-                    + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?;";
+                    + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ? AND OL_NUMBER = ?;";
 
-    public final static String getOrderTotalPrice =
-            "SELECT sum(OL_AMOUNT) as total_price "
+    public final static String getOrderLineInOrder =
+            "SELECT OL_AMOUNT, OL_C_ID, OL_NUMBER "
                     + "FROM order_line "
-                    + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?;";
+                    + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ?";
 
-    public final static String updateCustomerDeliveryInfo =
+    public final static String getCustomerBalance =
+            "SELECT C_BALANCE FROM customer WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
+
+    public final static String updateCustomerBalanceAndDcount =
             "UPDATE customer "
-                    + "SET C_DELIVERY_CNT = C_DELIVERY_CNT + 1, C_BALANCE = C_BALANCE + ? "
-                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
+                    + "SET C_BALANCE = ?, C_DELIVERY_CNT = C_DELIVERY_CNT + 1 "
+                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
+
 
     public final static String updateWarehouseYearToDateAmount =
             "UPDATE warehouse "
@@ -193,13 +201,15 @@ public class PreparedQueries {
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     // For Related-Customer Transaction
-    public final static String getRelatedCustomers =
-            "SELECT t2.OL_C_ID as customer_id "
-                    + "FROM order_line as t1 INNER JOIN order_line as t2 "
-                    + "    ON t1.OL_I_ID = t2.OL_I_ID "
-                    + "WHERE t1.OL_W_ID = ? AND t1.OL_D_ID = ? AND t1.OL_C_ID = ? AND t2.OL_W_ID <> t1.OL_W_ID "
-                    + "GROUP BY t2.OL_C_ID "
-                    + "HAVING count(*) >= 2;";
+    public final static String getItemIds =
+            "SELECT OL_I_ID "
+                    + "FROM order_line "
+                    + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_C_ID = ? ALLOW FILTERING";
+
+    public final static String getPossibleCustomers =
+            "SELECT OL_W_ID, OL_D_ID, OL_O_ID, OL_C_ID, OL_I_ID "
+                    + "FROM order_line "
+                    + "WHERE OL_W_ID <> ? ALLOW FILTERING";
 
     // For popular item transactions
     public final static String getLastOrdersInfoForDistrict =
