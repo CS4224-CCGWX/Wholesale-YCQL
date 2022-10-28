@@ -29,7 +29,7 @@ if [[ ! -d $diskDir/yugabyte-data ]]; then
     mkdir $diskDir/yugabyte-data/
 fi
 
-$yb/yb-tserver \
+$ybb/yb-tserver \
 --tserver_master_addrs $master1:$port,$master2:$port,$master3:$port \
 --rpc_bind_addresses $ip \
 --fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-tserver.out &
