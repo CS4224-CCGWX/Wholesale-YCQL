@@ -26,6 +26,6 @@ fi
 output_path="./log/"$tx".out"
 err_path="./log/"$tx".err"
 
-echo "Run transaction file "$input_path" at consistency_level: "$consistency_level
+echo "Run transaction file "$input_path" at consistency_level: "$consistency_level" at node: "$curr_node
 java -jar target/Wholesale-YCQL-1.0.jar run $ip $consistency_level < $input_path > $output_path 2> $err_path
 exit 0
