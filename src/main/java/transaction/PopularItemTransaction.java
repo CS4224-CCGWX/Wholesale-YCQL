@@ -1,9 +1,8 @@
 package transaction;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -84,7 +83,7 @@ public class PopularItemTransaction extends AbstractTransaction {
         builder.append(delimiter);
         for (Row orderInfo : resultS) {
             int orderId = orderInfo.getInt(FieldConstants.orderIdField);
-            LocalDate timestamp = orderInfo.getLocalDate(FieldConstants.orderEntryTimestampField);
+            Instant timestamp = orderInfo.getInstant(FieldConstants.orderEntryTimestampField);
             builder.append(outputFormatter.formatOrderIdAndTimestamp(orderId, timestamp));
             builder.append(delimiter);
 

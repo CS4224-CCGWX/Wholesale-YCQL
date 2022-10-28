@@ -1,6 +1,7 @@
 package transaction;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,7 +75,7 @@ public class NewOrderTransaction extends AbstractTransaction {
                break;
             }
         }
-        String orderDateTime = TimeFormatter.getCurrentTimestamp();
+        Date orderDateTime = TimeFormatter.getCurrentTimestamp();
         this.executeQuery(PreparedQueries.createNewOrder, orderId, districtId, warehouseId, customerId, new Date().toInstant(), nOrderLines, isAllLocal);
 //        String createNewOrder = String.format(
 //            "INSERT INTO \"order\" "
@@ -234,7 +235,7 @@ public class NewOrderTransaction extends AbstractTransaction {
                 "Customer ID: (%d, %d, %d), Last name:%s, Credit:%s, C_DISCOUNT:%.4f\n",
                 warehouseId, districtId, customerId, cLast, cCredit, cDiscount);
         System.out.printf("Warehouse tax:%.4f, District tax:%.4f\n", wTax, dTax);
-        System.out.printf("Order ID:%d, Order entry date:%s\n", orderId, orderDateTime);
+        System.out.printf("Order ID:%d, Order entry date:%s\n", orderId, TimeFormatter.formatTimestamp(orderDateTime));
         System.out.printf("#items:%d, Total amount:%.2f\n", nOrderLines, totalAmount);
         System.out.println("Items information:");
         for (int i = 0; i < nOrderLines; ++i) {
