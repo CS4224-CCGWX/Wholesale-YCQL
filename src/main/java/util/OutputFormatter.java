@@ -46,7 +46,7 @@ public class OutputFormatter {
         sb.append(String.format("Phone: %s", customerInfo.getString("C_PHONE")));
         sb.append(delimiter);
 
-        sb.append(String.format("Since: %s", TimeFormatter.formatTimestamp(customerInfo.getLocalDate("C_SINCE"))));
+        sb.append(String.format("Since: %s", customerInfo.getInstant("C_SINCE")));
         sb.append(delimiter);
 
         sb.append(String.format("Credit status: %s", customerInfo.getString("C_CREDIT")));
@@ -132,7 +132,7 @@ public class OutputFormatter {
         return sb.toString();
     }
 
-    public String formatOrderIdAndTimestamp(int id, LocalDate timestamp) {
+    public String formatOrderIdAndTimestamp(int id, Instant timestamp) {
         return String.format("order id: %d, entry date and time: %s", id, TimeFormatter.formatTimestamp(timestamp));
     }
 
