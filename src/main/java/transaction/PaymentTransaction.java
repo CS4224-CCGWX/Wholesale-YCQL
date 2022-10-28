@@ -78,6 +78,7 @@ public class PaymentTransaction extends AbstractTransaction {
          *     C CREDIT LIM, C DISCOUNT, C BALANCE
          */
 //        result = executeQuery(queryFormatter.getFullCustomerInfo(warehouseId, districtId, customerId));
+        sb.append("********** Payment Transaction *********\n");
         sb.append(outputFormatter.formatFullCustomerInfo(customerResult, customerBalance));
         sb.append(delimiter);
 
@@ -93,6 +94,10 @@ public class PaymentTransaction extends AbstractTransaction {
         sb.append(String.format("Payment: %.2f", payment));
         sb.append(delimiter);
 
-        System.out.print(sb);
+        System.out.println(sb);
+    }
+
+    public String toString() {
+        return String.format("Payment transaction info: warehouse: %d, district: %d, customer: %d, payment: %f", warehouseId, districtId, customerId, payment);
     }
 }

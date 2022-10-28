@@ -64,6 +64,7 @@ public class PopularItemTransaction extends AbstractTransaction {
 
     public void execute() {
         StringBuilder builder = new StringBuilder();
+        builder.append("********** Popular Item Transaction *********\n");
         builder.append(this.toString());
         builder.append(delimiter);
         // 1. Let N denote the value of the next available order number D_NEXT_O_ID for district (W ID,D ID)
@@ -147,10 +148,10 @@ public class PopularItemTransaction extends AbstractTransaction {
             builder.append(delimiter);
         }
 
-        System.out.print(builder);
+        System.out.println(builder);
     }
 
     public String toString() {
-        return String.format("warehouseId: %d, districtId: %d, number of last orders to be examined: %d", warehouseId, districtId, lastOrderToBeExamined);
+        return String.format("Popular Item Transaction info: warehouseId: %d, districtId: %d, number of last orders to be examined: %d", warehouseId, districtId, lastOrderToBeExamined);
     }
 }

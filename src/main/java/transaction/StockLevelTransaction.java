@@ -59,11 +59,14 @@ public class StockLevelTransaction extends AbstractTransaction {
             }
         }
 
-        System.out.println(outputFormatter.formatStockLevelTransactionOutput(res, this.toString()));
+        StringBuilder sb = new StringBuilder();
+        sb.append("********** Stock Level Transaction *********\n");
+        sb.append(outputFormatter.formatStockLevelTransactionOutput(res, this.toString()));
+        System.out.println(sb);
     }
 
     public String toString() {
-        return String.format("Stock Level Transaction: W_ID: %d, D_ID: %d. threshold: %f, L: %d",
+        return String.format("Stock Level Transaction info: W_ID: %d, D_ID: %d. threshold: %f, L: %d",
                 warehouseId, districtId, threshold, lastOrderToBeExamined);
     }
 }
