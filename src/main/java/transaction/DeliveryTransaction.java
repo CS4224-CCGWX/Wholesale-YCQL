@@ -74,7 +74,7 @@ public class DeliveryTransaction extends AbstractTransaction {
 
             // (c)
             for (int olNum : orderLineNums) {
-                executeQuery(String.format(updateDeliveryDateInOrderLine, TimeFormatter.getCurrentTimestamp(), warehouseId, districtNo, orderId, olNum));
+                executeQuery(String.format(updateDeliveryDateInOrderLine, TimeFormatter.getCurrentTimestamp().toInstant(), warehouseId, districtNo, orderId, olNum));
                 print(String.format("Updated order line (%d, %d, %d, %d)", warehouseId, districtNo, orderId, olNum));
             }
 

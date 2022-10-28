@@ -24,8 +24,8 @@ $YCQLSH -e "USE wholesale; COPY warehouse (W_ID, W_NAME, W_STREET_1, W_STREET_2,
 # Load large tables with Cassadra Loader
 C_LOADER="/home/stuproj/cs4224i/Wholesale-YCQL/cassandra-loader"
 badDir="/home/stuproj/cs4224i/Wholesale-YCQL/cassandra-loader-bad-dir"
-customer_bsz=1000
-order_bsz=1000
+customer_bsz=1
+order_bsz=500
 item_bsz=5000
 order_line_bsz=1000
 stock_bsz=10000
@@ -70,7 +70,8 @@ $C_LOADER \
     -dateFormat 'yyyy-MM-dd HH:mm:ss.SSS' \
     -delim $DELIM \
     -host $ip \
-    -badDir $badDir
+    -badDir $badDir \
+    -queryTimeout 10
 # $YCQLSH -e "USE wholesale; COPY customer (C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, C_CITY, C_STATE, C_ZIP, C_PHONE, C_SINCE, C_CREDIT, C_CREDIT_LIM, C_DISCOUNT, C_BALANCE, C_YTD_PAYMENT, C_PAYMENT_CNT, C_DELIVERY_CNT, C_DATA) FROM '$dataDir/customer.csv' WITH DELIMITER='$DELIM' AND MAXBATCHSIZE=$bsz;"
 
 echo "***** Load order table *****"

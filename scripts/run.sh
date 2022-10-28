@@ -20,7 +20,9 @@ else
 fi
 
 input_path="./project_files/xact_files/"$tx".txt"
-mkdir log
+if [[ ! -d log ]]; then
+    mkdir log
+fi
 output_path="./log/"$tx".out"
 err_path="./log/"$tx".err"
 
