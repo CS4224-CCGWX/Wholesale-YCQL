@@ -79,7 +79,7 @@ class Main {
             try {
                 transaction.execute();
             } catch (Exception e) {
-                System.err.println(e.toString());
+                e.printStackTrace();
                 System.err.println("**************************************");
                 System.err.println(transaction.toString());
                 exit(-1);
