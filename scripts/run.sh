@@ -20,10 +20,12 @@ else
 fi
 
 input_path="./project_files/xact_files/"$tx".txt"
-mkdir log
+if [[ ! -d log ]]; then
+    mkdir log
+fi
 output_path="./log/"$tx".out"
 err_path="./log/"$tx".err"
 
 echo "Run transaction file "$input_path" at consistency_level: "$consistency_level
-java -jar target/Wholesale-YCQL-1.0.jar run $ip $consistency_level < $input_path >& $output_path 2>& $err_path
+java -jar target/Wholesale-YCQL-1.0.jar run $ip $consistency_level < $input_path > $output_path 2> $err_path
 exit 0

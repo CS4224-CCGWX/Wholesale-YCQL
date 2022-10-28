@@ -25,7 +25,7 @@ $YCQLSH -e "USE wholesale; COPY warehouse (W_ID, W_NAME, W_STREET_1, W_STREET_2,
 C_LOADER="/home/stuproj/cs4224i/Wholesale-YCQL/cassandra-loader"
 badDir="/home/stuproj/cs4224i/Wholesale-YCQL/cassandra-loader-bad-dir"
 customer_bsz=1000
-order_bsz=1000
+order_bsz=500
 item_bsz=5000
 order_line_bsz=1000
 stock_bsz=10000
