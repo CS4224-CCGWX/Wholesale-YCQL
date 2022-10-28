@@ -1,3 +1,5 @@
+import static java.lang.System.exit;
+
 import java.io.FileInputStream;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
@@ -80,6 +82,7 @@ class Main {
                 System.err.println(e.toString());
                 System.err.println("**************************************");
                 System.err.println(transaction.toString());
+                exit(-1);
             }
 
             txEnd = System.nanoTime();
