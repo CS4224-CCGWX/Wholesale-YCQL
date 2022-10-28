@@ -27,6 +27,7 @@ port="7100"
 # $ybb/yb-ctl create \
 # --rf 3 \
 diskDir="/mnt/ramdisk"
+rm -rf $diskDir/yugabyte-data
 mkdir $diskDir/yugabyte-data/
 
 $yb/yb-master \
