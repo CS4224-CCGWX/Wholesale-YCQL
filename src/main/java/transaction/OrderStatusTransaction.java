@@ -25,6 +25,13 @@ public class OrderStatusTransaction extends AbstractTransaction {
         customerId = cId;
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("*** Order Status Transaction Information ***\n");
+        sb.append(String.format("C_W_ID:%d, C_D_ID:%d, C_ID:%d\n", customerWarehouseId, customerDistrictId, customerId));
+        return sb.toString();
+    }
+
     public void execute() {
         /*
         This transaction queries the status of the last order of a customer.

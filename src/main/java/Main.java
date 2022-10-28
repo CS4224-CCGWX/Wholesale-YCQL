@@ -1,3 +1,5 @@
+import static java.lang.System.exit;
+
 import java.io.FileInputStream;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
@@ -74,7 +76,15 @@ class Main {
                 transaction.setDefaultConsistencyLevel(consistencyLevel);
             }
             txStart = System.nanoTime();
-            transaction.execute();
+            try {
+                transaction.execute();
+            } catch (Exception e) {
+                System.err.println(e.toString());
+                System.err.println("**************************************");
+                System.err.println(transaction.toString());
+                exit(-1);
+            }
+
             txEnd = System.nanoTime();
             System.out.println(OutputFormatter.linebreak);
 

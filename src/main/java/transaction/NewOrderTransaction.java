@@ -37,6 +37,28 @@ public class NewOrderTransaction extends AbstractTransaction {
         this.supplyWarehouseIds = supplyWarehouseIds;
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("*** New Order Transaction Information ***\n");
+        sb.append(String.format("CID:%d, WID:%d, DID:%d, num order-lines:%d\n", customerId, warehouseId, districtId, nOrderLines));
+        sb.append("Item IDs:");
+        for(int id : itemIds) {
+            sb.append(",").append(id);
+        }
+        sb.append("\n");
+        sb.append("Quantities:");
+        for(int qty : quantities) {
+            sb.append(",").append(qty);
+        }
+        sb.append("\n");
+        sb.append("Supply warehouse IDs:");
+        for(int id : supplyWarehouseIds) {
+            sb.append(",").append(id);
+        }
+        sb.append("\n");
+
+        return sb.toString();
+    }
     public void execute() {
         /*
           1. N denotes the next available order number D_NEXT_O_ID for district (W_ID, D_ID)

@@ -51,6 +51,7 @@ public abstract class AbstractTransaction {
         BoundStatement statement = preparedStatement
                 .bind(values)
                 .setConsistencyLevel(getConsistencyLevel(query));
+
         ResultSet res = session.execute(statement);
 
         return res.all();
