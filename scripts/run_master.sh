@@ -27,9 +27,13 @@ port="7100"
 # $ybb/yb-ctl create \
 # --rf 3 \
 diskDir="/mnt/ramdisk"
+rm -rf $diskDir/yugabyte-data
 mkdir $diskDir/yugabyte-data/
+# if [[ ! -d $diskDir/yugabyte-data ]]; then
+#     mkdir $diskDir/yugabyte-data/
+# fi
 
-$yb/yb-master \
+$ybb/yb-master \
 --master_addresses "$master1:$port,$master2:$port,$master3:$port" \
 --rpc_bind_addresses "$ip:$port" \
 --fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-master.out &
