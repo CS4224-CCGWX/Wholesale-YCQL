@@ -83,7 +83,7 @@ public class PreparedQueries {
                     "WHERE D_W_ID = ? AND D_ID = ?;";
 
     public final static String updateOrderIdToDeliver =
-            "UPDATE district + "
+            "UPDATE district "
                     + "SET D_NEXT_DELIVER_O_ID = D_NEXT_DELIVER_O_ID + 1 "
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
 
