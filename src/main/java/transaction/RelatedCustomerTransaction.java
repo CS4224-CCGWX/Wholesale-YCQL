@@ -3,8 +3,6 @@ package transaction;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.CqlSession;
 
-import com.datastax.oss.protocol.internal.request.Prepare;
-import util.OutputFormatter;
 import util.PreparedQueries;
 
 import java.util.HashMap;
@@ -14,8 +12,6 @@ import java.util.List;
 
 public class RelatedCustomerTransaction extends AbstractTransaction {
 
-//    public static final String GET_ITEM_IDS = "SELECT OL_I_ID FROM order_line WHERE OL_W_ID = %d AND OL_D_ID = %d AND OL_C_ID = %d ALLOW FILTERING";
-//    public static final String GET_POSSIBLE_CUSTOMERS = "SELECT OL_W_ID, OL_D_ID, OL_O_ID, OL_C_ID, OL_I_ID FROM order_line WHERE OL_W_ID <> %d ALLOW FILTERING";
     private final int warehouseId;
     private final int districtId;
     private final int customerId;
@@ -36,11 +32,10 @@ public class RelatedCustomerTransaction extends AbstractTransaction {
      */
     public void execute() {
         List<Row> res;
-        StringBuilder resultString = new StringBuilder();
-
-//        res = executeQuery(String.format(GET_ITEM_IDS, warehouseId, districtId, customerId));
+        StringBuilder builder = new StringBuilder();
+        
         res = executeQuery(PreparedQueries.getItemIds , warehouseId, districtId, customerId);
-
+        print("********** Related Customer Transaction *********\n");
         print(String.format("Main customer: (%d, %d, %d)", warehouseId, districtId, customerId));
 
         HashSet<Integer> itemIds = new HashSet<>();
@@ -52,7 +47,6 @@ public class RelatedCustomerTransaction extends AbstractTransaction {
         }
         print("Total distinct items ordered by customer: " + itemIds.size());
 
-//        res = executeQuery(String.format(GET_POSSIBLE_CUSTOMERS, warehouseId));
         res = executeQuery(PreparedQueries.getPossibleCustomers, warehouseId);
 
         HashSet<String> relatedCustomers = new HashSet<>();
@@ -87,16 +81,20 @@ public class RelatedCustomerTransaction extends AbstractTransaction {
             itemSet.add(currItemId);
             if (itemSet.size() >= 2) {
                 relatedCustomers.add(fullCustomerId);
-                resultString.append(fullCustomerId + "\n");
+                builder.append(fullCustomerId + "\n");
             }
             // print(String.format("Item Set size after adding " + itemSet.size()));
         }
-        
-
-        if (resultString.length() == 0) {
+        if (builder.length() == 0) {
             print("No related customers found");
         } else {
-            print(resultString.toString());
+            print(builder.toString());
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("Related Customer Transaction info: warehouseId: %d, districtId: %d, customerId: %d", warehouseId, districtId, customerId);
+    }
+
 }
