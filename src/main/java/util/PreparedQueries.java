@@ -193,13 +193,15 @@ public class PreparedQueries {
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     // For Related-Customer Transaction
-    public final static String getRelatedCustomers =
-            "SELECT t2.OL_C_ID as customer_id "
-                    + "FROM order_line as t1 INNER JOIN order_line as t2 "
-                    + "    ON t1.OL_I_ID = t2.OL_I_ID "
-                    + "WHERE t1.OL_W_ID = ? AND t1.OL_D_ID = ? AND t1.OL_C_ID = ? AND t2.OL_W_ID <> t1.OL_W_ID "
-                    + "GROUP BY t2.OL_C_ID "
-                    + "HAVING count(*) >= 2;";
+    public final static String getItemIds =
+            "SELECT OL_I_ID "
+                    + "FROM order_line "
+                    + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_C_ID = ? ALLOW FILTERING";
+
+    public final static String getPossibleCustomers =
+            "SELECT OL_W_ID, OL_D_ID, OL_O_ID, OL_C_ID, OL_I_ID "
+                    + "FROM order_line "
+                    + "WHERE OL_W_ID <> ? ALLOW FILTERING";
 
     // For popular item transactions
     public final static String getLastOrdersInfoForDistrict =
