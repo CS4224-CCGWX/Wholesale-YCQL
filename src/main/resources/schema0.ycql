@@ -57,8 +57,14 @@ CREATE TABLE IF NOT EXISTS customer (
     C_PAYMENT_CNT int,
     C_DELIVERY_CNT int,
     C_DATA varchar,
-    PRIMARY KEY ((C_W_ID, C_D_ID, C_ID))
-);
+    PRIMARY KEY ((C_W_ID, C_D_ID), C_ID)
+) WITH transactions = { 'enabled' : true };
+
+DROP INDEX IF EXISTS customer_balance;
+CREATE INDEX IF NOT EXISTS customer_balance
+ON customer ((C_W_ID, C_D_ID), C_BALANCE, C_ID)
+INCLUDE (C_FIRST, C_MIDDLE, C_LAST)
+WITH CLUSTERING ORDER BY (C_BALANCE DESC, C_ID ASC);
 
 DROP TABLE IF EXISTS "order";
 CREATE TABLE IF NOT EXISTS "order" (

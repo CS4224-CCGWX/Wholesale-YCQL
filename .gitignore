@@ -27,8 +27,12 @@ hs_err_pid*
 target/
 project_files/
 log/
+experiment/
 
 *.err*
 
 cassandra-loader
 cassandra-loader-bad-dir
+
+scripts/wp_*
+.DS_Store

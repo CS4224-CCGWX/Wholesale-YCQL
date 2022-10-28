@@ -1,5 +1,6 @@
 package transaction;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -94,7 +95,7 @@ public class PopularItemTransaction extends AbstractTransaction {
 
             long maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
                     .get(0).getBigDecimal(0).longValue();
-            List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, maxQuantity);
+            List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, BigDecimal.valueOf(maxQuantity));
 
             // builder.append(String.format("max quantity: %d", maxQuantity));
 
@@ -105,11 +106,11 @@ public class PopularItemTransaction extends AbstractTransaction {
             Set<Integer> popularItemIds = new HashSet<>();
             for (Row popularItem : getPopularItemIdsResult) {
                 int itemId = popularItem.getInt(FieldConstants.orderLineItemIdField);
-                // if (popularItemIds.add(itemId)) {
-                //     itemIdsJoiner.add(String.valueOf(itemId));
-                // }
-                popularItemIds.add(itemId);
-                itemIdsJoiner.add(String.valueOf(itemId));
+                 if (popularItemIds.add(itemId)) {
+                     itemIdsJoiner.add(String.valueOf(itemId));
+                 }
+//                popularItemIds.add(itemId);
+//                itemIdsJoiner.add(String.valueOf(itemId));
             }
 
             // builder.append(itemIdsJoiner.toString());

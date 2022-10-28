@@ -5,9 +5,9 @@ public class QueryFormatter {
         assert(distId >= 1 && distId <= 10);
 
         if(distId < 10) {
-            return "0" + Integer.toString(distId);
+            return "S_DIST_" + "0" + Integer.toString(distId);
         } else {
-            return Integer.toString(distId);
+            return "S_DIST_" + Integer.toString(distId);
         }
     }
 }
