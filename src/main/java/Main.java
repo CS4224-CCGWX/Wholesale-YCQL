@@ -56,6 +56,7 @@ class Main {
 
     private static void run(String[] args) {
         String ip = args[1];
+        int inputNumber = Integer.parseInt(args[2]);
         String consistencyLevel = "";
 
         CqlSession session = getSessionByIp(ip);
@@ -71,8 +72,8 @@ class Main {
             AbstractTransaction transaction = transactionParser.parseNextTransaction();
             System.out.println(OutputFormatter.linebreak);
             System.out.println(outputFormatter.formatTransactionID(latencyList.size()));
-            if (args.length >= 2) {
-                consistencyLevel = args[2];
+            if (args.length >= 3) {
+                consistencyLevel = args[3];
                 transaction.setDefaultConsistencyLevel(consistencyLevel);
             }
             txStart = System.nanoTime();
@@ -94,7 +95,7 @@ class Main {
         fileEnd = System.nanoTime();
 
         long totalElapsedTime = TimeUnit.SECONDS.convert(fileEnd - fileStart, TimeUnit.NANOSECONDS);
-        PerformanceReportGenerator.generatePerformanceReport(latencyList, totalElapsedTime);
+        PerformanceReportGenerator.generatePerformanceReport(latencyList, totalElapsedTime, inputNumber);
 
         session.close();
         transactionParser.close();
@@ -106,6 +107,8 @@ class Main {
 
         AbstractTransaction summaryTransaction = new SummaryTransaction(session);
         summaryTransaction.execute();
+
+        PerformanceReportGenerator.generatePerformanceSummary();
 
         session.close();
     }
