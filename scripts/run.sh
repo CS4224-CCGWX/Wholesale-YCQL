@@ -1,6 +1,7 @@
 curr_node=$1
 tx=$2
 consistency_level=${3-'all'}
+port="9042"
 
 if [[ $curr_node == "xcnd20" ]]; then
     ip="192.168.48.239"
@@ -27,5 +28,5 @@ output_path="./log/"$tx".out"
 err_path="./log/"$tx".err"
 
 echo "Run transaction file "$input_path" at consistency_level: "$consistency_level" at node: "$curr_node
-java -jar target/Wholesale-YCQL-1.0.jar run $ip $consistency_level < $input_path > $output_path 2> $err_path
+java -jar target/Wholesale-YCQL-1.0.jar run $ip $port $tx $consistency_level < $input_path > $output_path 2> $err_path
 exit 0

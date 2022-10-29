@@ -99,7 +99,7 @@ public class NewOrderTransaction extends AbstractTransaction {
             }
         }
         Date orderDateTime = TimeFormatter.getCurrentDate();
-        this.executeQuery(PreparedQueries.createNewOrder, orderId, districtId, warehouseId, customerId, new Date().toInstant(), nOrderLines, isAllLocal);
+        this.executeQuery(PreparedQueries.createNewOrder, orderId, districtId, warehouseId, customerId, orderDateTime.toInstant(), nOrderLines, isAllLocal);
 //        String createNewOrder = String.format(
 //            "INSERT INTO \"order\" "
 //            + "(O_ID, O_D_ID, O_W_ID, O_C_ID, O_ENTRY_D, O_OL_CNT, O_ALL_LOCAL) "
