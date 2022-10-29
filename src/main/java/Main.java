@@ -82,7 +82,7 @@ class Main {
                 System.err.println("**************************************");
                 e.printStackTrace();
                 System.err.println(transaction.toString());
-                // exit(-1);
+//                exit(-1);
             }
 
             txEnd = System.nanoTime();
