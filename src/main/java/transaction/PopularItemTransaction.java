@@ -95,6 +95,12 @@ public class PopularItemTransaction extends AbstractTransaction {
 
             BigDecimal maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
                     .get(0).getBigDecimal(0);
+            if (maxQuantity == null) {
+                builder.append(String.format("Order: %d don't have max order line quantity", orderId));
+                builder.append(delimiter);
+                continue;
+            }
+
             List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, maxQuantity);
 
             // builder.append(String.format("max quantity: %d", maxQuantity));
