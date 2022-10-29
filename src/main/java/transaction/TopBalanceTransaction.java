@@ -23,6 +23,7 @@ public class TopBalanceTransaction extends AbstractTransaction {
     public String toString() {
         return "*** Top Balance Transaction ***";
     }
+
     public void execute() {
         /*
         This transaction finds the top-10 customers ranked in descending order of their outstanding balance payments.
@@ -64,25 +65,26 @@ public class TopBalanceTransaction extends AbstractTransaction {
         }
 
         PriorityQueue<Customer> customersPQ = new PriorityQueue<>();
-        for(int w_id = 1; w_id < N_WAREHOUSE; ++w_id) {
-            for(int d_id = 1; d_id < N_DISTRICT; ++d_id) {
-                String getTopKBalanceCustomers = String.format(
-                        "SELECT C_W_ID, C_D_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST " +
-                                "FROM customer " +
-                                "WHERE C_W_ID=%d and C_D_ID=%d "+
-                                "ORDER BY C_BALANCE DESC " +
-                                "LIMIT %d",
-                        w_id, d_id, K
-                );
-                List<Row> results = this.executeQuery(getTopKBalanceCustomers);
-                for(Row row : results) {
+        for (int w_id = 1; w_id < N_WAREHOUSE; ++w_id) {
+            for (int d_id = 1; d_id < N_DISTRICT; ++d_id) {
+//                String getTopKBalanceCustomers = String.format(
+//                        "SELECT C_W_ID, C_D_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST " +
+//                                "FROM customer " +
+//                                "WHERE C_W_ID=%d and C_D_ID=%d "+
+//                                "ORDER BY C_BALANCE DESC " +
+//                                "LIMIT %d",
+//                        w_id, d_id, K
+//                );
+//                List<Row> results = this.executeQuery(getTopKBalanceCustomers);
+                List<Row> results = this.executeQuery(PreparedQueries.getTopKBalanceCustomers, w_id, d_id, K);
+                for (Row row : results) {
                     customersPQ.add(new Customer(row));
                 }
             }
         }
 
         Customer[] topCustomers = new Customer[K];
-        for(int i=0; i < K; ++i) {
+        for (int i = 0; i < K; ++i) {
             topCustomers[i] = customersPQ.poll();
         }
 
@@ -101,8 +103,8 @@ public class TopBalanceTransaction extends AbstractTransaction {
             (d) District name of customer D NAME
              */
             String cInfo = String.format("Customer: (%s, %s, %s), Balance: %.2f, Warehouse: %s, District: %s",
-                        customer.first, customer.middle, customer.last,
-                        customer.balance, warehouseName, districtName);
+                    customer.first, customer.middle, customer.last,
+                    customer.balance, warehouseName, districtName);
             System.out.println(cInfo);
         }
     }
