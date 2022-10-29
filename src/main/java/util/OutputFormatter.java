@@ -1,5 +1,6 @@
 package util;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -141,7 +142,7 @@ public class OutputFormatter {
         return String.format("order id: %d, entry date and time: %s", id, TimeFormatter.formatTime(timestamp));
     }
 
-    public String formatPopularItemQuantity(String name, double quantity) {
+    public String formatPopularItemQuantity(String name, BigDecimal quantity) {
         return String.format("Item name: %s, quantity: %.2f", name, quantity);
     }
 
