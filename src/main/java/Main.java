@@ -56,9 +56,10 @@ class Main {
 
     private static void run(String[] args) {
         String ip = args[1];
+        int port = Integer.parseInt(args[2]);
         String consistencyLevel = "";
 
-        CqlSession session = getSessionByIp(ip);
+        CqlSession session = getSessionByIp(ip, port);
 
         TransactionParser transactionParser = new TransactionParser(session);
         OutputFormatter outputFormatter = new OutputFormatter();
@@ -102,7 +103,8 @@ class Main {
 
     private static void summary(String[] args) {
         String ip = args[1];
-        CqlSession session = getSessionByIp(ip);
+        int port = Integer.parseInt(args[2]);
+        CqlSession session = getSessionByIp(ip, port);
 
         AbstractTransaction summaryTransaction = new SummaryTransaction(session);
         summaryTransaction.execute();
@@ -110,10 +112,10 @@ class Main {
         session.close();
     }
 
-    private static CqlSession getSessionByIp(String ip) {
+    private static CqlSession getSessionByIp(String ip, int port) {
         return CqlSession
                 .builder()
-                .addContactPoint(new InetSocketAddress(ip, 9042))
+                .addContactPoint(new InetSocketAddress(ip, port))
                 .withLocalDatacenter("datacenter1")
                 .withKeyspace(CqlIdentifier.fromCql("wholesale"))
                 .build();
