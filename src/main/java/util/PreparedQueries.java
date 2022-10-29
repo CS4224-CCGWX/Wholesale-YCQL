@@ -134,10 +134,10 @@ public class PreparedQueries {
 //                     + "SET C_BALANCE = ?, C_YTD_PAYMENT = ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
 //                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
-   public final static String updateCustomerPaymentInfo =
-           "UPDATE customer "
-                   + "SET C_BALANCE = ?, C_YTD_PAYMENT = ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
-                   + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
+    public final static String updateCustomerPaymentInfo =
+            "UPDATE customer "
+                    + "SET C_BALANCE = ?, C_YTD_PAYMENT = ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
+                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
     public final static String getFullCustomerInfo =
             "SELECT C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, "
@@ -185,10 +185,11 @@ public class PreparedQueries {
 
     // For top balance transaction
     public final static String getTopKBalanceCustomers =
-            "SELECT C_W_ID, C_D_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST "
-                    + "FROM customer "
-                    + "ORDER BY C_BALANCE DESC "
-                    + "LIMIT ?;";
+            "SELECT C_W_ID, C_D_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST " +
+                    "FROM customer " +
+                    "WHERE C_W_ID = ? AND C_D_ID = ? " +
+                    "ORDER BY C_BALANCE DESC " +
+                    "LIMIT ?";
 
     public final static String getWarehouseName =
             "SELECT W_NAME "
