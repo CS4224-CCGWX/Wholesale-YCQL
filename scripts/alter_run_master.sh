@@ -25,14 +25,9 @@ master3="192.168.48.241"
 rpc_port="11451"
 web_port="11452"
 
-# $ybb/yb-ctl create \
-# --rf 3 \
 diskDir="/mnt/ramdisk"
 rm -rf $diskDir/yugabyte-data
 mkdir $diskDir/yugabyte-data/
-# if [[ ! -d $diskDir/yugabyte-data ]]; then
-#     mkdir $diskDir/yugabyte-data/
-# fi
 
 $ybb/yb-master \
 --master_addresses "$master1:$rpc_port,$master2:$rpc_port,$master3:$rpc_port" \
