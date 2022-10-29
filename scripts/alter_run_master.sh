@@ -34,3 +34,7 @@ $ybb/yb-master \
 --rpc_bind_addresses "$ip:$rpc_port" \
 --webserver_port $web_port \
 --fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-master.out &
+# flags="--master_addresses=$master1:$rpc_port,$master2:$rpc_port,$master3:$rpc_port --rpc_bind_addresses=$ip:$rpc_port --webserver_port=$web_port --fs_data_dirs=\"$diskDir/yugabyte-data\""
+# temp="/home/stuproj/cs4224i/Wholesale-YCQL/scripts/flags.conf"
+# echo "$flags" > $temp
+# $ybb/yb-master --flagfile $temp
