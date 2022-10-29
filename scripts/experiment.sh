@@ -1,6 +1,6 @@
 consistency_level=${1-'all'}
 
-nodes=3
+nodes=5
 
 submit_job() {
   job_id=$1
