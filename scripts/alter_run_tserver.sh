@@ -22,12 +22,15 @@ echo "Launching tserver on $ip ($curr_node)"
 master1="192.168.48.239"
 master2="192.168.48.240"
 master3="192.168.48.241"
+master_rpc_port="11451"
 rpc_port="11453"
 web_port="11454"
-ycql_addr="127.0.0.1:2333"
+ycql_addr="$ip:2333"
 ycql_web_port="2334"
-ysql_addr="127.0.0.1:6666"
+ysql_addr="$ip:6666"
 ysql_web_port="6667"
+yedis_addr="$ip:1515"
+yedis_web_port="1516"
 
 diskDir="/mnt/ramdisk"
 if [[ ! -d $diskDir/yugabyte-data ]]; then
@@ -35,12 +38,13 @@ if [[ ! -d $diskDir/yugabyte-data ]]; then
 fi
 
 $ybb/yb-tserver \
---tserver_master_addrs $master1:$rpc_port,$master2:$rpc_port,$master3:$rpc_port \
+--tserver_master_addrs $master1:$master_rpc_port,$master2:$master_rpc_port,$master3:$master_rpc_port \
 --rpc_bind_addresses $ip:$rpc_port \
 --webserver_port $web_port \
 --cql_proxy_bind_address $ycql_addr \
 --cql_proxy_webserver_port $ycql_web_port \
 --pgsql_proxy_bind_address $ysql_addr \
 --pgsql_proxy_webserver_port $ysql_web_port \
+--redis_proxy_bind_address $yedis_addr \
+--redis_proxy_webserver_port $yedis_web_port \
 --fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-tserver.out &
-# --fs_data_dirs "/export/data/ybdisk1,/export/data/ybdisk2"

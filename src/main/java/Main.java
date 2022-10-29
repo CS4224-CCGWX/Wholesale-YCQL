@@ -56,10 +56,11 @@ class Main {
 
     private static void run(String[] args) {
         String ip = args[1];
-        int inputNumber = Integer.parseInt(args[2]);
+        int port = Integer.parseInt(args[2]);
+        int inputNumber = Integer.parseInt(args[3]);
         String consistencyLevel = "";
 
-        CqlSession session = getSessionByIp(ip);
+        CqlSession session = getSessionByIp(ip, port);
 
         TransactionParser transactionParser = new TransactionParser(session);
         OutputFormatter outputFormatter = new OutputFormatter();
@@ -72,8 +73,8 @@ class Main {
             AbstractTransaction transaction = transactionParser.parseNextTransaction();
             System.out.println(OutputFormatter.linebreak);
             System.out.println(outputFormatter.formatTransactionID(latencyList.size()));
-            if (args.length >= 3) {
-                consistencyLevel = args[3];
+            if (args.length >= 4) {
+                consistencyLevel = args[4];
                 transaction.setDefaultConsistencyLevel(consistencyLevel);
             }
             txStart = System.nanoTime();
@@ -103,7 +104,8 @@ class Main {
 
     private static void summary(String[] args) {
         String ip = args[1];
-        CqlSession session = getSessionByIp(ip);
+        int port = Integer.parseInt(args[2]);
+        CqlSession session = getSessionByIp(ip, port);
 
         AbstractTransaction summaryTransaction = new SummaryTransaction(session);
         summaryTransaction.execute();
@@ -113,10 +115,10 @@ class Main {
         session.close();
     }
 
-    private static CqlSession getSessionByIp(String ip) {
+    private static CqlSession getSessionByIp(String ip, int port) {
         return CqlSession
                 .builder()
-                .addContactPoint(new InetSocketAddress(ip, 9042))
+                .addContactPoint(new InetSocketAddress(ip, port))
                 .withLocalDatacenter("datacenter1")
                 .withKeyspace(CqlIdentifier.fromCql("wholesale"))
                 .build();
