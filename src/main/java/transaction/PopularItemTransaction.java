@@ -93,9 +93,9 @@ public class PopularItemTransaction extends AbstractTransaction {
             builder.append(outputFormatter.formatCustomerName(customerInfo));
             builder.append(delimiter);
 
-            long maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
-                    .get(0).getBigDecimal(0).longValue();
-            List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, BigDecimal.valueOf(maxQuantity));
+            BigDecimal maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
+                    .get(0).getBigDecimal(0);
+            List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, maxQuantity);
 
             // builder.append(String.format("max quantity: %d", maxQuantity));
 
