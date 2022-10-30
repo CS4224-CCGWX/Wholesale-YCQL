@@ -37,14 +37,30 @@ if [[ ! -d $diskDir/yugabyte-data ]]; then
     mkdir $diskDir/yugabyte-data/
 fi
 
-$ybb/yb-tserver \
---tserver_master_addrs $master1:$master_rpc_port,$master2:$master_rpc_port,$master3:$master_rpc_port \
---rpc_bind_addresses $ip:$rpc_port \
---webserver_port $web_port \
---cql_proxy_bind_address $ycql_addr \
---cql_proxy_webserver_port $ycql_web_port \
---pgsql_proxy_bind_address $ysql_addr \
---pgsql_proxy_webserver_port $ysql_web_port \
---redis_proxy_bind_address $yedis_addr \
---redis_proxy_webserver_port $yedis_web_port \
---fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-tserver.out &
+#$ybb/yb-tserver \
+#--tserver_master_addrs $master1:$master_rpc_port,$master2:$master_rpc_port,$master3:$master_rpc_port \
+#--rpc_bind_addresses $ip:$rpc_port \
+#--webserver_port $web_port \
+#--cql_proxy_bind_address $ycql_addr \
+#--cql_proxy_webserver_port $ycql_web_port \
+#--pgsql_proxy_bind_address $ysql_addr \
+#--pgsql_proxy_webserver_port $ysql_web_port \
+#--redis_proxy_bind_address $yedis_addr \
+#--redis_proxy_webserver_port $yedis_web_port \
+#--fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-tserver.out &
+if [[ $curr_node == "xcnd20" ]]; then
+    flags=/home/stuproj/cs4224i/Wholesale-YCQL/scripts/t20.conf
+elif [[ $curr_node == "xcnd21" ]]; then
+    flags=/home/stuproj/cs4224i/Wholesale-YCQL/scripts/t21.conf
+elif [[ $curr_node == "xcnd22" ]]; then
+    flags=/home/stuproj/cs4224i/Wholesale-YCQL/scripts/t22.conf
+elif [[ $curr_node == "xcnd23" ]]; then
+    flags=/home/stuproj/cs4224i/Wholesale-YCQL/scripts/t23.conf
+elif [[ $curr_node == "xcnd24" ]]; then
+    flags=/home/stuproj/cs4224i/Wholesale-YCQL/scripts/t24.conf
+else
+    echo "Unknown node name: $curr_node"
+    exit -1
+fi
+
+$ybb/yb-tserver --flagfile $flags
