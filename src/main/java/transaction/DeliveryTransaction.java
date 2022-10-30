@@ -33,8 +33,8 @@ public class DeliveryTransaction extends AbstractTransaction {
          */
 
         for (int districtNo = 1; districtNo <= DISTRICT_NUM; districtNo++) {
-            res = executeQuery(PreparedQueries.getOrderIdToDeliver, warehouseId, districtNo);
-            executeQuery(PreparedQueries.updateOrderIdToDeliver, warehouseId, districtNo);
+            res = executeQuery(PreparedQueries.getNextDeliveryOrderId, warehouseId, districtNo);
+            executeQuery(PreparedQueries.updateNextDeliveryOrderId, warehouseId, districtNo);
 
             int orderId = res.get(0).getInt("D_NEXT_DELIVER_O_ID");
             print("********** Delivery Transaction *********\n");
@@ -56,7 +56,10 @@ public class DeliveryTransaction extends AbstractTransaction {
             ArrayList<Integer> orderLineNums = new ArrayList<>();
             List<Row> orderLines = executeQuery(PreparedQueries.getOrderLineInOrder, warehouseId, districtNo, orderId);
             if (orderLines.size() == 0) {
-                System.err.println(String.format("warehouse: %d, district %d, Next order to deliver: %d", warehouseId, districtNo, orderId));
+//                System.err.println(String.format("warehouse: %d, district %d, Next order to deliver: %d", warehouseId, districtNo, orderId));
+                print(String.format("There is no order to deliver in warehouse %d, district %d, order_id %d", warehouseId, districtNo, orderId));
+                executeQuery(PreparedQueries.revertNextDeliveryOrderId, warehouseId, districtNo);
+                return;
             }
 
             int customerId = orderLines.get(0).getInt("OL_C_ID");

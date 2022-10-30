@@ -77,15 +77,21 @@ public class PreparedQueries {
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
     // For delivery transaction
-    public final static String getOrderIdToDeliver =
+    public final static String getNextDeliveryOrderId =
             "SELECT D_NEXT_DELIVER_O_ID " +
                     "FROM district " +
                     "WHERE D_W_ID = ? AND D_ID = ?;";
 
-    public final static String updateOrderIdToDeliver =
+    public final static String updateNextDeliveryOrderId =
             "UPDATE district "
                     + "SET D_NEXT_DELIVER_O_ID = D_NEXT_DELIVER_O_ID + 1 "
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
+
+    public final static String revertNextDeliveryOrderId =
+            "UPDATE district "
+                    + "SET D_NEXT_DELIVER_O_ID = D_NEXT_DELIVER_O_ID - 1 "
+                    + "WHERE D_W_ID = ? AND D_ID = ?;";
+
 
     public final static String updateCarrierIdInOrder =
             "UPDATE \"order\" "
@@ -109,7 +115,6 @@ public class PreparedQueries {
             "UPDATE customer "
                     + "SET C_BALANCE = ?, C_DELIVERY_CNT = C_DELIVERY_CNT + 1 "
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
-
 
     public final static String updateWarehouseYearToDateAmount =
             "UPDATE warehouse "
