@@ -55,6 +55,9 @@ public class DeliveryTransaction extends AbstractTransaction {
             double orderAmount = 0;
             ArrayList<Integer> orderLineNums = new ArrayList<>();
             List<Row> orderLines = executeQuery(PreparedQueries.getOrderLineInOrder, warehouseId, districtNo, orderId);
+            if (orderLines.size() == 0) {
+                System.err.println(String.format("warehouse: %d, district %d, Next order to deliver: %d", warehouseId, districtNo, orderId));
+            }
 
             int customerId = orderLines.get(0).getInt("OL_C_ID");
             for (Row orderLine : orderLines) {
