@@ -94,7 +94,9 @@ public class PopularItemTransaction extends AbstractTransaction {
             int customerId = orderInfo.getInt(FieldConstants.orderCustomerIdField);
             List<Row> tmp = executeQuery(PreparedQueries.getCustomerName, warehouseId, districtId, customerId);
             if (tmp.size() == 0) {
+                System.err.println("*******************************");
                 System.err.printf("Popular item, can not get customer info for w_id:%d, d_id: %d, c_id:%d\n", warehouseId, districtId, customerId);
+                System.err.println("*******************************");
             } else {
                 Row customerInfo = tmp.get(0);
                 builder.append(outputFormatter.formatCustomerName(customerInfo));
