@@ -24,17 +24,16 @@ public class DeliveryTransaction extends AbstractTransaction {
 
     public void execute() {
         List<Row> res;
-        /*
-        (a) Let N denote the value of the smallest order number O ID for district (W ID,DISTRICT NO)
-        with O CARRIER ID = null; i.e.,
-                N = min{t.O ID ∈ Order | t.O W ID = W ID, t.D ID = DISTRICT NO, t.O CARRIER ID = null}
-        Let X denote the order corresponding to order number N, and let C denote the customer
-        who placed this order
-         */
-
         for (int districtNo = 1; districtNo <= DISTRICT_NUM; districtNo++) {
-            res = executeQuery(PreparedQueries.getOrderIdToDeliver, warehouseId, districtNo);
-            executeQuery(PreparedQueries.updateOrderIdToDeliver, warehouseId, districtNo);
+            /*
+            (a) Let N denote the value of the smallest order number O ID for district (W ID,DISTRICT NO)
+            with O CARRIER ID = null; i.e.,
+                    N = min{t.O ID ∈ Order | t.O W ID = W ID, t.D ID = DISTRICT NO, t.O CARRIER ID = null}
+            Let X denote the order corresponding to order number N, and let C denote the customer
+            who placed this order
+            */
+            res = executeQuery(PreparedQueries.getNextDeliveryOrderId, warehouseId, districtNo);
+            executeQuery(PreparedQueries.updateNextDeliveryOrderId, warehouseId, districtNo);
 
             int orderId = res.get(0).getInt("D_NEXT_DELIVER_O_ID");
             print("********** Delivery Transaction *********\n");
@@ -45,6 +44,7 @@ public class DeliveryTransaction extends AbstractTransaction {
              */
             executeQuery(PreparedQueries.updateCarrierIdInOrder, carrierId, warehouseId, districtNo, orderId);
 
+            
             /*
             (c) Update all the order-lines in X by setting OL DELIVERY D to the current date and time
             (d) Update customer C as follows:
@@ -55,7 +55,15 @@ public class DeliveryTransaction extends AbstractTransaction {
             double orderAmount = 0;
             ArrayList<Integer> orderLineNums = new ArrayList<>();
             List<Row> orderLines = executeQuery(PreparedQueries.getOrderLineInOrder, warehouseId, districtNo, orderId);
+            if (orderLines.size() == 0) {
+                print(String.format("There is no order to deliver in warehouse %d, district %d, order_id %d", warehouseId, districtNo, orderId));
 
+                // revert the change to next order id to delivery
+                executeQuery(PreparedQueries.revertNextDeliveryOrderId, warehouseId, districtNo);
+                return;
+            }
+            
+            
             int customerId = orderLines.get(0).getInt("OL_C_ID");
             for (Row orderLine : orderLines) {
                 orderAmount += orderLine.getBigDecimal("OL_AMOUNT").doubleValue();
@@ -65,12 +73,11 @@ public class DeliveryTransaction extends AbstractTransaction {
             // (c)
             for (int olNum : orderLineNums) {
                 executeQuery(PreparedQueries.updateDeliveryDateInOrderLine, TimeFormatter.getCurrentDate().toInstant(), warehouseId, districtNo, orderId, olNum);
-                print(String.format("Updated order line (%d, %d, %d, %d)", warehouseId, districtNo, orderId, olNum));
+                print(String.format("Updated order line warehouse %d, district %d, order %d, order line %d", warehouseId, districtNo, orderId, olNum));
             }
 
             // (d)
             List<Row> customers = executeQuery(PreparedQueries.getCustomerBalance, warehouseId, districtNo, customerId);
-
             double updatedBalance = customers.get(0).getBigDecimal(0).doubleValue() + orderAmount;
             executeQuery(PreparedQueries.updateCustomerBalanceAndDcount, BigDecimal.valueOf(updatedBalance), warehouseId, districtNo, customerId);
             print(String.format("Updated the info of customer (%d, %d, %d)", warehouseId, districtNo, customerId));

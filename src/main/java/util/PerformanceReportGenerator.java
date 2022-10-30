@@ -54,11 +54,14 @@ public class PerformanceReportGenerator {
         System.err.printf(outputFormatter.formatPercentile(99, p99));
         arr.add(String.valueOf(p99));
 
+        System.err.printf("longest latency: %dms\n", convertToMs(latencyList.get(latencyList.size() - 1)));
+
         String filePath = String.format(path, fileNumber);
         File file = new File(filePath);
 
         try {
-            FileWriter outputFile = new FileWriter(file);
+            file.createNewFile();
+            FileWriter outputFile = new FileWriter(file, false);
             CSVWriter writer = new CSVWriter(outputFile);
             String[] csvOutput = new String[arr.size()];
             arr.toArray(csvOutput);
@@ -95,7 +98,8 @@ public class PerformanceReportGenerator {
         File file = new File(clientsPath);
 
         try {
-            FileWriter outputFile = new FileWriter(file);
+            file.createNewFile();
+            FileWriter outputFile = new FileWriter(file, false);
             CSVWriter writer = new CSVWriter(outputFile);
             writer.writeAll(clients);
             writer.close();
@@ -124,7 +128,8 @@ public class PerformanceReportGenerator {
         file = new File(throughputPath);
 
         try {
-            FileWriter outputFile = new FileWriter(file);
+            file.createNewFile();
+            FileWriter outputFile = new FileWriter(file, false);
             CSVWriter writer = new CSVWriter(outputFile);
             writer.writeNext(output);
             writer.close();

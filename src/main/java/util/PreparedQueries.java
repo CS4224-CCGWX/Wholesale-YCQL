@@ -77,15 +77,21 @@ public class PreparedQueries {
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
 
     // For delivery transaction
-    public final static String getOrderIdToDeliver =
+    public final static String getNextDeliveryOrderId =
             "SELECT D_NEXT_DELIVER_O_ID " +
                     "FROM district " +
                     "WHERE D_W_ID = ? AND D_ID = ?;";
 
-    public final static String updateOrderIdToDeliver =
+    public final static String updateNextDeliveryOrderId =
             "UPDATE district "
                     + "SET D_NEXT_DELIVER_O_ID = D_NEXT_DELIVER_O_ID + 1 "
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
+
+    public final static String revertNextDeliveryOrderId =
+            "UPDATE district "
+                    + "SET D_NEXT_DELIVER_O_ID = D_NEXT_DELIVER_O_ID - 1 "
+                    + "WHERE D_W_ID = ? AND D_ID = ?;";
+
 
     public final static String updateCarrierIdInOrder =
             "UPDATE \"order\" "
@@ -109,7 +115,6 @@ public class PreparedQueries {
             "UPDATE customer "
                     + "SET C_BALANCE = ?, C_DELIVERY_CNT = C_DELIVERY_CNT + 1 "
                     + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
-
 
     public final static String updateWarehouseYearToDateAmount =
             "UPDATE warehouse "
@@ -202,8 +207,8 @@ public class PreparedQueries {
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     // For Related-Customer Transaction
-    public final static String getItemIds =
-            "SELECT OL_I_ID "
+    public final static String getOrderAndItemIds =
+            "SELECT OL_O_ID, OL_I_ID "
                     + "FROM order_line "
                     + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_C_ID = ? ALLOW FILTERING";
 
@@ -211,6 +216,11 @@ public class PreparedQueries {
             "SELECT OL_W_ID, OL_D_ID, OL_O_ID, OL_C_ID, OL_I_ID "
                     + "FROM order_line "
                     + "WHERE OL_W_ID <> ? ALLOW FILTERING";
+
+    public final static String getOrderLinesInDistrict =
+            "SELECT OL_W_ID, OL_D_ID, OL_O_ID, OL_C_ID, OL_I_ID "
+                    + "FROM order_line "
+                    + "WHERE OL_W_ID = ? AND OL_D_ID = ?;";
 
     // For popular item transactions
     public final static String getLastOrdersInfoForDistrict =

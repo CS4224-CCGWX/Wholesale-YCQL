@@ -85,6 +85,9 @@ public class PopularItemTransaction extends AbstractTransaction {
         for (Row orderInfo : resultS) {
             int orderId = orderInfo.getInt(FieldConstants.orderIdField);
             Instant timestamp = orderInfo.getInstant(FieldConstants.orderEntryTimestampField);
+            if (timestamp == null) {
+                System.err.printf("Null timestamp for w_id: %d, d_id: %d, o_id: %d\n", warehouseId, districtId, orderId);
+            }
             builder.append(outputFormatter.formatOrderIdAndTimestamp(orderId, timestamp));
             builder.append(delimiter);
 

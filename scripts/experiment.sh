@@ -13,6 +13,11 @@ submit_job() {
   ssh $node_id "cd Wholesale-YCQL && ./scripts/run.sh ${node_id} ${job_id} ${consistency_level}"
 }
 
+./scripts/dump_data.sh xcnd20
+if [[ ! -d experiment ]]; then
+    mkdir experiment
+fi
+
 for ((c=0; c<20; c++))
 do
   submit_job $c $consistency_level &

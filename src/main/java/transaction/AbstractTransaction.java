@@ -17,7 +17,7 @@ import com.datastax.oss.driver.api.core.CqlSession;
 public abstract class AbstractTransaction {
     protected CqlSession session;
     private ConsistencyLevel defaultConsistencyLevel;
-    private final int defaultTimeout = 5;
+    private final int defaultTimeout = 30;
 
     private static Map<String, PreparedStatement> preparedStatementHashMap = new HashMap<>();
 
@@ -76,7 +76,7 @@ public abstract class AbstractTransaction {
         BoundStatement statement = preparedStatement
                 .bind(values)
                 .setConsistencyLevel(getConsistencyLevel(query))
-                .setTimeout(Duration.ofMillis(timeout));
+                .setTimeout(Duration.ofSeconds(timeout));
         ResultSet res = session.execute(statement);
 
         return res.all();
@@ -106,6 +106,9 @@ public abstract class AbstractTransaction {
     }
 
     private ConsistencyLevel getConsistencyLevel(String query) {
+        if (this.defaultConsistencyLevel.equals(ConsistencyLevel.QUORUM)) {
+            return defaultConsistencyLevel;
+        }
         if (query.startsWith("SELECT")) {
             return ConsistencyLevel.ONE;
         } else {

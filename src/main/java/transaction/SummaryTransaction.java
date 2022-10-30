@@ -14,7 +14,7 @@ import util.PreparedQueries;
 
 public class SummaryTransaction extends AbstractTransaction {
     private final static String filePath = "./experiment/dbstate.csv";
-    private final static int timeout = 20000;
+    private final static int timeout = 100;
     private final static int numOfWarehouses = 10;
     private final static int numOfDistricts = 10;
 
@@ -35,7 +35,8 @@ public class SummaryTransaction extends AbstractTransaction {
         File file = new File(filePath);
 
         try {
-            FileWriter outputfile = new FileWriter(file);
+            file.createNewFile();
+            FileWriter outputfile = new FileWriter(file, false);
             CSVWriter writer = new CSVWriter(outputfile);
 
             System.out.println("Warehouse Summary");
@@ -48,11 +49,11 @@ public class SummaryTransaction extends AbstractTransaction {
             result = executeQuery(PreparedQueries.getDistrictSummary).get(0);
             temp[0] = String.valueOf(result.getBigDecimal(0).doubleValue());
             writer.writeNext(temp);
-            temp[0] = String.valueOf(result.getBigDecimal(1).doubleValue());
+            temp[0] = String.valueOf(result.getInt(1));
             writer.writeNext(temp);
 
             System.out.println("Customer Summary");
-            result = executeQueryWithTimeout(PreparedQueries.getCustomerSummary, timeout).get(0);
+            result = executeQuery(PreparedQueries.getCustomerSummary).get(0);
             temp[0] = String.valueOf(result.getBigDecimal(0).doubleValue());
             writer.writeNext(temp);
             temp[0] = String.valueOf(result.getFloat(1));
@@ -65,11 +66,11 @@ public class SummaryTransaction extends AbstractTransaction {
             System.out.println("Order Summary");
             List<String[]> arr = new ArrayList<>();
             int maxOId = 0;
-            double oolCount = 0;
+            long oolCount = 0;
             for (int i = 1; i <= numOfWarehouses; ++i) {
                 result = executeQueryWithTimeout(PreparedQueries.getOrderSummary, timeout, i).get(0);
                 maxOId = Math.max(maxOId, result.getInt(0));
-                oolCount += result.getBigDecimal(1).doubleValue();
+                oolCount += result.getInt(1);
                 System.out.printf("Finish Order Summary at warehouse: %d\n", i);
             }
             arr.add(new String[]{String.valueOf(maxOId)});

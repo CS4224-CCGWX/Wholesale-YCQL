@@ -29,12 +29,20 @@ diskDir="/mnt/ramdisk"
 rm -rf $diskDir/yugabyte-data
 mkdir $diskDir/yugabyte-data/
 
-$ybb/yb-master \
---master_addresses "$master1:$rpc_port,$master2:$rpc_port,$master3:$rpc_port" \
---rpc_bind_addresses "$ip:$rpc_port" \
---webserver_port $web_port \
---fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-master.out &
-# flags="--master_addresses=$master1:$rpc_port,$master2:$rpc_port,$master3:$rpc_port --rpc_bind_addresses=$ip:$rpc_port --webserver_port=$web_port --fs_data_dirs=\"$diskDir/yugabyte-data\""
-# temp="/home/stuproj/cs4224i/Wholesale-YCQL/scripts/flags.conf"
-# echo "$flags" > $temp
-# $ybb/yb-master --flagfile $temp
+#$ybb/yb-master \
+#--master_addresses "$master1:$rpc_port,$master2:$rpc_port,$master3:$rpc_port" \
+#--rpc_bind_addresses "$ip:$rpc_port" \
+#--webserver_port $web_port \
+#--fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-master.out &
+if [[ $curr_node == "xcnd20" ]]; then
+    flags=/home/stuproj/cs4224i/Wholesale-YCQL/scripts/m20.conf
+elif [[ $curr_node == "xcnd21" ]]; then
+    flags=/home/stuproj/cs4224i/Wholesale-YCQL/scripts/m21.conf
+elif [[ $curr_node == "xcnd22" ]]; then
+    flags=/home/stuproj/cs4224i/Wholesale-YCQL/scripts/m22.conf
+else
+    echo "Master should be launched at xcnd20-22"
+    exit -1
+fi
+
+$ybb/yb-master --flagfile $flags
