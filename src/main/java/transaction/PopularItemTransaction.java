@@ -92,9 +92,14 @@ public class PopularItemTransaction extends AbstractTransaction {
             builder.append(delimiter);
 
             int customerId = orderInfo.getInt(FieldConstants.orderCustomerIdField);
-            Row customerInfo = executeQuery(PreparedQueries.getCustomerName, warehouseId, districtId, customerId).get(0);
-            builder.append(outputFormatter.formatCustomerName(customerInfo));
-            builder.append(delimiter);
+            List<Row> tmp = executeQuery(PreparedQueries.getCustomerName, warehouseId, districtId, customerId);
+            if (tmp.size() == 0) {
+                System.err.printf("Popular item, can not get customer info for w_id:%d, d_id: %d, c_id:%d\n", warehouseId, districtId, customerId);
+            } else {
+                Row customerInfo = tmp.get(0);
+                builder.append(outputFormatter.formatCustomerName(customerInfo));
+                builder.append(delimiter);
+            }
 
             BigDecimal maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
                     .get(0).getBigDecimal(0);
