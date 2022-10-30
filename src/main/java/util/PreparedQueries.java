@@ -96,7 +96,8 @@ public class PreparedQueries {
     public final static String updateCarrierIdInOrder =
             "UPDATE \"order\" "
                     + "SET O_CARRIER_ID = ? "
-                    + "WHERE O_W_ID = ? AND O_D_ID = ? AND O_ID = ?;";
+                    + "WHERE O_W_ID = ? AND O_D_ID = ? AND O_ID = ? "
+                    + "IF EXISTS;";
 
     public final static String updateDeliveryDateInOrderLine =
             "UPDATE order_line "
