@@ -46,7 +46,7 @@ public class RelatedCustomerTransaction extends AbstractTransaction {
         // get order id and item ids in one order
         for (Row row : res) {
             int currItemId = row.getInt("OL_I_ID");
-            int currOId = row.getInt("O_ID");
+            int currOId = row.getInt("OL_O_ID");
             if (!oIdToItemIds.containsKey(currOId)) {
                 oIdToItemIds.put(currOId, new HashSet<>());
             }
@@ -159,6 +159,7 @@ public class RelatedCustomerTransaction extends AbstractTransaction {
         if (builder.length() == 0) {
             print("No related customers found");
         } else {
+            print("Related Customer: (warehouse, distrinct, customer id)");
             print(builder.toString());
         }
     }

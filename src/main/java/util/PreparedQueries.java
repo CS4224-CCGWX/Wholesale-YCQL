@@ -208,7 +208,7 @@ public class PreparedQueries {
 
     // For Related-Customer Transaction
     public final static String getOrderAndItemIds =
-            "SELECT O_ID, OL_I_ID "
+            "SELECT OL_O_ID, OL_I_ID "
                     + "FROM order_line "
                     + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_C_ID = ? ALLOW FILTERING";
 
