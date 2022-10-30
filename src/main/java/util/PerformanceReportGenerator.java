@@ -54,6 +54,8 @@ public class PerformanceReportGenerator {
         System.err.printf(outputFormatter.formatPercentile(99, p99));
         arr.add(String.valueOf(p99));
 
+        System.err.printf("longest latency: %d\n", latencyList.get(latencyList.size() - 1));
+
         String filePath = String.format(path, fileNumber);
         File file = new File(filePath);
 

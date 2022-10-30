@@ -17,7 +17,7 @@ import com.datastax.oss.driver.api.core.CqlSession;
 public abstract class AbstractTransaction {
     protected CqlSession session;
     private ConsistencyLevel defaultConsistencyLevel;
-    private final int defaultTimeout = 5;
+    private final int defaultTimeout = 30;
 
     private static Map<String, PreparedStatement> preparedStatementHashMap = new HashMap<>();
 
