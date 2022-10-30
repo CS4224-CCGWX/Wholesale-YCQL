@@ -242,7 +242,7 @@ public class PreparedQueries {
 
     // Summary Transactions
     public final static String getWarehouseYtdSummary =
-            "SELECT W_YTD From warehouse;";
+            "SELECT SUM(W_YTD) From warehouse;";
 
     public final static String getDistrictSummary =
             "SELECT SUM(D_YTD), SUM(D_NEXT_O_ID) FROM district;";
