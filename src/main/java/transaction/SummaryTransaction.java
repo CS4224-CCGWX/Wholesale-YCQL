@@ -34,7 +34,8 @@ public class SummaryTransaction extends AbstractTransaction {
         File file = new File(filePath);
 
         try {
-            FileWriter outputfile = new FileWriter(file);
+            file.createNewFile();
+            FileWriter outputfile = new FileWriter(file, false);
             CSVWriter writer = new CSVWriter(outputfile);
 
             System.out.println("Warehouse Summary");

@@ -139,6 +139,9 @@ public class OutputFormatter {
     }
 
     public String formatOrderIdAndTimestamp(int id, Instant timestamp) {
+        if (timestamp == null) {
+            return String.format("order id: %d, entry date and time: not available", id);
+        }
         return String.format("order id: %d, entry date and time: %s", id, TimeFormatter.formatTime(timestamp));
     }
 

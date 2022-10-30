@@ -106,6 +106,9 @@ public abstract class AbstractTransaction {
     }
 
     private ConsistencyLevel getConsistencyLevel(String query) {
+        if (this.defaultConsistencyLevel.equals(ConsistencyLevel.QUORUM)) {
+            return defaultConsistencyLevel;
+        }
         if (query.startsWith("SELECT")) {
             return ConsistencyLevel.ONE;
         } else {

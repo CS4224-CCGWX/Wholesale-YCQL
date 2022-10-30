@@ -58,7 +58,8 @@ public class PerformanceReportGenerator {
         File file = new File(filePath);
 
         try {
-            FileWriter outputFile = new FileWriter(file);
+            file.createNewFile();
+            FileWriter outputFile = new FileWriter(file, false);
             CSVWriter writer = new CSVWriter(outputFile);
             String[] csvOutput = new String[arr.size()];
             arr.toArray(csvOutput);
@@ -95,7 +96,8 @@ public class PerformanceReportGenerator {
         File file = new File(clientsPath);
 
         try {
-            FileWriter outputFile = new FileWriter(file);
+            file.createNewFile();
+            FileWriter outputFile = new FileWriter(file, false);
             CSVWriter writer = new CSVWriter(outputFile);
             writer.writeAll(clients);
             writer.close();
@@ -124,7 +126,8 @@ public class PerformanceReportGenerator {
         file = new File(throughputPath);
 
         try {
-            FileWriter outputFile = new FileWriter(file);
+            file.createNewFile();
+            FileWriter outputFile = new FileWriter(file, false);
             CSVWriter writer = new CSVWriter(outputFile);
             writer.writeNext(output);
             writer.close();
