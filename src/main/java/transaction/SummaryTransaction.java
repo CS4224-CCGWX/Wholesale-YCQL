@@ -16,6 +16,7 @@ public class SummaryTransaction extends AbstractTransaction {
     private final static String filePath = "./experiment/dbstate.csv";
     private final static int timeout = 100;
     private final static int numOfWarehouses = 10;
+    private final static int numOfDistricts = 10;
 
     /**
      * i. select sum(W YTD) from Warehouse
@@ -80,10 +81,12 @@ public class SummaryTransaction extends AbstractTransaction {
             arr = new ArrayList<>();
             double olAmount = 0, olQuantity = 0;
             for (int i = 1; i <= numOfWarehouses; ++i) {
-                result = executeQueryWithTimeout(PreparedQueries.getOrderLineSummary, timeout, i).get(0);
-                olAmount += result.getBigDecimal(0).doubleValue();
-                olQuantity += result.getBigDecimal(1).doubleValue();
-                System.out.printf("Finish Order Line Summary at warehouse: %d\n", i);
+                for (int j = 1; j <= numOfDistricts; ++j) {
+                    result = executeQueryWithTimeout(PreparedQueries.getOrderLineSummary, timeout, i, j).get(0);
+                    olAmount += result.getBigDecimal(0).doubleValue();
+                    olQuantity += result.getBigDecimal(1).doubleValue();
+                    System.out.printf("Finish Order Line Summary at warehouse: %d, district: %d\n", i, j);
+                }
             }
             arr.add(new String[]{String.valueOf(olAmount)});
             arr.add(new String[]{String.valueOf(olQuantity)});
@@ -97,8 +100,8 @@ public class SummaryTransaction extends AbstractTransaction {
                 result = executeQueryWithTimeout(PreparedQueries.getStockSummary, timeout, i).get(0);
                 sAmount += result.getBigDecimal(0).doubleValue();
                 sQuantity += result.getBigDecimal(1).doubleValue();
-                soCount += result.getLong(2);
-                srCount += result.getLong(3);
+                soCount += result.getInt(2);
+                srCount += result.getInt(3);
                 System.out.printf("Finish Stock Summary at warehouse: %d\n", i);
             }
             arr.add(new String[]{String.valueOf(sAmount)});
