@@ -1,4 +1,5 @@
 curr_node=$1
+port="9042"
 
 if [[ $curr_node == "xcnd20" ]]; then
     ip="192.168.48.239"
@@ -15,10 +16,12 @@ else
     exit -1
 fi
 
-mkdir experiment
+if [[ ! -d experiment ]]; then
+    mkdir experiment
+fi
 output_path="./log/summary.out"
 err_path="./log/summary.err"
 
 echo "Run summary"
-java -jar target/Wholesale-YCQL-1.0.jar summary $ip
+java -jar target/Wholesale-YCQL-1.0.jar summary $ip $port
 exit 0

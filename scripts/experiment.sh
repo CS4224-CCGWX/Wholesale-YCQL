@@ -14,6 +14,9 @@ submit_job() {
 }
 
 ./scripts/dump_data.sh xcnd20
+if [[ ! -d experiment ]]; then
+    mkdir experiment
+fi
 
 for ((c=0; c<20; c++))
 do
