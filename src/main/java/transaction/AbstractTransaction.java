@@ -76,7 +76,7 @@ public abstract class AbstractTransaction {
         BoundStatement statement = preparedStatement
                 .bind(values)
                 .setConsistencyLevel(getConsistencyLevel(query))
-                .setTimeout(Duration.ofMillis(timeout));
+                .setTimeout(Duration.ofSeconds(timeout));
         ResultSet res = session.execute(statement);
 
         return res.all();
