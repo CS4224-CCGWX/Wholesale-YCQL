@@ -97,14 +97,12 @@ public class SummaryTransaction extends AbstractTransaction {
             double sAmount = 0, sQuantity = 0;
             long soCount = 0, srCount = 0;
             for (int i = 1; i <= numOfWarehouses; ++i) {
-                for (int j = 1; j <= numOfDistricts; ++j) {
-                    result = executeQueryWithTimeout(PreparedQueries.getStockSummary, timeout, i, j).get(0);
-                    sAmount += result.getBigDecimal(0).doubleValue();
-                    sQuantity += result.getBigDecimal(1).doubleValue();
-                    soCount += result.getInt(2);
-                    srCount += result.getInt(3);
-                    System.out.printf("Finish Stock Summary at warehouse: %d district: %d\n", i, j);
-                }
+                result = executeQueryWithTimeout(PreparedQueries.getStockSummary, timeout, i).get(0);
+                sAmount += result.getBigDecimal(0).doubleValue();
+                sQuantity += result.getBigDecimal(1).doubleValue();
+                soCount += result.getInt(2);
+                srCount += result.getInt(3);
+                System.out.printf("Finish Stock Summary at warehouse: %d\n", i);
             }
             arr.add(new String[]{String.valueOf(sAmount)});
             arr.add(new String[]{String.valueOf(sQuantity)});

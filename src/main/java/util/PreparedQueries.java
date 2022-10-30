@@ -267,5 +267,5 @@ public class PreparedQueries {
             "SELECT SUM(OL_AMOUNT), SUM(OL_QUANTITY) from order_line WHERE OL_W_ID = ? AND OL_D_ID = ?;";
 
     public final static String getStockSummary =
-            "SELECT SUM(S_QUANTITY), SUM(S_YTD), SUM(S_ORDER_CNT), SUM(S_REMOTE_CNT) from stock WHERE S_W_ID = ? AND S_D_ID = ?;";
+            "SELECT SUM(S_QUANTITY), SUM(S_YTD), SUM(S_ORDER_CNT), SUM(S_REMOTE_CNT) from stock WHERE S_W_ID = ?;";
 }
