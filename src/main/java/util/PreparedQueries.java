@@ -207,8 +207,8 @@ public class PreparedQueries {
                     + "WHERE D_W_ID = ? AND D_ID = ?;";
 
     // For Related-Customer Transaction
-    public final static String getItemIds =
-            "SELECT OL_I_ID "
+    public final static String getOrderAndItemIds =
+            "SELECT O_ID, OL_I_ID "
                     + "FROM order_line "
                     + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_C_ID = ? ALLOW FILTERING";
 
@@ -216,6 +216,11 @@ public class PreparedQueries {
             "SELECT OL_W_ID, OL_D_ID, OL_O_ID, OL_C_ID, OL_I_ID "
                     + "FROM order_line "
                     + "WHERE OL_W_ID <> ? ALLOW FILTERING";
+
+    public final static String getOrderLinesInDistrict =
+            "SELECT OL_W_ID, OL_D_ID, OL_O_ID, OL_C_ID, OL_I_ID "
+                    + "FROM order_line "
+                    + "WHERE OL_W_ID = ? AND OL_D_ID = ?;";
 
     // For popular item transactions
     public final static String getLastOrdersInfoForDistrict =
