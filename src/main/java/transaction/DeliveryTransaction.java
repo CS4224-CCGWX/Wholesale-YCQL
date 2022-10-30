@@ -23,7 +23,7 @@ public class DeliveryTransaction extends AbstractTransaction {
     }
 
     public void execute() {
-        List<Row> res;
+        print("********** Delivery Transaction *********\n");
         for (int districtNo = 1; districtNo <= DISTRICT_NUM; districtNo++) {
             /*
             (a) Let N denote the value of the smallest order number O ID for district (W ID,DISTRICT NO)
@@ -32,18 +32,17 @@ public class DeliveryTransaction extends AbstractTransaction {
             Let X denote the order corresponding to order number N, and let C denote the customer
             who placed this order
             */
-            res = executeQuery(PreparedQueries.getNextDeliveryOrderId, warehouseId, districtNo);
+            List<Row> res = executeQuery(PreparedQueries.getNextDeliveryOrderId, warehouseId, districtNo);
             executeQuery(PreparedQueries.updateNextDeliveryOrderId, warehouseId, districtNo);
 
             int orderId = res.get(0).getInt("D_NEXT_DELIVER_O_ID");
-            print("********** Delivery Transaction *********\n");
+
             print(String.format("The next order to deliver in (%d, %d) is %d", warehouseId, districtNo, orderId));
 
             /*
             (b) Update the order X by setting O CARRIER ID to CARRIER ID
              */
             executeQuery(PreparedQueries.updateCarrierIdInOrder, carrierId, warehouseId, districtNo, orderId);
-
             
             /*
             (c) Update all the order-lines in X by setting OL DELIVERY D to the current date and time
@@ -60,7 +59,7 @@ public class DeliveryTransaction extends AbstractTransaction {
 
                 // revert the change to next order id to delivery
                 executeQuery(PreparedQueries.revertNextDeliveryOrderId, warehouseId, districtNo);
-                return;
+                continue;
             }
             
             
