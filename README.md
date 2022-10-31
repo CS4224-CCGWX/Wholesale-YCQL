@@ -5,4 +5,4 @@
 
 ### Setup steps
 
-## Run YCQL Java application
+## Run YCQL Java application benchmark
