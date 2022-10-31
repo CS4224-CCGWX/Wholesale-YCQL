@@ -1,5 +1,8 @@
 # Wholesale-YCQL
 
-## Cluster Setup
+## Cluster setup
+### Pre-requisite
+
+### Setup steps
 
 ## Run YCQL Java application
