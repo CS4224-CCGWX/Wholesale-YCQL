@@ -10,14 +10,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.Row;
 
 import util.FieldConstants;
 import util.OutputFormatter;
 import util.PreparedQueries;
 
 public class PopularItemTransaction extends AbstractTransaction {
+    private static final String delimiter = "\n";
     /**
      * This transaction finds the most popular item(s) in each of the last L orders at a specified warehouse
      * district. Given two items X and Y in the same order O, X is defined to be more popular than Y in O
@@ -49,13 +50,12 @@ public class PopularItemTransaction extends AbstractTransaction {
      * i. Item name I NAME
      * ii. The percentage of orders in S that contain the popular item t
      */
-    private int warehouseId;
-    private int districtId;
-    private int lastOrderToBeExamined;
-    private OutputFormatter outputFormatter = new OutputFormatter();
-    private static final String delimiter = "\n";
+    private final int warehouseId;
+    private final int districtId;
+    private final int lastOrderToBeExamined;
+    private final OutputFormatter outputFormatter = new OutputFormatter();
 
-    public PopularItemTransaction (CqlSession session, int warehouseId, int districtId, int lastOrderToBeExamined) {
+    public PopularItemTransaction(CqlSession session, int warehouseId, int districtId, int lastOrderToBeExamined) {
         super(session);
         this.warehouseId = warehouseId;
         this.districtId = districtId;
@@ -65,7 +65,7 @@ public class PopularItemTransaction extends AbstractTransaction {
     public void execute() {
         StringBuilder builder = new StringBuilder();
         builder.append("********** Popular Item Transaction *********\n");
-        builder.append(this.toString());
+        builder.append(this);
         builder.append(delimiter);
         // 1. Let N denote the value of the next available order number D_NEXT_O_ID for district (W ID,D ID)
         List<Row> result = executeQuery(PreparedQueries.getNextAvailableOrderNumber, warehouseId, districtId);
@@ -102,7 +102,7 @@ public class PopularItemTransaction extends AbstractTransaction {
             List<Row> tmp = executeQuery(PreparedQueries.getCustomerName, warehouseId, districtId, customerId);
             if (tmp.size() == 0) {
                 System.err.println("*******************************");
-                System.err.printf("Popular item, can not get customer info for w_id:%d, d_id: %d, c_id:%d\n", warehouseId, districtId, customerId);
+                System.err.printf("Popular Item Transaction: Cannot get customer info for w_id=%d, d_id=%d, c_id=%d\n", warehouseId, districtId, customerId);
                 System.err.println("*******************************");
                 continue;
             } else {
@@ -121,8 +121,6 @@ public class PopularItemTransaction extends AbstractTransaction {
 
             List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, maxQuantity);
 
-            // builder.append(String.format("max quantity: %d", maxQuantity));
-
             builder.append("Popular items:");
             builder.append(delimiter);
 
@@ -130,17 +128,12 @@ public class PopularItemTransaction extends AbstractTransaction {
             Set<Integer> popularItemIds = new HashSet<>();
             for (Row popularItem : getPopularItemIdsResult) {
                 int itemId = popularItem.getInt(FieldConstants.orderLineItemIdField);
-                 if (popularItemIds.add(itemId)) {
-                     itemIdsJoiner.add(String.valueOf(itemId));
-                 }
-//                popularItemIds.add(itemId);
-//                itemIdsJoiner.add(String.valueOf(itemId));
+                if (popularItemIds.add(itemId)) {
+                    itemIdsJoiner.add(String.valueOf(itemId));
+                }
             }
 
-            // builder.append(itemIdsJoiner.toString());
-            // builder.append(delimiter);
-
-            List<Row> popularItemsResult = executeQuery(String.format(PreparedQueries.getItemNameByIds, itemIdsJoiner.toString()));
+            List<Row> popularItemsResult = executeQuery(String.format(PreparedQueries.getItemNameByIds, itemIdsJoiner));
             for (Row popularItem : popularItemsResult) {
                 String itemName = popularItem.getString(FieldConstants.itemNameField);
                 popularItemsMap.putIfAbsent(popularItem.getInt(FieldConstants.itemIdField), itemName);

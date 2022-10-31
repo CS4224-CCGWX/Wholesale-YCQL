@@ -1,20 +1,19 @@
 package transaction;
 
-import com.datastax.oss.driver.api.core.cql.Row;
-import com.datastax.oss.driver.api.core.CqlSession;
-
-import util.PreparedQueries;
-import util.TimeFormatter;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.Row;
+
+import util.PreparedQueries;
+import util.TimeFormatter;
+
 public class DeliveryTransaction extends AbstractTransaction {
+    final int DISTRICT_NUM = 10;
     private int warehouseId;
     private int carrierId;
-
-    final int DISTRICT_NUM = 10;
 
     public DeliveryTransaction(CqlSession session, int warehouseId, int carrierId) {
         super(session);
@@ -61,8 +60,8 @@ public class DeliveryTransaction extends AbstractTransaction {
                 executeQuery(PreparedQueries.revertNextDeliveryOrderId, warehouseId, districtNo);
                 continue;
             }
-            
-            
+
+
             int customerId = orderLines.get(0).getInt("OL_C_ID");
             for (Row orderLine : orderLines) {
                 orderAmount += orderLine.getBigDecimal("OL_AMOUNT").doubleValue();
@@ -83,7 +82,7 @@ public class DeliveryTransaction extends AbstractTransaction {
         }
     }
 
-    @Override 
+    @Override
     public String toString() {
         return String.format("Delivery Transaction info: warehouseId: %d, carrierId: %d", warehouseId, carrierId);
     }

@@ -2,19 +2,19 @@ package transaction;
 
 import java.math.BigDecimal;
 
-import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.Row;
 
 import util.OutputFormatter;
 import util.PreparedQueries;
 
 public class PaymentTransaction extends AbstractTransaction {
+    private static final String delimiter = "\n";
+    private static OutputFormatter outputFormatter = new OutputFormatter();
     private int warehouseId;
     private int districtId;
     private int customerId;
     private double payment;
-    private static OutputFormatter outputFormatter = new OutputFormatter();
-    private static final String delimiter = "\n";
 
     public PaymentTransaction(CqlSession session, int warehouseId, int districtId, int customerId, double payment) {
         super(session);
@@ -23,6 +23,7 @@ public class PaymentTransaction extends AbstractTransaction {
         this.customerId = customerId;
         this.payment = payment;
     }
+
     /**
      * This transaction processes a payment made by a customer.
      * Inputs:

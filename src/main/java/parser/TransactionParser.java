@@ -1,16 +1,24 @@
 package parser;
 
-
-import com.datastax.oss.driver.api.core.CqlSession;
-import transaction.*;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import com.datastax.oss.driver.api.core.CqlSession;
+
+import transaction.AbstractTransaction;
+import transaction.DeliveryTransaction;
+import transaction.NewOrderTransaction;
+import transaction.OrderStatusTransaction;
+import transaction.PaymentTransaction;
+import transaction.PopularItemTransaction;
+import transaction.RelatedCustomerTransaction;
+import transaction.StockLevelTransaction;
+import transaction.TopBalanceTransaction;
+
 public class TransactionParser {
+    final String SEPARATOR = ",";
     Scanner scanner = new Scanner(System.in);
     CqlSession session;
-    final String SEPARATOR = ",";
 
     public TransactionParser(CqlSession session) {
         this.session = session;
@@ -25,31 +33,33 @@ public class TransactionParser {
     }
 
     public AbstractTransaction parseNextTransaction() {
-        if (!scanner.hasNext()) return null;
+        if (!scanner.hasNext()) {
+            return null;
+        }
 
         String line = scanner.nextLine();
         String[] inputs = line.split(SEPARATOR);
         String txType = inputs[0];
 
-        switch (txType) {
-            case "N":
-                return parseNewOrderTransaction(inputs);
-            case "P":
-                return parsePaymentTransaction(inputs);
-            case "D":
-                return parseDeliveryTransaction(inputs);
-            case "O":
-                return parseOrderStatusTransaction(inputs);
-            case "S":
-                return parseStockLevelTransaction(inputs);
-            case "I":
-                return parsePopularItemTransaction(inputs);
-            case "T":
-                return parseTopBalanceTransaction();
-            case "R":
-                return parseRelatedCustomerTransaction(inputs);
-            default:
-                throw new RuntimeException("Invalid type of transaction");
+        switch(txType) {
+        case "N":
+            return parseNewOrderTransaction(inputs);
+        case "P":
+            return parsePaymentTransaction(inputs);
+        case "D":
+            return parseDeliveryTransaction(inputs);
+        case "O":
+            return parseOrderStatusTransaction(inputs);
+        case "S":
+            return parseStockLevelTransaction(inputs);
+        case "I":
+            return parsePopularItemTransaction(inputs);
+        case "T":
+            return parseTopBalanceTransaction();
+        case "R":
+            return parseRelatedCustomerTransaction(inputs);
+        default:
+            throw new RuntimeException("Invalid type of transaction");
         }
     }
 

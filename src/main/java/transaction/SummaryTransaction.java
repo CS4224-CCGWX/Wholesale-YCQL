@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.Row;
 import com.opencsv.CSVWriter;
 
 import util.PreparedQueries;
@@ -112,9 +112,7 @@ public class SummaryTransaction extends AbstractTransaction {
 
             // closing writer connection
             writer.close();
-        }
-        catch (IOException e) {
-            // TODO Auto-generated catch block
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
