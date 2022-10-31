@@ -23,4 +23,5 @@ do
   submit_job $c $consistency_level &
 done
 wait
+/home/stuproj/cs4224i/Wholesale-YCQL/scripts/summary.sh xcnd20
 exit 0
