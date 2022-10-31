@@ -1,7 +1,13 @@
 export ybb="/temp/yugabyte-2.14.1.0/bin"
 
-curr_node=$1
+# Specify the master IPs and RPC port
+master1="192.168.48.239"
+master2="192.168.48.240"
+master3="192.168.48.241"
+port="7100"
 
+# Get current node IP
+curr_node=$1
 if [[ $curr_node == "xcnd20" ]]; then
     ip="192.168.48.239"
 elif [[ $curr_node == "xcnd21" ]]; then
@@ -17,22 +23,14 @@ else
     exit -1
 fi
 
-echo "Launching master on $ip ($curr_node)"
+echo "*** Launching master on $curr_node with address $ip:$port ***"
 
-master1="192.168.48.239"
-master2="192.168.48.240"
-master3="192.168.48.241"
-port="7100"
-
-# $ybb/yb-ctl create \
-# --rf 3 \
+# Specify disk directory
 diskDir="/mnt/ramdisk"
 rm -rf $diskDir/yugabyte-data
 mkdir $diskDir/yugabyte-data/
-# if [[ ! -d $diskDir/yugabyte-data ]]; then
-#     mkdir $diskDir/yugabyte-data/
-# fi
 
+# Launch
 $ybb/yb-master \
 --master_addresses "$master1:$port,$master2:$port,$master3:$port" \
 --rpc_bind_addresses "$ip:$port" \
