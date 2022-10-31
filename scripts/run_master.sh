@@ -1,3 +1,4 @@
+# Specify yugabyte binary path
 export ybb="/temp/yugabyte-2.14.1.0/bin"
 
 # Specify the master IPs and RPC port
