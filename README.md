@@ -6,8 +6,8 @@
 ### Setup steps
 
 ## Run YCQL Java application benchmark
-## Pre-requisite
+### Pre-requisite
 
-## Build and package
+### Build and package
 
-## Run benchmark
+### Run benchmark
