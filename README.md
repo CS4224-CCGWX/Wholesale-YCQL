@@ -22,8 +22,11 @@
 
 ### Build and package
 ```
-mvn clean -f "/home/stuproj/cs4224i/Wholesale-YCQL/pom.xml"
-mvn package -f "/home/stuproj/cs4224i/Wholesale-YCQL/pom.xml"
+mvn clean -f "./pom.xml"
+mvn package -f "./pom.xml"
 ```
+Make sure the project jar file is gerenerated at `./target/Wholesale-YCQL-1.0.jar`
 
 ### Run benchmark
+- Run `./scripts/benchmark.sh` to start benchmarking.
+- Check `./log` for each transaction files' output and errors.
