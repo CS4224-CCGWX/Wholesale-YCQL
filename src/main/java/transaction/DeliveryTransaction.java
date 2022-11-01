@@ -73,13 +73,13 @@ public class DeliveryTransaction extends AbstractTransaction {
             }
 
             // (c)
-            BatchStatement batchQueries = BatchStatement.newInstance(DefaultBatchType.LOGGED);
+            BatchStatement batchStatement = BatchStatement.newInstance(DefaultBatchType.LOGGED);
             for (int olNum : orderLineNums) {
-                BoundStatement boundStatement = bindPreparedQuery(PreparedQueries.updateDeliveryDateInOrderLine, TimeFormatter.getCurrentDate().toInstant(), warehouseId, districtNo, orderId, olNum);
-                batchQueries.add(boundStatement);
-//                executeQuery(PreparedQueries.updateDeliveryDateInOrderLine, TimeFormatter.getCurrentDate().toInstant(), warehouseId, districtNo, orderId, olNum);
+                BoundStatement boundStatement = bindPreparedQuery(PreparedQueries.batchUpdateDeliveryDateInOrderLine, TimeFormatter.getCurrentDate().toInstant(), warehouseId, districtNo, orderId, olNum);
+                batchStatement = batchStatement.add(boundStatement);
+            //    executeQuery(PreparedQueries.updateDeliveryDateInOrderLine, TimeFormatter.getCurrentDate().toInstant(), warehouseId, districtNo, orderId, olNum);
             }
-            executeBatch(batchQueries);
+            executeBatch(batchStatement);
 
             for (int olNum : orderLineNums) {
                 print(String.format("Updated order line warehouse %d, district %d, order %d, order line %d", warehouseId, districtNo, orderId, olNum));
