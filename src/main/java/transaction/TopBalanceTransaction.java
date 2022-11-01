@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.BatchStatement;
+import com.datastax.oss.driver.api.core.cql.DefaultBatchType;
 import com.datastax.oss.driver.api.core.cql.Row;
 
 import util.Customer;
@@ -37,14 +39,20 @@ public class TopBalanceTransaction extends AbstractTransaction {
         OutputFormatter outputFormatter = new OutputFormatter();
 
         PriorityQueue<Customer> customersPQ = new PriorityQueue<>();
+        BatchStatement batchQueries = BatchStatement.newInstance(DefaultBatchType.LOGGED);
         // Go to every partition and use the local index to get local top 10, put in MAX PQ.
         for (int w_id = 1; w_id < N_WAREHOUSE; ++w_id) {
             for (int d_id = 1; d_id < N_DISTRICT; ++d_id) {
-                List<Row> results = this.executeQuery(PreparedQueries.getTopKBalanceCustomers, w_id, d_id, RANK_LIMIT);
-                for (Row row : results) {
-                    customersPQ.add(new Customer(row));
-                }
+//                List<Row> results = this.executeQuery(PreparedQueries.getTopKBalanceCustomers, w_id, d_id, RANK_LIMIT);
+//                for (Row row : results) {
+//                    customersPQ.add(new Customer(row));
+//                }
+                batchQueries.add(this.bindPreparedQuery(PreparedQueries.getTopKBalanceCustomers, w_id, d_id, RANK_LIMIT));
             }
+        }
+        List<Row> results = this.executeBatch(batchQueries);
+        for(Row row : results) {
+            customersPQ.add(new Customer(row));
         }
         // Get global top 10.
         Customer[] topCustomers = new Customer[RANK_LIMIT];
