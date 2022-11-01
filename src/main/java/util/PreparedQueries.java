@@ -26,12 +26,12 @@ public class PreparedQueries {
     public final static String incrementDistrictNextOrderId =
             "UPDATE district "
                     + "SET D_NEXT_O_ID=D_NEXT_O_ID+1 "
-                    + "WHERE D_W_ID = ? AND D_ID = ?;";
+                    + "WHERE D_W_ID = ? AND D_ID = ? IF EXISTS;";
 
     public final static String createNewOrder =
             "INSERT INTO \"order\" "
                     + "(O_ID, O_D_ID, O_W_ID, O_C_ID, O_ENTRY_D, O_OL_CNT, O_ALL_LOCAL) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?);";
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?) IF NOT EXISTS;";
 
     public final static String getStockQty =
             "SELECT S_QUANTITY, S_YTD "
@@ -42,13 +42,13 @@ public class PreparedQueries {
     public final static String updateStockQtyIncrRemoteCnt =
             "UPDATE stock "
                     + "SET S_QUANTITY = ?, S_YTD = ?, S_ORDER_CNT = S_ORDER_CNT + 1, S_REMOTE_CNT = S_REMOTE_CNT + 1 "
-                    + "WHERE S_W_ID = ? AND S_I_ID = ?;";
+                    + "WHERE S_W_ID = ? AND S_I_ID = ? IF EXISTS;";
 
     // update stock qty that NOT increments remote count
     public final static String updateStockQty =
             "UPDATE stock "
                     + "SET S_QUANTITY = ?, S_YTD = ?, S_ORDER_CNT = S_ORDER_CNT + 1 "
-                    + "WHERE S_W_ID = ? AND S_I_ID = ?;";
+                    + "WHERE S_W_ID = ? AND S_I_ID = ? IF EXISTS;";
 
     public final static String getItemPriceAndName =
             "SELECT I_PRICE, I_NAME "
@@ -64,7 +64,7 @@ public class PreparedQueries {
     public final static String createNewOrderLine =
             "INSERT INTO order_line "
                     + "(OL_O_ID, OL_D_ID, OL_W_ID, OL_C_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DIST_INFO) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) IF NOT EXISTS;";
 
     public final static String getWarehouseTax =
             "SELECT W_TAX "
@@ -85,12 +85,12 @@ public class PreparedQueries {
     public final static String updateNextDeliveryOrderId =
             "UPDATE district "
                     + "SET D_NEXT_DELIVER_O_ID = D_NEXT_DELIVER_O_ID + 1 "
-                    + "WHERE D_W_ID = ? AND D_ID = ?;";
+                    + "WHERE D_W_ID = ? AND D_ID = ? IF EXISTS;";
 
     public final static String revertNextDeliveryOrderId =
             "UPDATE district "
                     + "SET D_NEXT_DELIVER_O_ID = D_NEXT_DELIVER_O_ID - 1 "
-                    + "WHERE D_W_ID = ? AND D_ID = ?;";
+                    + "WHERE D_W_ID = ? AND D_ID = ? IF EXISTS;";
 
 
     public final static String updateCarrierIdInOrder =
@@ -102,7 +102,7 @@ public class PreparedQueries {
     public final static String updateDeliveryDateInOrderLine =
             "UPDATE order_line "
                     + "SET OL_DELIVERY_D = ? "
-                    + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ? AND OL_NUMBER = ?;";
+                    + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ? AND OL_NUMBER = ? IF EXISTS;";
 
     public final static String getOrderLineInOrder =
             "SELECT OL_AMOUNT, OL_C_ID, OL_NUMBER "
@@ -115,12 +115,12 @@ public class PreparedQueries {
     public final static String updateCustomerBalanceAndDcount =
             "UPDATE customer "
                     + "SET C_BALANCE = ?, C_DELIVERY_CNT = C_DELIVERY_CNT + 1 "
-                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?";
+                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ? IF EXISTS";
 
     public final static String updateWarehouseYearToDateAmount =
             "UPDATE warehouse "
                     + "SET W_YTD = ? "
-                    + "WHERE W_ID = ?;";
+                    + "WHERE W_ID = ? IF EXISTS;";
 
 //     public static String formatUpdateWarehouseYearToDateAmount(double payment) {
 //         return String.format(updateWarehouseYearToDateAmount, String.valueOf(payment));
@@ -129,7 +129,7 @@ public class PreparedQueries {
     public final static String updateDistrictYearToDateAmount =
             "UPDATE district "
                     + "SET D_YTD = ? "
-                    + "WHERE D_W_ID = ? AND D_ID = ?;";
+                    + "WHERE D_W_ID = ? AND D_ID = ? IF EXISTS;";
 
 //     public static String formatUpdateDistrictYearToDateAmount(double payment) {
 //         return String.format(updateDistrictYearToDateAmount, String.valueOf(payment));
@@ -143,7 +143,7 @@ public class PreparedQueries {
     public final static String updateCustomerPaymentInfo =
             "UPDATE customer "
                     + "SET C_BALANCE = ?, C_YTD_PAYMENT = ?, C_PAYMENT_CNT = C_PAYMENT_CNT + 1 "
-                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ?;";
+                    + "WHERE C_W_ID = ? AND C_D_ID = ? AND C_ID = ? IF EXISTS;";
 
     public final static String getFullCustomerInfo =
             "SELECT C_W_ID, C_D_ID, C_ID, C_FIRST, C_MIDDLE, C_LAST, C_STREET_1, C_STREET_2, "
