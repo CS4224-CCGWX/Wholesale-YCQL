@@ -28,6 +28,7 @@ target/
 project_files/
 log/
 experiment/
+benchmark/
 
 *.err*
 
