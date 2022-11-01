@@ -11,12 +11,12 @@ submit_job() {
   node_id="xcnd"$(($base_node + $job_id % $num_nodes))
   echo "the job will be submitted to node: "$node_id
 
-  ssh $node_id "cd Wholesale-YCQL && ./scripts/run.sh ${node_id} ${job_id} ${consistency_level}"
+  ssh $node_id "cd Wholesale-YCQL && ./scripts/alter_run_jar.sh ${node_id} ${job_id} ${consistency_level}"
 }
 
-./scripts/dump_data.sh "xcnd${base_node}"
-if [[ ! -d experiment ]]; then
-    mkdir experiment
+./scripts/alter_dump_data.sh "xcnd${base_node}"
+if [[ ! -d benchmark ]]; then
+    mkdir benchmark
 fi
 
 for ((c=0; c<20; c++))
