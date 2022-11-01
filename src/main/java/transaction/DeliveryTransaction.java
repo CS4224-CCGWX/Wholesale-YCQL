@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.BatchStatement;
+import com.datastax.oss.driver.api.core.cql.BoundStatement;
+import com.datastax.oss.driver.api.core.cql.DefaultBatchType;
 import com.datastax.oss.driver.api.core.cql.Row;
 
 import util.PreparedQueries;
@@ -41,6 +44,7 @@ public class DeliveryTransaction extends AbstractTransaction {
             /*
             (b) Update the order X by setting O CARRIER ID to CARRIER ID
              */
+            // update if exists is used
             executeQuery(PreparedQueries.updateCarrierIdInOrder, carrierId, warehouseId, districtNo, orderId);
             
             /*
@@ -69,8 +73,15 @@ public class DeliveryTransaction extends AbstractTransaction {
             }
 
             // (c)
+            BatchStatement batchQueries = BatchStatement.newInstance(DefaultBatchType.LOGGED);
             for (int olNum : orderLineNums) {
-                executeQuery(PreparedQueries.updateDeliveryDateInOrderLine, TimeFormatter.getCurrentDate().toInstant(), warehouseId, districtNo, orderId, olNum);
+                BoundStatement boundStatement = bindPreparedQuery(PreparedQueries.updateDeliveryDateInOrderLine, TimeFormatter.getCurrentDate().toInstant(), warehouseId, districtNo, orderId, olNum);
+                batchQueries.add(boundStatement);
+//                executeQuery(PreparedQueries.updateDeliveryDateInOrderLine, TimeFormatter.getCurrentDate().toInstant(), warehouseId, districtNo, orderId, olNum);
+            }
+            executeBatch(batchQueries);
+
+            for (int olNum : orderLineNums) {
                 print(String.format("Updated order line warehouse %d, district %d, order %d, order line %d", warehouseId, districtNo, orderId, olNum));
             }
 
