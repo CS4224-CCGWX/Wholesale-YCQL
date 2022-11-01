@@ -89,8 +89,14 @@ public class OutputFormatter {
     }
 
     public String formatLastOrderInfo(int lastOrderId, int carrierId, Instant datetime) {
+        String time = "";
+        if(datetime == null) {
+            time = "Not available";
+        } else {
+            time = TimeFormatter.formatTime(datetime);
+        }
         return String.format("Last order ID: %d, Carrier ID: %d, Datetime: %s",
-                lastOrderId, carrierId, datetime.toString());
+                lastOrderId, carrierId, time);
     }
 
     public String formatItemInfo(Row itemInfo) {
@@ -101,7 +107,7 @@ public class OutputFormatter {
         } else {
             deliverTime = TimeFormatter.formatTime(time);
         }
-        return String.format("Item number: %d, Supply warehouse ID: %d, Quantity: %d, Price: %.2f, Delivery time: %s",
+        return String.format("- Item number: %d, Supply warehouse ID: %d, Quantity: %d, Price: %.2f, Delivery time: %s",
                 itemInfo.getInt("OL_I_ID"),
                 itemInfo.getInt("OL_SUPPLY_W_ID"),
                 itemInfo.getBigDecimal("OL_QUANTITY").intValue(),

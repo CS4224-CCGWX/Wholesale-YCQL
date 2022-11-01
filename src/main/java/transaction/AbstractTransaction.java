@@ -6,20 +6,19 @@ import java.util.List;
 import java.util.Map;
 
 import com.datastax.oss.driver.api.core.ConsistencyLevel;
-import com.datastax.oss.driver.api.core.cql.PreparedStatement;
-import com.datastax.oss.driver.api.core.cql.SimpleStatement;
-import com.datastax.oss.driver.api.core.cql.SimpleStatementBuilder;
+import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.BoundStatement;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
-import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
+import com.datastax.oss.driver.api.core.cql.SimpleStatementBuilder;
 
 public abstract class AbstractTransaction {
+    private static Map<String, PreparedStatement> preparedStatementHashMap = new HashMap<>();
+    private final int defaultTimeout = 30;
     protected CqlSession session;
     private ConsistencyLevel defaultConsistencyLevel;
-    private final int defaultTimeout = 30;
-
-    private static Map<String, PreparedStatement> preparedStatementHashMap = new HashMap<>();
 
     AbstractTransaction(CqlSession s) {
         session = s;
@@ -39,10 +38,6 @@ public abstract class AbstractTransaction {
     }
 
     protected List<Row> executeQuery(String query, Object... values) {
-        // SimpleStatement statement = new SimpleStatementBuilder(query)
-        //         .addPositionalValue(values)
-        //         .setConsistencyLevel(getConsistencyLevel(query))
-        //         .build();
         PreparedStatement preparedStatement;
         if (preparedStatementHashMap.containsKey(query)) {
             preparedStatement = preparedStatementHashMap.get(query);
@@ -61,11 +56,6 @@ public abstract class AbstractTransaction {
     }
 
     protected List<Row> executeQueryWithTimeout(String query, int timeout, Object... values) {
-        // SimpleStatement statement = new SimpleStatementBuilder(query)
-        //         .addPositionalValue(values)
-        //         .setConsistencyLevel(getConsistencyLevel(query))
-        //         .setTimeout(Duration.ofMillis(timeout))
-        //         .build();
         PreparedStatement preparedStatement;
         if (preparedStatementHashMap.containsKey(query)) {
             preparedStatement = preparedStatementHashMap.get(query);
@@ -88,19 +78,43 @@ public abstract class AbstractTransaction {
 
     public void setDefaultConsistencyLevel(String s) {
         ConsistencyLevel level;
-        switch (s) {
-        case "any": level = ConsistencyLevel.ANY;break;
-        case "one": level = ConsistencyLevel.ONE;break;
-        case "two": level = ConsistencyLevel.TWO;break;
-        case "three": level = ConsistencyLevel.THREE;break;
-        case "quorum": level = ConsistencyLevel.QUORUM;break;
-        case "all": level = ConsistencyLevel.ALL;break;
-        case "local_quorum": level = ConsistencyLevel.LOCAL_QUORUM;break;
-        case "each_quorum": level = ConsistencyLevel.EACH_QUORUM;break;
-        case "serial": level = ConsistencyLevel.SERIAL;break;
-        case "local_serial": level = ConsistencyLevel.LOCAL_SERIAL;break;
-        case "local_one": level = ConsistencyLevel.LOCAL_ONE;break;
-        default:level = ConsistencyLevel.ALL;break;
+        switch(s) {
+        case "any":
+            level = ConsistencyLevel.ANY;
+            break;
+        case "one":
+            level = ConsistencyLevel.ONE;
+            break;
+        case "two":
+            level = ConsistencyLevel.TWO;
+            break;
+        case "three":
+            level = ConsistencyLevel.THREE;
+            break;
+        case "quorum":
+            level = ConsistencyLevel.QUORUM;
+            break;
+        case "all":
+            level = ConsistencyLevel.ALL;
+            break;
+        case "local_quorum":
+            level = ConsistencyLevel.LOCAL_QUORUM;
+            break;
+        case "each_quorum":
+            level = ConsistencyLevel.EACH_QUORUM;
+            break;
+        case "serial":
+            level = ConsistencyLevel.SERIAL;
+            break;
+        case "local_serial":
+            level = ConsistencyLevel.LOCAL_SERIAL;
+            break;
+        case "local_one":
+            level = ConsistencyLevel.LOCAL_ONE;
+            break;
+        default:
+            level = ConsistencyLevel.ALL;
+            break;
         }
         this.defaultConsistencyLevel = level;
     }

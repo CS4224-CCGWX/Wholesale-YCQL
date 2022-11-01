@@ -1,17 +1,13 @@
 package transaction;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.Row;
 
 import util.OutputFormatter;
 import util.PreparedQueries;
-import util.QueryFormatter;
-import util.TimeFormatter;
 
 public class OrderStatusTransaction extends AbstractTransaction {
     private final int customerWarehouseId;
@@ -26,10 +22,9 @@ public class OrderStatusTransaction extends AbstractTransaction {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("*** Order Status Transaction Information ***\n");
-        sb.append(String.format("C_W_ID:%d, C_D_ID:%d, C_ID:%d\n", customerWarehouseId, customerDistrictId, customerId));
-        return sb.toString();
+        String sb = "*** Order Status Transaction Information ***\n" +
+                String.format("C_W_ID:%d, C_D_ID:%d, C_ID:%d\n", customerWarehouseId, customerDistrictId, customerId);
+        return sb;
     }
 
     public void execute() {
@@ -50,41 +45,19 @@ public class OrderStatusTransaction extends AbstractTransaction {
             (e) Data and time of delivery OL DELIVERY D
          */
         OutputFormatter outputFormatter = new OutputFormatter();
-
+        // 1.
         Row cInfo = this.executeQuery(PreparedQueries.getCustomerFullNameAndBalance, customerWarehouseId, customerDistrictId, customerId).get(0);
-//        String getCustomerFullNameAndBalance = String.format(
-//                "SELECT C_FIRST, C_MIDDLE, C_LAST, C_BALANCE "
-//                        + "FROM customer "
-//                        + "WHERE C_W_ID = %d AND C_D_ID = %d AND C_ID = %d;",
-//                customerWarehouseId, customerDistrictId, customerId
-//        );
-//        Row cInfo = this.executeQuery(getCustomerFullNameAndBalance).get(0);
-        System.out.println("*** Order Status Transaction Summary ***");
-        System.out.println(outputFormatter.formatCustomerFullNameAndBalance(cInfo));
-
+        // 2.
         Row lastOrderInfo = this.executeQuery(PreparedQueries.getCustomerLastOrderInfo, customerWarehouseId, customerDistrictId, customerId).get(0);
-//        String getCustomerLastOrderInfo = String.format(
-//                "SELECT O_ID, O_CARRIER_ID, O_ENTRY_D "
-//                        + "FROM \"order\" "
-//                        + "WHERE O_W_ID = %d AND O_D_ID = %d AND O_C_ID = %d "
-//                        + "ORDER BY O_ID DESC "
-//                        + "LIMIT 1;",
-//                customerWarehouseId, customerDistrictId, customerId
-//        );
-//        Row lastOrderInfo = this.executeQuery(getCustomerLastOrderInfo).get(0);
         int lastOrderId = lastOrderInfo.getInt("O_ID");
         int carrierId = lastOrderInfo.getInt("O_CARRIER_ID");
         Instant orderDateTime = lastOrderInfo.getInstant("O_ENTRY_D");
-        System.out.println(outputFormatter.formatLastOrderInfo(lastOrderId, carrierId, orderDateTime));
-
+        // 3.
         List<Row> itemsInfo = this.executeQuery(PreparedQueries.getCustomerLastOrderItemsInfo, customerWarehouseId, customerDistrictId, lastOrderId);
-//        String getCustomerLastOrderItemsInfo = String.format(
-//                "SELECT OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DELIVERY_D "
-//                        + "FROM order_line "
-//                        + "WHERE OL_W_ID = %d AND OL_D_ID = %d AND OL_O_ID = %d;",
-//                customerWarehouseId, customerDistrictId, lastOrderId
-//        );
-//        List<Row> itemsInfo = this.executeQuery(getCustomerLastOrderItemsInfo);
+        // Print results
+        System.out.println("*** Order Status Transaction Summary ***");
+        System.out.println(outputFormatter.formatCustomerFullNameAndBalance(cInfo));
+        System.out.println(outputFormatter.formatLastOrderInfo(lastOrderId, carrierId, orderDateTime));
         System.out.println("Items of last order:");
         for (Row itemInfo : itemsInfo) {
             System.out.println(outputFormatter.formatItemInfo(itemInfo));
