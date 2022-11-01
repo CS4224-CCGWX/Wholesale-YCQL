@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.datastax.oss.driver.api.core.ConsistencyLevel;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.BatchStatement;
 import com.datastax.oss.driver.api.core.cql.BoundStatement;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
@@ -35,6 +36,21 @@ public abstract class AbstractTransaction {
         ResultSet res = session.execute(statement);
 
         return res.all();
+    }
+
+    protected BoundStatement bindPreparedQuery(String query, Object... values) {
+        PreparedStatement preparedStatement;
+        if (preparedStatementHashMap.containsKey(query)) {
+            preparedStatement = preparedStatementHashMap.get(query);
+        } else {
+            preparedStatement = session.prepare(query);
+            preparedStatementHashMap.put(query, preparedStatement);
+        }
+
+        return preparedStatement
+                .bind(values)
+                .setTimeout(Duration.ofSeconds(defaultTimeout))
+                .setConsistencyLevel(getConsistencyLevel(query));
     }
 
     protected List<Row> executeQuery(String query, Object... values) {
@@ -70,6 +86,10 @@ public abstract class AbstractTransaction {
         ResultSet res = session.execute(statement);
 
         return res.all();
+    }
+
+    protected List<Row> executeBatch(BatchStatement batch) {
+        return session.execute(batch).all();
     }
 
     public void setDefaultConsistencyLevel(ConsistencyLevel consistencyLevel) {
