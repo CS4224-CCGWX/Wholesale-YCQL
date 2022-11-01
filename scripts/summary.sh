@@ -16,8 +16,8 @@ else
     exit -1
 fi
 
-if [[ ! -d experiment ]]; then
-    mkdir experiment
+if [[ ! -d benchmark ]]; then
+    mkdir benchmark
 fi
 output_path="./log/summary.out"
 err_path="./log/summary.err"

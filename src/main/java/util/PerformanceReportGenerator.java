@@ -13,9 +13,9 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
 public class PerformanceReportGenerator {
-    private static final String path = "./experiment/%d.csv";
-    private static final String clientsPath = "./experiment/clients.csv";
-    private static final String throughputPath = "./experiment/throughput.csv";
+    private static final String path = "./benchmark/%d.csv";
+    private static final String clientsPath = "./benchmark/clients.csv";
+    private static final String throughputPath = "./benchmark/throughput.csv";
 
     public static void generatePerformanceReport(List<Long> latencyList, long totalTime, int fileNumber) {
         Collections.sort(latencyList);

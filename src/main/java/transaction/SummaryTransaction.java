@@ -13,7 +13,7 @@ import com.opencsv.CSVWriter;
 import util.PreparedQueries;
 
 public class SummaryTransaction extends AbstractTransaction {
-    private final static String filePath = "./experiment/dbstate.csv";
+    private final static String filePath = "./benchmark/dbstate.csv";
     private final static int timeout = 100;
     private final static int numOfWarehouses = 10;
     private final static int numOfDistricts = 10;
