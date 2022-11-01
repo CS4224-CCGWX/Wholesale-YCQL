@@ -27,7 +27,7 @@ public abstract class AbstractTransaction {
 
     public abstract void execute();
 
-    protected List<Row> executeQuery(String query) {
+    protected List<Row> executeQueryString(String query) {
         SimpleStatement statement = new SimpleStatementBuilder(query)
                 .setConsistencyLevel(getConsistencyLevel(query))
                 .setTimeout(Duration.ofSeconds(defaultTimeout))

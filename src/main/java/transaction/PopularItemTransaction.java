@@ -85,39 +85,38 @@ public class PopularItemTransaction extends AbstractTransaction {
         for (Row orderInfo : resultS) {
             int orderId = orderInfo.getInt(FieldConstants.orderIdField);
             Instant timestamp = orderInfo.getInstant(FieldConstants.orderEntryTimestampField);
-            if (timestamp == null) {
-                System.err.printf("Null timestamp for w_id: %d, d_id: %d, o_id: %d\n", warehouseId, districtId, orderId);
-                continue;
-            }
+//            if (timestamp == null) {
+//                System.err.printf("Null timestamp for w_id: %d, d_id: %d, o_id: %d\n", warehouseId, districtId, orderId);
+//                continue;
+//            }
             builder.append(outputFormatter.formatOrderIdAndTimestamp(orderId, timestamp));
             builder.append(delimiter);
 
             int customerId = orderInfo.getInt(FieldConstants.orderCustomerIdField);
-            if (customerId == 0) {
-                builder.append(String.format("Customer id for w_id: %d, d_id: %d, o_id: %d order not available\n",
-                        warehouseId, districtId, orderId));
-                builder.append(delimiter);
-                continue;
-            }
+//            if (customerId == 0) {
+//                builder.append(String.format("Customer id for w_id: %d, d_id: %d, o_id: %d order not available\n",
+//                        warehouseId, districtId, orderId));
+//                builder.append(delimiter);
+//                continue;
+//            }
             List<Row> tmp = executeQuery(PreparedQueries.getCustomerName, warehouseId, districtId, customerId);
-            if (tmp.size() == 0) {
-                System.err.println("*******************************");
-                System.err.printf("Popular Item Transaction: Cannot get customer info for w_id=%d, d_id=%d, c_id=%d\n", warehouseId, districtId, customerId);
-                System.err.println("*******************************");
-                continue;
-            } else {
-                Row customerInfo = tmp.get(0);
-                builder.append(outputFormatter.formatCustomerName(customerInfo));
-                builder.append(delimiter);
-            }
+//            if (tmp.size() == 0) {
+//                System.err.println("*******************************");
+//                System.err.printf("Popular Item Transaction: Cannot get customer info for w_id=%d, d_id=%d, c_id=%d\n", warehouseId, districtId, customerId);
+//                System.err.println("*******************************");
+//                continue;
+//            } else {
+            Row customerInfo = tmp.get(0);
+            builder.append(outputFormatter.formatCustomerName(customerInfo));
+            builder.append(delimiter);
 
             BigDecimal maxQuantity = executeQuery(PreparedQueries.getMaxOLQuantity, orderId, districtId, warehouseId)
                     .get(0).getBigDecimal(0);
-            if (maxQuantity == null) {
-                builder.append(String.format("Order: %d don't have max order line quantity", orderId));
-                builder.append(delimiter);
-                continue;
-            }
+//            if (maxQuantity == null) {
+//                builder.append(String.format("Order: %d don't have max order line quantity", orderId));
+//                builder.append(delimiter);
+//                continue;
+//            }
 
             List<Row> getPopularItemIdsResult = executeQuery(PreparedQueries.getPopularItems, orderId, districtId, warehouseId, maxQuantity);
 
@@ -133,7 +132,7 @@ public class PopularItemTransaction extends AbstractTransaction {
                 }
             }
 
-            List<Row> popularItemsResult = executeQuery(String.format(PreparedQueries.getItemNameByIds, itemIdsJoiner));
+            List<Row> popularItemsResult = executeQueryString(String.format(PreparedQueries.getItemNameByIds, itemIdsJoiner));
             for (Row popularItem : popularItemsResult) {
                 String itemName = popularItem.getString(FieldConstants.itemNameField);
                 popularItemsMap.putIfAbsent(popularItem.getInt(FieldConstants.itemIdField), itemName);

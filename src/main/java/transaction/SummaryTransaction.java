@@ -40,20 +40,20 @@ public class SummaryTransaction extends AbstractTransaction {
             CSVWriter writer = new CSVWriter(outputfile);
 
             System.out.println("Warehouse Summary");
-            Row result = executeQuery(PreparedQueries.getWarehouseYtdSummary).get(0);
+            Row result = executeQueryString(PreparedQueries.getWarehouseYtdSummary).get(0);
             String[] temp = new String[1];
             temp[0] = String.valueOf(result.getBigDecimal(0).doubleValue());
             writer.writeNext(temp);
 
             System.out.println("District Summary");
-            result = executeQuery(PreparedQueries.getDistrictSummary).get(0);
+            result = executeQueryString(PreparedQueries.getDistrictSummary).get(0);
             temp[0] = String.valueOf(result.getBigDecimal(0).doubleValue());
             writer.writeNext(temp);
             temp[0] = String.valueOf(result.getInt(1));
             writer.writeNext(temp);
 
             System.out.println("Customer Summary");
-            result = executeQuery(PreparedQueries.getCustomerSummary).get(0);
+            result = executeQueryString(PreparedQueries.getCustomerSummary).get(0);
             temp[0] = String.valueOf(result.getBigDecimal(0).doubleValue());
             writer.writeNext(temp);
             temp[0] = String.valueOf(result.getFloat(1));
