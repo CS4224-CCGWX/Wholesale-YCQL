@@ -66,6 +66,11 @@ public class PreparedQueries {
                     + "(OL_O_ID, OL_D_ID, OL_W_ID, OL_C_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DIST_INFO) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) IF NOT EXISTS;";
 
+    public final static String createNewOrderLineBatch =
+            "INSERT INTO order_line "
+                    + "(OL_O_ID, OL_D_ID, OL_W_ID, OL_C_ID, OL_NUMBER, OL_I_ID, OL_SUPPLY_W_ID, OL_QUANTITY, OL_AMOUNT, OL_DIST_INFO) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) IF NOT EXISTS RETURNS STATUS AS ROW;";
+
     public final static String getWarehouseTax =
             "SELECT W_TAX "
                     + "FROM warehouse "
@@ -103,6 +108,11 @@ public class PreparedQueries {
             "UPDATE order_line "
                     + "SET OL_DELIVERY_D = ? "
                     + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ? AND OL_NUMBER = ? IF EXISTS;";
+
+    public final static String batchUpdateDeliveryDateInOrderLine =
+            "UPDATE order_line "
+                    + "SET OL_DELIVERY_D = ? "
+                    + "WHERE OL_W_ID = ? AND OL_D_ID = ? AND OL_O_ID = ? AND OL_NUMBER = ? IF EXISTS RETURNS STATUS AS ROW;";
 
     public final static String getOrderLineInOrder =
             "SELECT OL_AMOUNT, OL_C_ID, OL_NUMBER "
