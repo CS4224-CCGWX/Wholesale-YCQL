@@ -35,4 +35,5 @@ mkdir $diskDir/yugabyte-data/
 $ybb/yb-master \
 --master_addresses "$master1:$port,$master2:$port,$master3:$port" \
 --rpc_bind_addresses "$ip:$port" \
+--replication_factor=3 \
 --fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-master.out &
