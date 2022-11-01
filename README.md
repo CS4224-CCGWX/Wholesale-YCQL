@@ -20,12 +20,12 @@
 - `Maven`
 - `Python 3.7` with `Pandas` package (neccessary for data pre-processing).
 
-### Build and package
+### Build and package Java application
 ```
 mvn clean -f "./pom.xml"
 mvn package -f "./pom.xml"
 ```
-Make sure the project jar file is gerenerated at `./target/Wholesale-YCQL-1.0.jar`
+Make sure the project jar file is generated at `./target/Wholesale-YCQL-1.0.jar`
 
 ### Run benchmark
 - Run `./scripts/benchmark.sh` to start benchmarking.
