@@ -44,7 +44,6 @@ public class RelatedCustomerTransaction extends AbstractTransaction {
         HashMap<Integer, HashSet<Integer>> oIdToItemIds = new HashMap<>();
 
         HashSet<Integer> allOrderedItems = new HashSet<>();
-        HashMap<String, HashSet<Integer>> cusAndItemToItemSet = new HashMap<>();
 
         // get order id and item ids in one order
         for (Row row : res) {
