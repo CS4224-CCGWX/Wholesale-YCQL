@@ -43,6 +43,9 @@ else
     ip="192.168.48.239"
 fi
 echo "***** Using Cassandra Loader with host: $ip *****"
+if [[ ! -d $badDir ]]; then
+    mkdir $badDir
+fi
 
 # Cassandra-loader reference: https://github.com/yugabyte/cassandra-loader#options
 # DateTime format reference: https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html

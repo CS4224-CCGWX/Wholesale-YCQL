@@ -6,6 +6,7 @@ master1="192.168.48.239"
 master2="192.168.48.240"
 master3="192.168.48.241"
 port="7100"
+rf=3
 
 # Get current node IP
 curr_node=$1
@@ -35,4 +36,5 @@ mkdir $diskDir/yugabyte-data/
 $ybb/yb-master \
 --master_addresses "$master1:$port,$master2:$port,$master3:$port" \
 --rpc_bind_addresses "$ip:$port" \
+--replication_factor=$rf \
 --fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-master.out &

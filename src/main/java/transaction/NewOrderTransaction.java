@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.BatchStatement;
+import com.datastax.oss.driver.api.core.cql.BatchType;
 import com.datastax.oss.driver.api.core.cql.Row;
 
 import util.PreparedQueries;
@@ -79,6 +81,7 @@ public class NewOrderTransaction extends AbstractTransaction {
         List<Integer> adjustQuantities = new ArrayList<>();
         List<Double> itemAmounts = new ArrayList<>();
         List<String> itemNames = new ArrayList<>();
+        BatchStatement createOrderLinesBatchStmt = BatchStatement.newInstance(BatchType.LOGGED);
         for (int i = 0; i < nOrderLines; ++i) {
             int itemId = itemIds.get(i);
             int supplyWarehouseId = supplyWarehouseIds.get(i);
@@ -141,11 +144,11 @@ public class NewOrderTransaction extends AbstractTransaction {
             String distIdStr = queryFormatter.distIdStr(districtId);
             res = this.executeQuery(String.format(PreparedQueries.getStockDistInfo, distIdStr), warehouseId, itemId);
             String distInfo = res.get(0).getString(0);
-            this.executeQuery(PreparedQueries.createNewOrderLine,
-                    orderId, districtId, warehouseId, customerId,
-                    i, itemId, supplyWarehouseId, BigDecimal.valueOf(quantity),
-                    BigDecimal.valueOf(itemAmount), distInfo);
+            createOrderLinesBatchStmt = createOrderLinesBatchStmt.add(
+                    bindPreparedQuery(PreparedQueries.createNewOrderLineBatch, orderId, districtId, warehouseId,
+                            customerId, i, itemId, supplyWarehouseId, BigDecimal.valueOf(quantity), BigDecimal.valueOf(itemAmount), distInfo));
         }
+        this.executeBatch(createOrderLinesBatchStmt);
 
         /*
           4. TOTAL_AMOUNT = TOTAL_AMOUNT × (1+D_TAX +W_TAX) × (1−C_DISCOUNT),
