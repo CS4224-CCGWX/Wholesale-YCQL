@@ -6,6 +6,7 @@ master1="192.168.48.239"
 master2="192.168.48.240"
 master3="192.168.48.241"
 port="7100"
+compression="LZ4"
 
 # Get current node IP
 curr_node=$1
@@ -36,5 +37,5 @@ fi
 $ybb/yb-tserver \
 --tserver_master_addrs $master1:$port,$master2:$port,$master3:$port \
 --rpc_bind_addresses $ip \
---compression_type LZ4 \
+--compression_type $compression \
 --fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-tserver.out &
