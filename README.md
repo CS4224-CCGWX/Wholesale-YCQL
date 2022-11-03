@@ -3,8 +3,8 @@
 ## Cluster setup
 ### Pre-requisite
 - `yugabyte-2.14.1.0` installed under `/temp`, if not installed, run `./scripts/install_yugabyte.sh`.
-- Make sure `/mnt/ramdisk` has enough space (> 10G).
-- Make sure the default ports used by Yugabyte YCQL are available. You can find the default ports [here](https://docs.yugabyte.com/preview/reference/configuration/default-ports/).
+- Make sure `/mnt/ramdisk` has enough space (>12G).
+- Make sure the default ports used by Yugabyte masters and tservers are available. You can find the default ports [here](https://docs.yugabyte.com/preview/reference/configuration/default-ports/).
 
 
 ### Setup steps
@@ -22,7 +22,7 @@ Assume the current working directory is the root directory of this repo (Wholesa
 - `JDK 11`
 - `Maven`
 - `Python 3.7` with `pandas` package (necessary for data pre-processing).
-- `cassandra-loader` (download under the root directory)
+- `cassandra-loader` ([download](https://github.com/brianmhess/cassandra-loader) to the project root directory)
 
 ### Build and package Java application
 ```
