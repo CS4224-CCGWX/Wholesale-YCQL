@@ -85,6 +85,7 @@ public class PerformanceReportGenerator {
                 FileReader fileReader = new FileReader(filePath);
                 CSVReader reader = new CSVReader(fileReader);
                 String[] values = reader.readNext();
+                reader.close();
                 if (values != null) {
                     clients.add(values);
                 }
