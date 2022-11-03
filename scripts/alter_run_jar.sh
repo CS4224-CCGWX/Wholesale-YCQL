@@ -1,6 +1,6 @@
 curr_node=$1
 tx=$2
-consistency_level=${3-'all'}
+consistency_level=${3-'quorum'}
 port="2333"
 
 if [[ $curr_node == "xcnd20" ]]; then

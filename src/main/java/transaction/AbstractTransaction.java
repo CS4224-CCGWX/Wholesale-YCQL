@@ -23,7 +23,7 @@ public abstract class AbstractTransaction {
 
     AbstractTransaction(CqlSession s) {
         session = s;
-        defaultConsistencyLevel = ConsistencyLevel.ALL;
+        defaultConsistencyLevel = ConsistencyLevel.QUORUM;
     }
 
     public abstract void execute();
@@ -97,6 +97,12 @@ public abstract class AbstractTransaction {
     }
 
     public void setDefaultConsistencyLevel(String s) {
+        /*
+         * Not like Cassandra is AP database, Yugabyte is CP.
+         * YCQL only supports two consistency levels: Quorum and ONE.
+         * ONE is specifically for Follower-Reads usage.
+         * Reference: https://docs.yugabyte.com/preview/admin/ycqlsh/#consistency
+         */
         ConsistencyLevel level;
         switch(s) {
         case "one":
@@ -105,11 +111,8 @@ public abstract class AbstractTransaction {
         case "quorum":
             level = ConsistencyLevel.QUORUM;
             break;
-        case "all":
-            level = ConsistencyLevel.ALL;
-            break;
         default:
-            level = ConsistencyLevel.ALL;
+            level = ConsistencyLevel.QUORUM;
             break;
         }
         this.defaultConsistencyLevel = level;
