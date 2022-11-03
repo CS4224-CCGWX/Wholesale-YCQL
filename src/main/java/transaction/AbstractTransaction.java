@@ -101,6 +101,7 @@ public abstract class AbstractTransaction {
          * Not like Cassandra is AP database, Yugabyte is CP.
          * YCQL only supports two consistency levels: Quorum and ONE.
          * ONE is specifically for Follower-Reads usage.
+         * Reference: https://docs.yugabyte.com/preview/admin/ycqlsh/#consistency
          */
         ConsistencyLevel level;
         switch(s) {
