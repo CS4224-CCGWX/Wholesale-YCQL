@@ -1,4 +1,4 @@
-consistency_level=${1-'all'}
+consistency_level=${1-'quorum'}
 
 num_nodes=5
 base_node=20  # base node is xcnd20

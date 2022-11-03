@@ -19,11 +19,11 @@ public abstract class AbstractTransaction {
     private static Map<String, PreparedStatement> preparedStatementHashMap = new HashMap<>();
     private final int defaultTimeout = 30;
     protected CqlSession session;
-    private ConsistencyLevel defaultConsistencyLevel;
+    private ConsistencyLevel defaultReadConsistencyLevel;
 
     AbstractTransaction(CqlSession s) {
         session = s;
-        defaultConsistencyLevel = ConsistencyLevel.QUORUM;
+        defaultReadConsistencyLevel = ConsistencyLevel.QUORUM;
     }
 
     public abstract void execute();
@@ -92,11 +92,11 @@ public abstract class AbstractTransaction {
         return session.execute(batch).all();
     }
 
-    public void setDefaultConsistencyLevel(ConsistencyLevel consistencyLevel) {
-        this.defaultConsistencyLevel = consistencyLevel;
+    public void setDefaultReadConsistencyLevel(ConsistencyLevel consistencyLevel) {
+        this.defaultReadConsistencyLevel = consistencyLevel;
     }
 
-    public void setDefaultConsistencyLevel(String s) {
+    public void setDefaultReadConsistencyLevel(String s) {
         /*
          * Not like Cassandra is AP database, Yugabyte is CP.
          * YCQL only supports two consistency levels: Quorum and ONE.
@@ -115,17 +115,14 @@ public abstract class AbstractTransaction {
             level = ConsistencyLevel.QUORUM;
             break;
         }
-        this.defaultConsistencyLevel = level;
+        this.defaultReadConsistencyLevel = level;
     }
 
     private ConsistencyLevel getConsistencyLevel(String query) {
-        if (this.defaultConsistencyLevel.equals(ConsistencyLevel.QUORUM)) {
-            return defaultConsistencyLevel;
-        }
         if (query.startsWith("SELECT")) {
-            return ConsistencyLevel.ONE;
+            return defaultReadConsistencyLevel;
         } else {
-            return defaultConsistencyLevel;
+            return ConsistencyLevel.QUORUM;
         }
     }
 
