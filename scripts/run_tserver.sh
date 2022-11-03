@@ -38,4 +38,5 @@ $ybb/yb-tserver \
 --tserver_master_addrs $master1:$port,$master2:$port,$master3:$port \
 --rpc_bind_addresses $ip \
 --compression_type $compression \
+--yb_enable_read_committed_isolation true \
 --fs_data_dirs "$diskDir/yugabyte-data" >& $diskDir/yugabyte-data/yb-tserver.out &
