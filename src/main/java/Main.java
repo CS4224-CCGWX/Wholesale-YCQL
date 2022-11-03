@@ -54,7 +54,7 @@ class Main {
             System.out.println(outputFormatter.formatTransactionID(latencyList.size()));
             if (args.length >= 5) {
                 consistencyLevel = args[4];
-                transaction.setDefaultConsistencyLevel(consistencyLevel);
+                transaction.setDefaultReadConsistencyLevel(consistencyLevel);
             }
             txStart = System.nanoTime();
             try {
