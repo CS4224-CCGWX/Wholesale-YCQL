@@ -1,6 +1,7 @@
 package transaction;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.Row;
@@ -50,9 +51,14 @@ public class StockLevelTransaction extends AbstractTransaction {
 
         // 3. Output the total number of items in S where its stock quantity at W ID is below the threshold;
         long res = 0;
+        StringJoiner itemIds = new StringJoiner(",");
         for (Row orderLineInfo : result) {
             int itemId = orderLineInfo.getInt(FieldConstants.orderLineItemIdField);
-            Row stockInfo = executeQuery(PreparedQueries.getStockQuantityForWarehouseItem, warehouseId, itemId).get(0);
+            itemIds.add(String.valueOf(itemId));
+        }
+
+        result = executeQueryString(String.format(PreparedQueries.getStockQuantitiesFromWarehouseItems, warehouseId, itemIds.toString()));
+        for (Row stockInfo : result) {
             double quantity = stockInfo.getBigDecimal(FieldConstants.stockQuantityField).doubleValue();
             if (quantity < threshold) {
                 ++res;
