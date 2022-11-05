@@ -26,8 +26,8 @@ Assume the current working directory is the root directory of this repo (Wholesa
 
 ### Build and package Java application
 ```
-mvn clean -f "./pom.xml"
-mvn package -f "./pom.xml"
+mvn clean
+mvn package
 ```
 Make sure the project jar file is generated at `./target/Wholesale-YCQL-1.0.jar`
 
