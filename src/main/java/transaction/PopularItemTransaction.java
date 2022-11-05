@@ -123,6 +123,10 @@ public class PopularItemTransaction extends AbstractTransaction {
             builder.append("Popular items:");
             builder.append(delimiter);
 
+            if (getPopularItemIdsResult.size() == 0) {
+                continue;
+            }
+
             StringJoiner itemIdsJoiner = new StringJoiner(",");
             Set<Integer> popularItemIds = new HashSet<>();
             for (Row popularItem : getPopularItemIdsResult) {

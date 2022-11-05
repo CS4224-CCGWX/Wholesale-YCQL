@@ -199,6 +199,10 @@ public class PreparedQueries {
             "SELECT S_QUANTITY "
                     + "FROM stock WHERE S_W_ID = ? AND S_I_ID = ?;";
 
+    public final static String getStockQuantitiesFromWarehouseItems =
+            "SELECT S_QUANTITY "
+                    + "FROM stock WHERE S_W_ID = %d AND S_I_ID IN (%s);";
+
     // For top balance transaction
     public final static String getTopKBalanceCustomers =
             "SELECT C_W_ID, C_D_ID, C_BALANCE, C_FIRST, C_MIDDLE, C_LAST " +

@@ -1,6 +1,7 @@
 package transaction;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,21 +55,30 @@ public abstract class AbstractTransaction {
     }
 
     protected List<Row> executeQuery(String query, Object... values) {
-        PreparedStatement preparedStatement;
-        if (preparedStatementHashMap.containsKey(query)) {
-            preparedStatement = preparedStatementHashMap.get(query);
-        } else {
-            preparedStatement = session.prepare(query);
-            preparedStatementHashMap.put(query, preparedStatement);
+        try {
+            PreparedStatement preparedStatement;
+            if (preparedStatementHashMap.containsKey(query)) {
+                preparedStatement = preparedStatementHashMap.get(query);
+            } else {
+                preparedStatement = session.prepare(query);
+                preparedStatementHashMap.put(query, preparedStatement);
+            }
+            BoundStatement statement = preparedStatement
+                    .bind(values)
+                    .setTimeout(Duration.ofSeconds(defaultTimeout))
+                    .setConsistencyLevel(getConsistencyLevel(query));
+
+            ResultSet res = session.execute(statement);
+
+            return res.all();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.printf("query: %s\n", query);
+            for (Object value : values) {
+                System.err.println(value);
+            }
+            return new ArrayList<Row>();
         }
-        BoundStatement statement = preparedStatement
-                .bind(values)
-                .setTimeout(Duration.ofSeconds(defaultTimeout))
-                .setConsistencyLevel(getConsistencyLevel(query));
-
-        ResultSet res = session.execute(statement);
-
-        return res.all();
     }
 
     protected List<Row> executeQueryWithTimeout(String query, int timeout, Object... values) {
