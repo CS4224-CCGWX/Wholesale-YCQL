@@ -23,6 +23,7 @@ Assume the current working directory is the root directory of this repo (Wholesa
 - `Maven`
 - `Python 3.7` with `pandas` package (necessary for data pre-processing).
 - `cassandra-loader` ([download](https://github.com/brianmhess/cassandra-loader) to the project root directory)
+- Put the data and transaction files under `./project_files`.
 
 ### Build and package Java application
 ```
