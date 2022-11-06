@@ -113,14 +113,16 @@ public class PerformanceReportGenerator {
         // write throughput.csv
         double min = Double.valueOf(clients.get(0)[3]);
         double max = min;
-        double total = 0;
+        double totalTime = 0;
+        double totalTxs = 0;
         for (String[] client : clients) {
             double cur = Double.valueOf(client[3]);
             min = Math.min(min, cur);
             max = Math.max(max, cur);
-            total += cur;
+            totalTime += Double.valueOf(client[2]);
+            totalTxs += Double.valueOf(client[1]);
         }
-        double average = total / 20;
+        double average = totalTxs / totalTime;
         String[] output = new String[3];
         output[0] = String.valueOf(min);
         output[1] = String.valueOf(max);
